@@ -22,9 +22,12 @@
         <module>geomesa-examples-transformations</module>
         <module>geomesa-quickstart-accumulo</module>
         <module>geomesa-quickstart-kafka</module>
+        <module>geomesa-quickstart-storm</module>
     </modules>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <geomesa.version>${project.version}</geomesa.version>
         <gt.version>14.1</gt.version>
 
@@ -32,6 +35,8 @@
         <accumulo.version>1.5.3</accumulo.version>
         <zookeeper.version>3.4.5</zookeeper.version>
         <hadoop.version>2.2.0</hadoop.version>
+        <kafka.version>0.8.2.1</kafka.version>
+        <storm.version>0.9.6</storm.version>
     </properties>
 
     <dependencyManagement>
@@ -60,6 +65,30 @@
                 <groupId>org.apache.hadoop</groupId>
                 <artifactId>hadoop-client</artifactId>
                 <version>${hadoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka_2.11</artifactId>
+                <version>${kafka.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.xerial.snappy</groupId>
+                        <artifactId>snappy-java</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>net.sf.jopt-simple</groupId>
+                        <artifactId>jopt-simple</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.storm</groupId>
+                <artifactId>storm-core</artifactId>
+                <version>${storm.version}</version>
             </dependency>
 
             <dependency>
