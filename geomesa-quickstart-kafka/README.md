@@ -40,17 +40,17 @@ Download and Build the Tutorial
 Pick a reasonable directory on your machine, and run:
 
 ```bash
-git clone git@github.com:geomesa/geomesa-tutorials.git
-cd geomesa-tutorials
+$ git clone git@github.com:geomesa/geomesa-tutorials.git
+$ cd geomesa-tutorials
 ```
 
 To build, run
 
-```
-mvn clean install -pl geomesa-quickstart-kafka
+```bash
+$ mvn clean install -pl geomesa-quickstart-kafka
 ```
 
-> :warning: Note: Ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
+> :warning: Note: ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
 
 <span/>
 
@@ -62,8 +62,8 @@ Run the Code
 
 On the command-line, run:
 
-```
-java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers>
+```bash
+$ java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers>
 ```
 
 where you provide the values for the following arguments:

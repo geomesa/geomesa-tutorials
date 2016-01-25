@@ -35,17 +35,17 @@ Download and Build the Tutorial
 Pick a reasonable directory on your machine, and run:
 
 ```bash
-git@github.com:geomesa/geomesa-tutorials.git
-cd geomesa-tutorials
+$ git clone git@github.com:geomesa/geomesa-tutorials.git
+$ cd geomesa-tutorials
 ```
 
 To build, run
 
-```
-mvn clean install -pl geomesa-quickstart-accumulo
+```bash
+$ mvn clean install -pl geomesa-quickstart-accumulo
 ```
 
-> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
+> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
 <span/>
 
@@ -63,8 +63,8 @@ Run the Tutorial
 
 On the command-line, run:
 
-```
-java -cp geomesa-quickstart-accumulo/target/geomesa-quickstart-accumulo-${geomesa.version}.jar com.example.geomesa.accumulo.AccumuloQuickStart -instanceId <instance> -zookeepers <zookeepers> -user <user> -password <password> -tableName <table>
+```bash
+$ java -cp geomesa-quickstart-accumulo/target/geomesa-quickstart-accumulo-${geomesa.version}.jar com.example.geomesa.accumulo.AccumuloQuickStart -instanceId <instance> -zookeepers <zookeepers> -user <user> -password <password> -tableName <table>
 ```
 
 where you provide the following arguments:
