@@ -1,4 +1,4 @@
-GeoMesa Quick-Start Tutorial
+GeoMesa Accumulo Quick-Start Tutorial
 ============================
 
 This tutorial is the fastest and easiest way to get started with GeoMesa.  It is
@@ -29,54 +29,51 @@ Before you begin, you must have the following:
 * Apache [Maven](http://maven.apache.org/) installed
 * a GitHub client installed
 
-Download and build GeoMesa
+Download and Build the Tutorial
 --------------------------
 
 Pick a reasonable directory on your machine, and run:
 
-```
-git clone git@github.com:locationtech/geomesa.git
+```bash
+git@github.com:geomesa/geomesa-tutorials.git
+cd geomesa-tutorials
 ```
 
 To build, run
 
 ```
-mvn clean install
+mvn clean install -pl geomesa-quickstart-accumulo
 ```
 
-NB:  This step is only required, because the GeoMesa artifacts have not yet
-been published to a public Maven repository.  With the upcoming 1.0 release of
-GeoMesa, these artifacts will be available at LocationTech's Nexus server, and
-this download-and-build step will become obsolete.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
+<span/>
 
-About this tutorial/example
---------------------------------
+> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
-The GeoMesa Accumulo Example ```pom.xml``` file contains an explicit list of dependent libraries that will be bundled together into this tutorial.  You should confirm
-that the versions of Hadoop match what you are running; if it does not match, change the value in the POM.  (NB:  The only reason these libraries
-are bundled into the final JAR is that this is easier for most people to do this than it is to set the classpath when running the tutorial.
-If you would rather not bundle these dependencies, mark them as ```provided``` in the POM, and update your classpath as appropriate.)
+About this Tutorial
+-------------------
 
 The QuickStart operates by inserting and then querying 1000 features.  After the insertions are complete, a sequence of queries are run to
 demonstrate different types of queries possible via the GeoTools API.
 
-Run the tutorial
+Run the Tutorial
 ----------------
 
 On the command-line, run:
 
 ```
-java -cp geomesa-quickstart-accumulo/target/geomesa-quickstart-accumulo-${geomesa.version}.jar com.example.geomesa.accumulo.AccumuloQuickStart  -instanceId somecloud -zookeepers "zoo1:2181,zoo2:2181,zoo3:2181" -user someuser -password somepwd -tableName sometable
+java -cp geomesa-quickstart-accumulo/target/geomesa-quickstart-accumulo-${geomesa.version}.jar com.example.geomesa.accumulo.AccumuloQuickStart -instanceId <instance> -zookeepers <zookeepers> -user <user> -password <password> -tableName <table>
 ```
 
 where you provide the following arguments:
 
-* ```somecloud```:  the name of your Accumulo instance
-* ```zoo1:2181,zoo2:2181,zoo3:2181```:  your Zookeeper nodes, separated by commas
-* ```someuser```:  the name of an Accumulo user that has permissions to create, and write to, tables
-* ```somepwd```:  the password for the previously-mentioned Accumulo user
-* ```sometable```:  the name of the destination table that will accept these test records; this table should either not exist or should be empty
+* ```<instance>``` the name of your Accumulo instance
+* ```<zookeepers>``` your Zookeeper nodes, separated by commas
+* ```<user>``` the name of an Accumulo user that has permissions to create, read and write tables
+* ```<password>``` the password for the previously-mentioned Accumulo user
+* ```<table>``` the name of the destination table that will accept these test records; this table should either not exist or should be empty
 
 You should see output similar to the following (not including some of Maven's output and log4j's warnings):
 
