@@ -1,4 +1,4 @@
-GeoMesa Accumulo Quick-Start Tutorial
+GeoMesa Accumulo Quick-Start
 ============================
 
 This tutorial is the fastest and easiest way to get started with GeoMesa.  It is
@@ -55,8 +55,8 @@ mvn clean install -pl geomesa-quickstart-accumulo
 About this Tutorial
 -------------------
 
-The QuickStart operates by inserting and then querying 1000 features.  After the insertions are complete, a sequence of queries are run to
-demonstrate different types of queries possible via the GeoTools API.
+The QuickStart operates by inserting and then querying 1000 features.  After the insertions are complete,
+a sequence of queries are run to demonstrate different types of queries possible via the GeoTools API.
 
 Run the Tutorial
 ----------------
