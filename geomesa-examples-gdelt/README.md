@@ -65,8 +65,7 @@ hence the ``*.tsv`` extension. See the [GDELT raw data file
 documentation](http://www.gdeltproject.org/data.html#rawdatafiles)
 for more information on the format of these files.
 
-Building the tutorial code
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Building the tutorial code
 
 Clone the geomesa project and build it, if you haven't already:
 
@@ -96,8 +95,7 @@ $ mvn clean install
 After building, the built JAR file bundled with all dependencies will be
 in the ``target`` subdirectory.
 
-Running the ingest
-~~~~~~~~~~~~~~~~~~
+### Running the ingest
 
 Use ``hadoop jar`` to launch the Map/Reduce ingest job:
 
@@ -210,7 +208,7 @@ Analyze
 
 ### GeoServer Setup
 
-First, make sure that GeoServer is installed and configured to use GeoMesa as described in the :doc:`../user/installation_and_configuration` section of the GeoMesa User Manual.
+First, follow the [GeoMesa Deployment Tutorial](http://www.geomesa.org/geomesa-deployment/) to set up the GeoMesa GeoServer plugin if you haven't done so.
 
 ### Register the GeoMesa DataStore with GeoServer
 
