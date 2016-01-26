@@ -34,7 +34,7 @@
         <gt.version>14.1</gt.version>
 
         <!-- environment specific variables-->
-        <accumulo.version>1.5.3</accumulo.version>
+        <accumulo.version>1.6.4</accumulo.version>
         <zookeeper.version>3.4.5</zookeeper.version>
         <hadoop.version>2.2.0</hadoop.version>
         <kafka.version>0.8.2.1</kafka.version>

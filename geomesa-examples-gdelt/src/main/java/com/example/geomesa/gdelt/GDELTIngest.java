@@ -2,6 +2,7 @@ package com.example.geomesa.gdelt;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
 import org.apache.accumulo.core.client.mapreduce.AccumuloFileOutputFormat;
 import org.apache.commons.cli.*;
 import org.apache.hadoop.conf.Configuration;
@@ -18,9 +19,12 @@ import org.geotools.feature.SchemaException;
 import org.locationtech.geomesa.accumulo.index.Constants;
 import org.opengis.feature.simple.SimpleFeatureType;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class GDELTIngest {
 
@@ -97,6 +101,19 @@ public class GDELTIngest {
         return dsConf;
     }
 
+    public static String getVersion() {
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("project.properties");
+        Properties p = new Properties();
+        try {
+            p.load(is);
+        }
+        catch (IOException e) {
+            System.err.println("Exception when loading properties: " + e);
+        }
+
+        return p.getProperty("project.version");
+    }
+
     public static void main(String [ ] args) throws Exception {
         CommandLineParser parser = new BasicParser();
         Options options = getCommonRequiredOptions();
@@ -135,6 +152,8 @@ public class GDELTIngest {
         conf.set(FEATURE_NAME, featureName);
         FileSystem fs = FileSystem.get(conf);
         FileInputFormat.setInputPaths(job, mapredCSVFilePath);
+        String jarFile = "geomesa-examples-gdelt-" + getVersion() + ".jar";
+
         Path tmpPath = new Path("///tmp");
         if (!fs.exists(tmpPath)) {
             fs.mkdirs(tmpPath);
@@ -144,13 +163,13 @@ public class GDELTIngest {
           // remove this directory, if it already exists
             fs.delete(outputDir, true);
         }
-        Path hdfsJarPath = new Path("///tmp", "geomesa-gdelt-1.0-SNAPSHOT.jar");
+        Path hdfsJarPath = new Path("///tmp", jarFile);
         if (fs.exists(hdfsJarPath)) {
           // remove this jar, if it already exists
             fs.delete(hdfsJarPath, true);
         }
         FileOutputFormat.setOutputPath(job, outputDir);
-        fs.copyFromLocalFile(new Path("target/geomesa-gdelt-1.0-SNAPSHOT.jar"), hdfsJarPath);
+        fs.copyFromLocalFile(new Path("target/" + jarFile), hdfsJarPath);
         for (FileStatus path : fs.listStatus(hdfsJarPath)) {
             job.addArchiveToClassPath(new Path(path.getPath().toUri().getPath()));
         }
@@ -161,7 +180,6 @@ public class GDELTIngest {
             throw new Exception("Job failed");
         }
     }
-
 
     private static SimpleFeatureType buildGDELTFeatureType(String featureName) throws SchemaException {
         String name = featureName;
