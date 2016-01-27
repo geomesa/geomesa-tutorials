@@ -1,5 +1,4 @@
-Map-Reduce Ingest of GDELT
-=================
+# Map-Reduce Ingest of GDELT
 
 This tutorial shows how to:
 
@@ -7,8 +6,7 @@ This tutorial shows how to:
    GeoMesa Accumulo table via a Hadoop Map/Reduce job.
 2. Leverage GeoServer to query and visualize the data.
 
-Prerequisites
--------------
+## Prerequisites
 
 > :warning: You will need access to a Hadoop 2.2.2 or better installation as well as an Accumulo 1.5-1.6 database.
 
@@ -21,8 +19,7 @@ You will also need:
 -  [Apache Maven](http://maven.apache.org) 3.2.2, and
 -  a [git](http://git-scm.com) client.
 
-Obtaining GDELT data
---------------------
+## Obtaining GDELT data
 
 The [GDELT Event database](http://www.gdeltproject.org) provides a
 comprehensive time- and location-indexed archive of events reported in
@@ -65,57 +62,48 @@ hence the ``*.tsv`` extension. See the [GDELT raw data file
 documentation](http://www.gdeltproject.org/data.html#rawdatafiles)
 for more information on the format of these files.
 
-### Building the tutorial code
+## Download and Build the Tutorial
 
-Clone the geomesa project and build it, if you haven't already:
-
-```bash
-$ git clone https://github.com/locationtech/geomesa.git
-$ cd geomesa
-$ mvn clean install
-```
-
-This is needed to install the GeoMesa JAR files in your local Maven
-repository. For more information see the [GeoMesa Accumulo Quick
-Start](../geomesa-quickstart-accumulo) tutorial.
-
-Clone the geomesa-tutorials project and build it:
+Pick a reasonable directory on your machine, and run:
 
 ```bash
-$ git clone https://github.com/geomesa/geomesa-tutorials.git
+$ git clone git@github.com:geomesa/geomesa-tutorials.git
+$ cd geomesa-tutorials
 ```
 
-The example code is in ``geomesa-examples-gdelt``:
+To build, run
 
 ```bash
-$ cd geomesa-tutorials/geomesa-examples-gdelt
-$ mvn clean install
+$ mvn clean install -pl geomesa-examples-gdelt
 ```
 
-After building, the built JAR file bundled with all dependencies will be
-in the ``target`` subdirectory.
+> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
-### Running the ingest
+<span/>
+
+> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> Instructions can be found [here](https://github.com/locationtech/geomesa/).
+
+## Running the Ingest
 
 Use ``hadoop jar`` to launch the Map/Reduce ingest job:
 
 ```bash
-$ hadoop jar ./target/geomesa-examples-$VERSION.jar \
-   com.example.geomesa.gdelt.GDELTIngest           \
-   -instanceId <accumulo-instance-id>              \
-   -zookeepers <zookeeper-hosts-string>            \
-   -user <username> -password <password>           \
-   -auths <comma-separated-authorization-string>   \
-   -tableName gdelt -featureName event             \
-   -ingestFile hdfs:///gdelt/uncompressed/gdelt.tsv
+$ hadoop jar geomesa-examples-gdelt/target/geomesa-examples-gdelt-<version>.jar \
+    com.example.geomesa.gdelt.GDELTIngest            \
+    -instanceId <accumulo-instance-id>               \
+    -zookeepers <zookeeper-hosts-string>             \
+    -user <username> -password <password>            \
+    -auths <comma-separated-authorization-string>    \
+    -tableName gdelt -featureName event              \
+    -ingestFile hdfs:///gdelt/uncompressed/gdelt.tsv
 ```
 
 Note that authorizations are optional. Unless you know that your table
 already exists with explicit authorizations, or that it will be created
 with default authorizations, you probably want to omit this parameter.
 
-DataStore Initialization
-------------------------
+### DataStore Initialization
 
 [GeoTools](http://www.geotools.org) uses a ``SimpleFeatureType`` to
 represent the schema for individual ``SimpleFeatures`` created from
@@ -162,28 +150,26 @@ Finally, we create the new feature type in GeoMesa as follows.
 ds.createSchema(featureType);
 ```
 
-Mapper
-------
+### Mapper
 
-In the ``setup`` method of the Mapper class, we grab the connection
-params from the ``JobContext`` and get a handle on a ``FeatureWriter``.
+In the `setup` method of the Mapper class, we create a `FeatureBuilder` for the
+GDELT `SimpleFeatureType` we created in the initialization.
 
 ```java
-DataStore ds = DataStoreFinder.getDataStore(connectionParams);
-featureType = ds.getSchema(featureName);
+String featureName = context.getConfiguration().get(GDELTIngest.FEATURE_NAME);
+SimpleFeatureType featureType = GDELTIngest.buildGDELTFeatureType(featureName);
 featureBuilder = new SimpleFeatureBuilder(featureType);
-featureWriter = ds.getFeatureWriter(featureName, Transaction.AUTO_COMMIT);
 ```
 
 The input to the map method is a single line of the GDELT TSV file. We
 split the line on tabs and extract the attributes of the data. We parse
 the latitude and longitude field to set the default geometry of our
-``SimpleFeature``.
+`SimpleFeature`.
 
 GeoTools provides common conversions for most data types and some date
 formats. However, any attribute strings that will not convert
 automatically into the specified class need to be explicitly set on the
-``SimpleFeature``. See "SQLDATE" below.
+`SimpleFeature`. See "SQLDATE" below.
 
 ```java 
 featureBuilder.reset();
@@ -195,20 +181,22 @@ Geometry geom = geometryFactory.createPoint(new Coordinate(lon, lat));
 SimpleFeature simpleFeature = featureBuilder.buildFeature(attributes[ID_COL_IDX]);
 simpleFeature.setAttribute("SQLDATE", formatter.parse(attributes[DATE_COL_IDX]));
 simpleFeature.setDefaultGeometry(geom);
-
-try { SimpleFeature next = featureWriter.next();
-    next.setAttributes(simpleFeature.getAttributes());
-    ((FeatureIdImpl)next.getIdentifier()).setID(simpleFeature.getID());
-    featureWriter.write();
-}
 ```
 
-Analyze
--------
+We leverage the `GeoMesaOutputFormat` in order to write `SimpleFeature`s to Accumulo.
+Once we have created the `SimpleFeature`, all we have to do is write it to the output
+context:
+
+```java
+context.write(new Text(), simpleFeature);
+```
+
+## Analyze
 
 ### GeoServer Setup
 
-First, follow the [GeoMesa Deployment Tutorial](http://www.geomesa.org/geomesa-deployment/) to set up the GeoMesa GeoServer plugin if you haven't done so.
+First, follow the [GeoMesa Deployment Tutorial](http://www.geomesa.org/geomesa-deployment/) to set
+up the GeoMesa GeoServer plugin if you haven't done so.
 
 ### Register the GeoMesa DataStore with GeoServer
 

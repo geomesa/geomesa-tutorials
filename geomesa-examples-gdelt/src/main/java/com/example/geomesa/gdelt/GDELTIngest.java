@@ -2,29 +2,30 @@ package com.example.geomesa.gdelt;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.io.Closeables;
-import org.apache.accumulo.core.client.mapreduce.AccumuloFileOutputFormat;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
 import org.locationtech.geomesa.accumulo.index.Constants;
+import org.locationtech.geomesa.jobs.interop.mapreduce.GeoMesaOutputFormat;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 public class GDELTIngest {
 
@@ -101,19 +102,6 @@ public class GDELTIngest {
         return dsConf;
     }
 
-    public static String getVersion() {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("project.properties");
-        Properties p = new Properties();
-        try {
-            p.load(is);
-        }
-        catch (IOException e) {
-            System.err.println("Exception when loading properties: " + e);
-        }
-
-        return p.getProperty("project.version");
-    }
-
     public static void main(String [ ] args) throws Exception {
         CommandLineParser parser = new BasicParser();
         Options options = getCommonRequiredOptions();
@@ -142,37 +130,19 @@ public class GDELTIngest {
                                         Map<String, String> dsConf,
                                         Path mapredCSVFilePath) throws Exception {
         Job job = Job.getInstance(new Configuration());
-        job.setMapperClass(GDELTIngestMapper.class);
-        job.setOutputFormatClass(AccumuloFileOutputFormat.class);
         job.setJobName("GeoMesa GDELT Ingest");
-        Configuration conf = job.getConfiguration();
-        for (String key : dsConf.keySet()) {
-            conf.set(key, dsConf.get(key));
-        }
-        conf.set(FEATURE_NAME, featureName);
-        FileSystem fs = FileSystem.get(conf);
-        FileInputFormat.setInputPaths(job, mapredCSVFilePath);
-        String jarFile = "geomesa-examples-gdelt-" + getVersion() + ".jar";
+        job.setJarByClass(GDELTIngest.class);
 
-        Path tmpPath = new Path("///tmp");
-        if (!fs.exists(tmpPath)) {
-            fs.mkdirs(tmpPath);
-        }
-        Path outputDir = new Path("///tmp", "geomesa-gdelt-output");
-        if (fs.exists(outputDir)) {
-          // remove this directory, if it already exists
-            fs.delete(outputDir, true);
-        }
-        Path hdfsJarPath = new Path("///tmp", jarFile);
-        if (fs.exists(hdfsJarPath)) {
-          // remove this jar, if it already exists
-            fs.delete(hdfsJarPath, true);
-        }
-        FileOutputFormat.setOutputPath(job, outputDir);
-        fs.copyFromLocalFile(new Path("target/" + jarFile), hdfsJarPath);
-        for (FileStatus path : fs.listStatus(hdfsJarPath)) {
-            job.addArchiveToClassPath(new Path(path.getPath().toUri().getPath()));
-        }
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setMapperClass(GDELTIngestMapper.class);
+        job.setOutputFormatClass(GeoMesaOutputFormat.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(SimpleFeature.class);
+        job.setNumReduceTasks(0);
+
+        FileInputFormat.setInputPaths(job, mapredCSVFilePath);
+        GeoMesaOutputFormat.configureDataStore(job, dsConf);
+        job.getConfiguration().set(FEATURE_NAME, featureName);
 
         job.submit();
 
@@ -181,7 +151,7 @@ public class GDELTIngest {
         }
     }
 
-    private static SimpleFeatureType buildGDELTFeatureType(String featureName) throws SchemaException {
+    public static SimpleFeatureType buildGDELTFeatureType(String featureName) throws SchemaException {
         String name = featureName;
         String spec = Joiner.on(",").join(attributes);
         SimpleFeatureType featureType = DataUtilities.createType(name, spec);

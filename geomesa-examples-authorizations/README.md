@@ -193,7 +193,7 @@ the spatio-temporal index table through the Accumulo shell:
 
 ```bash
 myuser@mycloud> scan -t gdelt_auths_records
-\x01169881494 SFT: [user]    \x02\x12169881494\x00\xAC\xBE...
+\x0100700230-fdfe-422e-b4d1-8072db6f3dda SFT: [user]    \x02\x00\x00\x01b00700230...
 ```
 
 ## Download and Build the Tutorial
