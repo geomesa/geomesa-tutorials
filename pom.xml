@@ -20,6 +20,7 @@
 
     <modules>
         <module>geomesa-examples-authorizations</module>
+        <module>geomesa-examples-featurelevelvis</module>
         <module>geomesa-examples-gdelt</module>
         <module>geomesa-examples-transformations</module>
         <module>geomesa-quickstart-accumulo</module>
