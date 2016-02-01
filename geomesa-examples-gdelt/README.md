@@ -13,10 +13,10 @@ This tutorial shows how to:
 You will also need:
 
 -  access to an Accumulo user that has both create-table and write
-   permissions,
+   permissions
 -  an instance of GeoServer 2.8.1 with the GeoMesa plugin installed,
--  Java JDK 7,
--  [Apache Maven](http://maven.apache.org) 3.2.2, and
+-  Java JDK 7
+-  [Apache Maven](http://maven.apache.org) 3.2.2
 -  a [git](http://git-scm.com) client.
 
 ## Obtaining GDELT data
@@ -274,7 +274,7 @@ location or high volume of data in general. Add the SLD file [heatmap.sld](../as
 to GeoServer.
 
 In the request below, the heatmap is before the points layer so that the
-points will be overlayed and not hidden. Notice the
+points will be overlaid and not hidden. Notice the
 "&env=radiusPixels:30" in the URL; this is SLD variable substitution,
 and will replace the default value assigned in the SLD.
 

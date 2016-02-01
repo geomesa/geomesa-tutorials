@@ -1,7 +1,7 @@
 GeoMesa Kafka Quick Start
 ============================
 
-This tutorial will introduce how to:
+This tutorial will show you how to:
 
 1. Write custom Java code to produce and consume messages in [Apache Kafka](http://kafka.apache.org/) using GeoMesa.
 2. Query the data and replay the messages in a Kafka topic to achieve an earlier state.

@@ -5,7 +5,7 @@ Apache Storm is
 
 > a free and open source distributed realtime computation system.
 
-Storm can be leveraged to analyze and ingest data into GeoMesa in near real time. In this tutorial, we will:
+You can leverage Storm to analyze and ingest data into GeoMesa in near real time. In this tutorial, we will:
 
 1. Use Apache Kakfa to send messages to a Storm topology.
 2. Use Storm to parse Open Street Map (OSM) data files and ingest them into Accumulo.
@@ -227,7 +227,7 @@ Heatmaps
 
 Use a heatmap to more clearly visualize a high volume of data in the same location. Add
 this [SLD](../assets/geomesa-quickstart-storm/heatmap.sld) file to
-GeoServer, call it heatmap.sld
+GeoServer, then browse to the following URL:
 
 ```
 http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=geomesa:OSM&styles=heatmap&bbox=-87.63,41.88,-87.61,41.9&width=1400&height=600&srs=EPSG:4326&format=application/openlayers
