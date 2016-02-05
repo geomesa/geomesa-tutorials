@@ -190,8 +190,12 @@
 
     <repositories>
         <repository>
-            <id>locationtech</id>
+            <id>locationtech-releases</id>
             <url>https://repo.locationtech.org/content/repositories/releases</url>
+        </repository>
+        <repository>
+            <id>locationtech-snapshots</id>
+            <url>https://repo.locationtech.org/content/repositories/snapshots</url>
         </repository>
         <repository>
             <id>geotools</id>
