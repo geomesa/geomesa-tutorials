@@ -27,10 +27,10 @@ In order to install the GeoMesa Accumulo GeoServer plugin, follow the instructio
 
 You will also need:
 
-* The [xz](http://tukanni.org/xz/) data compression tool,
-* Java JDK 7,
-* [Apache Maven](http://maven.apache.org) 3.2.2 or better, and
-* a [git](http://git-scm.com/) client.
+* The [xz](http://tukanni.org/xz/) data compression tool
+* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* [Apache Maven](http://maven.apache.org) 3.2.2 or better
+* a [git](http://git-scm.com/) client
 
 Download and Build the Tutorial
 --------------------------
