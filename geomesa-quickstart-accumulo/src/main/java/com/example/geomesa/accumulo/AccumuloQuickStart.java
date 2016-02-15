@@ -117,6 +117,8 @@ public class AccumuloQuickStart {
             dsConf.put(param, cmd.getOptionValue(param));
         }
         if (dsConf.get(AUTHS) == null) dsConf.put(AUTHS, "");
+        // disable stat collection for this test
+        dsConf.put("collectStats", "false");
         return dsConf;
     }
 
