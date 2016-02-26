@@ -10,30 +10,14 @@ package com.example.geomesa.kafka;
 
 import org.apache.commons.cli.*;
 import org.geotools.data.*;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.simple.SimpleFeatureStore;
-import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.locationtech.geomesa.kafka.KafkaDataStoreHelper;
 import org.locationtech.geomesa.kafka.KafkaFeatureEvent;
-import org.locationtech.geomesa.kafka.ReplayConfig;
-import org.locationtech.geomesa.kafka.ReplayTimeHelper;
-import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
-import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 
 public class KafkaListener {
     public static final String KAFKA_BROKER_PARAM = "brokers";
@@ -113,17 +97,30 @@ public class KafkaListener {
         // create the schema which creates a topic in Kafka
         // (only needs to be done once)
         // TODO: This should be rolled into the Command line options to make this more general.
-        final String sftName = "KafkaQuickStart";
+        registerListeners(consumerDS);
 
-        // the live consumer must be created before the producer writes features
-        // in order to read streaming data.
-        // i.e. the live consumer will only read data written after its instantiation
+        while (true) {
+            // Wait for user to terminate with ctrl-C.
+        }
+    }
+
+    private static void registerListeners(DataStore consumerDS) throws IOException {
+        for (String typename : consumerDS.getTypeNames()) {
+            registerListenerForFeature(consumerDS, typename);
+        }
+    }
+
+    // the live consumer must be created before the producer writes features
+    // in order to read streaming data.
+    // i.e. the live consumer will only read data written after its instantiation
+    private static void registerListenerForFeature(DataStore consumerDS, final String sftName) throws IOException {
         SimpleFeatureSource consumerFS = consumerDS.getFeatureSource(sftName);
+        System.out.println("Registering a feature listener for type " + sftName + ".");
 
         consumerFS.addFeatureListener(new FeatureListener() {
             @Override
             public void changed(FeatureEvent featureEvent) {
-                System.out.println("Received FeatureEvent of Type: " + featureEvent.getType());
+                System.out.println("Received FeatureEvent from layer " + sftName + " of Type: " + featureEvent.getType());
 
                 if (featureEvent.getType() == FeatureEvent.Type.CHANGED &&
                         featureEvent instanceof KafkaFeatureEvent) {
@@ -135,9 +132,5 @@ public class KafkaListener {
                 }
             }
         });
-
-        while (true) {
-            // Wait for user to terminate with ctrl-C.
-        }
     }
 }
