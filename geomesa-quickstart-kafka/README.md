@@ -180,6 +180,59 @@ fid:1 | name:James | age:59 | dtg:Sat Jan 24 06:26:44 EST 2015 | geom:POINT (132
 
 For a deeper understanding of what's going on, we recommend exploring the source code.
 
+(Optional) Listening for FeatureEvents
+--------------------------------------
+
+The GeoTools API also includes a mechanism to fire off a
+[``FeatureEvent``](http://docs.geotools.org/stable/javadocs/index.html?org/geotools/data/FeatureEvent.Type.html)
+each time there is an event (typically when the data are changed) in a ``DataStore``. A client may implement a
+[``FeatureListener``](http://docs.geotools.org/stable/javadocs/index.html?org/geotools/data/FeatureEvent.Type.html),
+ which has a single method called ``changed()`` that is invoked as each ``FeatureEvent`` is fired.
+
+The code in ``com.example.geomesa.kafa.KafkaListener`` implements a simple ``FeatureListener`` that simply prints
+the messages received. Open up a second terminal window and run:
+
+```bash
+$ java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaListener -brokers <brokers> -zookeepers <zookeepers>
+```
+
+and use the same settings for ``<brokers>`` and ``<zookeepers>``. Then in the first terminal window, re-run the
+``KafkaQuickStart`` code as before. The ``KafkaListener`` terminal should produce messages like the following:
+
+```
+Received FeatureEvent of Type: CHANGED
+fid:1 | name:Hannah | age:53 | dtg:Sun Dec 13 11:04:40 EST 2015 | geom:POINT (-66 -33)
+Received FeatureEvent of Type: CHANGED
+fid:2 | name:Claire | age:77 | dtg:Thu Feb 26 02:06:41 EST 2015 | geom:POINT (-66 33)
+```
+
+Now interrupt the ``KafkaQuickStart`` command. The mesages sent to ``KafkaListener`` should cease.
+
+The portion of ``KafkaListener`` that creates and implements the ``FeatureListener`` is:
+
+```java
+// the live consumer must be created before the producer writes features
+// in order to read streaming data.
+// i.e. the live consumer will only read data written after its instantiation
+SimpleFeatureSource consumerFS = consumerDS.getFeatureSource(sftName);
+
+consumerFS.addFeatureListener(new FeatureListener() {
+    @Override
+    public void changed(FeatureEvent featureEvent) {
+        System.out.println("Received FeatureEvent of Type: " + featureEvent.getType());
+
+        if (featureEvent.getType() == FeatureEvent.Type.CHANGED && 
+                featureEvent instanceof KafkaFeatureEvent) {
+            printFeature(((KafkaFeatureEvent) featureEvent).feature());
+        }
+
+        if (featureEvent.getType() == FeatureEvent.Type.REMOVED) {
+            System.out.println("Received Delete for filter: " + featureEvent.getFilter());
+        }
+    }
+});
+```
+
 Conclusion
 ----------
 
