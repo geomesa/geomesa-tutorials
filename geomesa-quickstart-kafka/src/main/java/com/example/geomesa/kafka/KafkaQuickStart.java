@@ -16,6 +16,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.joda.time.DateTime;
@@ -31,6 +32,8 @@ import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 
 import java.io.IOException;
 import java.util.*;
@@ -122,9 +125,31 @@ public class KafkaQuickStart {
             producerFS.addFeatures(featureCollection);
             featureCollection.clear();
 
-            // wait 200 ms in between updating SimpleFeatures to simulate a stream of data
-            Thread.sleep(200);
+            // wait 100 ms in between updating SimpleFeatures to simulate a stream of data
+            Thread.sleep(100);
         }
+    }
+
+    public static void addDeleteNewFeature(SimpleFeatureType sft, FeatureStore producerFS)
+            throws InterruptedException, IOException {
+        SimpleFeatureBuilder builder = new SimpleFeatureBuilder(sft);
+        DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
+        final Random random = new Random();
+
+        String id = "1000";
+
+        builder.add("Antoninus"); // name
+        builder.add((int) Math.round(random.nextDouble()*110)); // age
+        builder.add(new Date()); // dtg
+        builder.add(WKTUtils$.MODULE$.read("POINT(-1 -1)")); // geom
+        SimpleFeature feature = builder.buildFeature(id);
+
+        featureCollection.add(feature);
+        producerFS.addFeatures(featureCollection);
+
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2();
+        Filter idFilter = ff.id(ff.featureId(id));
+        producerFS.removeFeatures(idFilter);
     }
 
     // prints out attribute values for a SimpleFeature
@@ -193,6 +218,14 @@ public class KafkaQuickStart {
         SimpleFeatureCollection featureCollection = consumerFS.getFeatures();
         System.out.println(featureCollection.size() + " features were written to Kafka");
 
+        addDeleteNewFeature(sft, producerFS);
+
+        // read from Kafka after writing all the features.
+        // LIVE CONSUMER - will obtain the current state of SimpleFeatures
+        System.out.println("\nConsuming with the live consumer...");
+        featureCollection = consumerFS.getFeatures();
+        System.out.println(featureCollection.size() + " features were written to Kafka");
+
         // the state of the two SimpleFeatures is real time here
         System.out.println("Here are the two SimpleFeatures that were obtained with the live consumer:");
         SimpleFeatureIterator featureIterator = featureCollection.features();
@@ -227,6 +260,12 @@ public class KafkaQuickStart {
         featureIterator.close();
         printFeature(feature1);
         printFeature(feature2);
+
+        if (System.getProperty("clear") != null) {
+            // Run Java command with -Dclear=true
+            // This will cause a 'clear'
+            producerFS.removeFeatures(Filter.INCLUDE);
+        }
 
         System.exit(0);
     }
