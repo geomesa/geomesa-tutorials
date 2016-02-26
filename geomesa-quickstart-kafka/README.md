@@ -206,7 +206,7 @@ Received FeatureEvent of Type: CHANGED
 fid:2 | name:Claire | age:77 | dtg:Thu Feb 26 02:06:41 EST 2015 | geom:POINT (-66 33)
 ```
 
-Now interrupt the ``KafkaQuickStart`` command. The mesages sent to ``KafkaListener`` should cease.
+The ``KafkaListener`` code will run until interrupted.
 
 The portion of ``KafkaListener`` that creates and implements the ``FeatureListener`` is:
 
@@ -231,6 +231,12 @@ consumerFS.addFeatureListener(new FeatureListener() {
         }
     }
 });
+```
+
+Additionally, the ``KafkaQuickStart`` class run above can generate a 'clear' control message at the end of the run if you specify "-Dclear=true" on the commandline.  This will generate a Feature removed ``FeatureEvent`` with a ``Filter.INCLUDE``.
+
+```bash
+$ java -Dclear=true -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers> 
 ```
 
 Conclusion
