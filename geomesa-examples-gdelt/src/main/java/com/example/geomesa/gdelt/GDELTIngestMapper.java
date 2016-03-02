@@ -49,7 +49,6 @@ public class GDELTIngestMapper extends Mapper<LongWritable, Text, Text, SimpleFe
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
             try {
                 featureBuilder.reset();
-                featureBuilder.addAll(attributes);
 
                 Double lat = Double.parseDouble(attributes[LATITUDE_COL_IDX]);
                 Double lon = Double.parseDouble(attributes[LONGITUDE_COL_IDX]);
@@ -58,6 +57,11 @@ public class GDELTIngestMapper extends Mapper<LongWritable, Text, Text, SimpleFe
                 } else {
                     Geometry geom = geometryFactory.createPoint(new Coordinate(lon, lat));
                     SimpleFeature simpleFeature = featureBuilder.buildFeature(attributes[ID_COL_IDX]);
+                    int i = 0;
+                    while (i < attributes.length) {
+                        simpleFeature.setAttribute(i, attributes[i]);
+                        i++;
+                    }
                     simpleFeature.setAttribute("SQLDATE", formatter.parse(attributes[DATE_COL_IDX]));
                     simpleFeature.setDefaultGeometry(geom);
 
