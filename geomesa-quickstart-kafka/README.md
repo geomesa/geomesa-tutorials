@@ -239,6 +239,17 @@ Additionally, the ``KafkaQuickStart`` class run above can generate a 'clear' con
 $ java -Dclear=true -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers> 
 ```
 
+KafkaDataStore Load Test
+------------------------
+
+For those interested in load testing the KafkaDataStore, there is a simple utility with constructs any number of SimpleFeatures, rolls a random latitude, and then have them step left or right.
+
+```bash
+$ java -cp target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaLoadTester -brokers <brokers> -zookeepers <zookeepers> -count <count>
+```
+The 'count' parameter is optional.  Without it, the tool defaults to 1000 SimpleFeatures.
+
+
 Conclusion
 ----------
 
