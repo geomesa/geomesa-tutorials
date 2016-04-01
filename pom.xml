@@ -188,6 +188,13 @@
         </pluginManagement>
     </build>
 
+    <scm>
+        <connection>scm:git:git@github.com:geomesa/geomesa-tutorials.git</connection>
+        <developerConnection>scm:git:git@github.com:geomesa/geomesa-tutorials.git</developerConnection>
+        <url>https://github.com/geomesa/geomesa-tutorials</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <repositories>
         <repository>
             <id>locationtech-releases</id>
