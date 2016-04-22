@@ -19,6 +19,7 @@
 
     <modules>
         <module>geomesa-examples-authorizations</module>
+        <module>geomesa-examples-avro</module>
         <module>geomesa-examples-featurelevelvis</module>
         <module>geomesa-examples-gdelt</module>
         <module>geomesa-examples-transformations</module>
@@ -106,6 +107,16 @@
             <dependency>
                 <groupId>org.locationtech.geomesa</groupId>
                 <artifactId>geomesa-jobs</artifactId>
+                <version>${geomesa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.locationtech.geomesa</groupId>
+                <artifactId>geomesa-feature-common</artifactId>
+                <version>${geomesa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.locationtech.geomesa</groupId>
+                <artifactId>geomesa-feature-avro</artifactId>
                 <version>${geomesa.version}</version>
             </dependency>
             <dependency>
