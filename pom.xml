@@ -25,6 +25,7 @@
         <module>geomesa-examples-transformations</module>
         <module>geomesa-quickstart-accumulo</module>
         <module>geomesa-quickstart-kafka</module>
+        <module>geomesa-quickstart-hbase</module>
         <module>geomesa-quickstart-storm</module>
     </modules>
 
@@ -38,8 +39,10 @@
         <accumulo.version>1.6.4</accumulo.version>
         <zookeeper.version>3.4.5</zookeeper.version>
         <hadoop.version>2.2.0</hadoop.version>
+        <hbase.hadoop.version>2.5.2</hbase.hadoop.version>
         <kafka.version>0.8.2.1</kafka.version>
         <storm.version>0.9.6</storm.version>
+        <hbase.version>1.1.5</hbase.version>
     </properties>
 
     <dependencyManagement>
@@ -89,10 +92,21 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-client</artifactId>
+                <version>${hbase.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-server</artifactId>
+                <version>${hbase.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-core</artifactId>
                 <version>${storm.version}</version>
             </dependency>
+
 
             <dependency>
                 <groupId>org.locationtech.geomesa</groupId>
@@ -102,6 +116,11 @@
             <dependency>
                 <groupId>org.locationtech.geomesa</groupId>
                 <artifactId>geomesa-kafka-datastore</artifactId>
+                <version>${geomesa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.locationtech.geomesa</groupId>
+                <artifactId>geomesa-hbase-datastore</artifactId>
                 <version>${geomesa.version}</version>
             </dependency>
             <dependency>
@@ -135,6 +154,21 @@
                 <artifactId>gt-epsg-wkt</artifactId>
                 <version>${gt.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-epsg-hsql</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-opengis</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-data</artifactId>
+                <version>${gt.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>commons-cli</groupId>
@@ -146,6 +180,12 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.beust</groupId>
+                <artifactId>jcommander</artifactId>
+                <version>1.48</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
