@@ -12,7 +12,7 @@
 
     <groupId>com.example.geomesa</groupId>
     <artifactId>geomesa-tutorials</artifactId>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.2.2</version>
 
     <name>GeoMesa Tutorials and Examples</name>
     <packaging>pom</packaging>
