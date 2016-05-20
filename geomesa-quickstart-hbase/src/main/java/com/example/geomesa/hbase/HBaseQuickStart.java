@@ -1,3 +1,19 @@
+/**
+ * Copyright 2016 Commonwealth Computer Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an AS IS BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.geomesa.hbase;
 
 import com.beust.jcommander.internal.Lists;
@@ -27,22 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-/**
- * Copyright 2016 Commonwealth Computer Research, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the License);
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an AS IS BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 public class HBaseQuickStart {
     static String TABLE_NAME = "bigtable.table.name".replace(".", "_");
@@ -106,8 +106,8 @@ public class HBaseQuickStart {
         Long SECONDS_PER_YEAR = 365L * 24L * 60L * 60L;
         Random random = new Random(5771);
         DateTime MIN_DATE = new DateTime(2014, 1, 1, 0, 0, 0, DateTimeZone.forID("UTC"));
-        Double MIN_X = -78.0;
-        Double MIN_Y = -39.0;
+        Double MIN_X = -79.5;
+        Double MIN_Y =  37.0;
         Double DX = 2.0;
         Double DY = 2.0;
 
@@ -121,24 +121,24 @@ public class HBaseQuickStart {
 
             // populate the new feature's attributes
 
-            // string value
+            // Who: string value
             simpleFeature.setAttribute("Who", PEOPLE_NAMES[i % PEOPLE_NAMES.length]);
 
-            // long value
+            // What: long value
             simpleFeature.setAttribute("What", i);
 
-            // location:  construct a random point within a 2-degree-per-side square
+            // Where: location: construct a random point within a 2-degree-per-side square
             double x = MIN_X + random.nextDouble() * DX;
             double y = MIN_Y + random.nextDouble() * DY;
             Geometry geometry = WKTUtils$.MODULE$.read("POINT(" + x + " " + y + ")");
-
-            // date-time:  construct a random instant within a year
             simpleFeature.setAttribute("Where", geometry);
+
+            // When: date-time:  construct a random instant within a year
             DateTime dateTime = MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR));
             simpleFeature.setAttribute("When", dateTime.toDate());
 
-            // another string value
-            // "Why"; left empty, showing that not all attributes need values
+            // Why: another string value
+            // left empty, showing that not all attributes need values
 
             // accumulate this new feature in the collection
             featureCollection.add(simpleFeature);
@@ -242,7 +242,7 @@ public class HBaseQuickStart {
         // query a few Features from this table
         System.out.println("Submitting query");
         queryFeatures(simpleFeatureTypeName, dataStore,
-                "Where", -77.5, -37.5, -76.5, -36.5,
+                "Where", -78.5, 37.5, -78.0, 38.0,
                 "When", "2014-07-01T00:00:00.000Z", "2014-09-30T23:59:59.999Z",
                 "(Who = 'Bierce')");
     }

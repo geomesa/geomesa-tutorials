@@ -64,7 +64,7 @@ them as ```provided``` in the POM, and update your classpath as appropriate.)
 
 GeoMesa's ``HBaseDataStore`` searches for a file called ``hbase-site.xml``,
 which among other things configures the Zookeeper host(s) and port. If this file
-is not present, the ``hbase-default.xml`` provided by hbase-common sets the
+is not present on the classpath, the ``hbase-default.xml`` provided by hbase-common sets the
 default zookeeper quorum to "localhost" and port to 2181, which is what is used
 by the standalone HBase described in "Setting up HBase in standalone mode" above. 
 If you have an existing HBase installation, you should copy your ``hbase-site.xml``
@@ -93,21 +93,18 @@ The only argument passed is the name of the HBase table where GeoMesa will store
 It will also create a table called ``<featuretype>_z3`` which will store the Z3-indexed features.
 
 You should see output similar to the following (not including some of Maven's output and
-log4j's warnings, which lists the features that match the specified query in the tutorial do
+log4j's warnings), which lists the features that match the specified query in the tutorial do
 
     Creating feature-type (schema):  QuickStart
     Creating new features
     Inserting new features
     Submitting query
-    1.  Bierce|931|Fri Jul 04 18:25:38 EDT 2014|POINT (-76.51304097832912 -37.49406125975311)|null
-    2.  Bierce|589|Sat Jul 05 02:02:15 EDT 2014|POINT (-76.88146600670152 -37.40156607152168)|null
-    3.  Bierce|322|Tue Jul 15 17:09:42 EDT 2014|POINT (-77.01760098223343 -37.30933767159561)|null
-    4.  Bierce|886|Tue Jul 22 14:12:36 EDT 2014|POINT (-76.59795732474399 -37.18420917493149)|null
-    5.  Bierce|394|Fri Aug 01 19:55:05 EDT 2014|POINT (-77.42555615743139 -37.26710898726304)|null
-    6.  Bierce|343|Wed Aug 06 04:59:22 EDT 2014|POINT (-76.66826220670282 -37.44503877750368)|null
-    7.  Bierce|925|Sun Aug 17 23:28:33 EDT 2014|POINT (-76.5621106573523 -37.34321201566148)|null
-    8.  Bierce|259|Thu Aug 28 15:59:30 EDT 2014|POINT (-76.90122194030118 -37.148525741002466)|null
-    9.  Bierce|640|Sun Sep 14 15:48:25 EDT 2014|POINT (-77.36222958792739 -37.13013846773835)|null
+    1.  Bierce|676|Fri Jul 18 08:22:03 EDT 2014|POINT (-78.08495724535888 37.590866849120395)|null
+    2.  Bierce|190|Sat Jul 26 19:06:19 EDT 2014|POINT (-78.1159944062711 37.64226959044015)|null
+    3.  Bierce|550|Mon Aug 04 08:27:52 EDT 2014|POINT (-78.01884511971093 37.68814732634964)|null
+    4.  Bierce|307|Tue Sep 09 11:23:22 EDT 2014|POINT (-78.18782181976381 37.6444865782879)|null
+    5.  Bierce|781|Wed Sep 10 01:14:16 EDT 2014|POINT (-78.0250604717695 37.58285696304815)|null
+
 
 To see how the data is stored in HBase, use the HBase shell.
 
@@ -124,7 +121,7 @@ ROW                              COLUMN+CELL
                                  rid=4326,Why:String
 ```
 
-The Z3-indexed features are stored in ``<featuretype>_z3`` (``QuickStart_z3`` in this example):
+The features are stored in ``<featuretype>_z3`` (``QuickStart_z3`` in this example):
 
 ```
 hbase> scan 'QuickStart_z3', { LIMIT => 3 }
@@ -221,7 +218,7 @@ layer, and you should see a small square with a collection of red dots.
 (You may shift-click to highlight a region to zoom into). After zooming in
 your view should look something like this:
 
-![Visualizing quickstart data](../assets/geomesa-quickstart-accumulo/geoserver-layer-preview.png)
+![Visualizing quickstart data](../assets/geomesa-quickstart-hbase/geoserver-layer-preview.png)
 
 Click on one of the red points in the display, and GeoServer should report
 a detailed record for the clicked point underneath the map area.
