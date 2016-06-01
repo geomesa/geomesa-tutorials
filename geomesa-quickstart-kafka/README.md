@@ -40,7 +40,7 @@ Download and Build the Tutorial
 Pick a reasonable directory on your machine, and run:
 
 ```bash
-$ git clone git@github.com:geomesa/geomesa-tutorials.git
+$ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 

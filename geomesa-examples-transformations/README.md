@@ -47,7 +47,7 @@ This tutorial queries the GDELT data set. Instructions on ingesting GDELT data a
 Pick a reasonable directory on your machine, and run:
 
 ```bash
-$ git clone git@github.com:geomesa/geomesa-tutorials.git
+$ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 

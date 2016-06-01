@@ -45,7 +45,7 @@ instances of HBase and Zookeeper.
 Clone the geomesa-tutorials distribution from GitHub:
 
 ```bash
-$ git clone git@github.com:geomesa/geomesa-tutorials.git
+$ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
@@ -144,7 +144,7 @@ ROW                              COLUMN+CELL
 Clone the GeoMesa source distribution:
 
 ```bash
-$ git clone git@github.com:locationtech/geomesa.git
+$ git clone https://github.com/locationtech/geomesa.git
 $ cd geomesa
 ```
 
