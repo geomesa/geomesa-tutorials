@@ -175,7 +175,8 @@ directory:
  * zookeeper-3.4.6.jar
  * commons-configuration-1.6.jar
 
-(Note the versions may vary depending on your installation.)
+Note: the versions may vary depending on your installation. In addition, for Hadoop 
+2.6.0+, ``htrace-core-<version>.jar`` is also required. 
 
 The HBase data store requires the configuration file `hbase-site.xml` to be on the
 classpath. This can be accomplished, for example in Tomcat, by placing the file in
