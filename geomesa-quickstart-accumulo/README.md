@@ -194,9 +194,9 @@ data, because we have enabled the time dimension for this layer, but the
 preview does not specify a time. In the URL bar for the visualization,
 add the following to the end:
 
-``&TIME=2014-01-01T00:00:00.000Z/2014-12-31T23:59:59.999Z``
+``&TIME=2014-01-01T00:00:00.000Z/2014-01-31T23:59:59.999Z``
 
-That tells GeoServer to display the records for the entire calendar year
+That tells GeoServer to display the records for the entire month of January
 2014. You can find more information about the TIME parameter from
 [GeoServer's documentation](http://docs.geoserver.org/latest/en/user/services/wms/time.html).
 
