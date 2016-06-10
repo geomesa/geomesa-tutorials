@@ -148,10 +148,10 @@ $ git clone https://github.com/locationtech/geomesa.git
 $ cd geomesa
 ```
 
-and build it:
+and build it with the `hbase` profile:
 
 ```
-$ mvn clean install -DskipTests
+$ mvn clean install -DskipTests -Phbase
 ```
 
 Go into the buld HBase GeoServer plugin module:
