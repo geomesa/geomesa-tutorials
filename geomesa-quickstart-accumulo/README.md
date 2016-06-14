@@ -23,9 +23,10 @@ Prerequisites
 
 Before you begin, you must have the following:
 
-* an instance of Accumulo 1.5 or 1.6 running on Hadoop 2.2.x
+* an instance of Accumulo 1.5, 1.6 or 1.7 running on Hadoop 2.2 or better
 * an Accumulo user that has both create-table and write permissions
-* a local copy of the [Java](http://java.oracle.com/) Development Kit 1.7.x
+* the GeoMesa Accumulo distributed runtime [installed for your Accumulo instance](http://www.geomesa.org/documentation/user/installation_and_configuration.html#installing-the-accumulo-distributed-runtime-library)
+* a local copy of the [Java](http://java.oracle.com/) JDK 8
 * Apache [Maven](http://maven.apache.org/) installed
 * a GitHub client installed
 
@@ -80,6 +81,10 @@ where you provide the following arguments:
 * ```<user>``` the name of an Accumulo user that has permissions to create, read and write tables
 * ```<password>``` the password for the previously-mentioned Accumulo user
 * ```<table>``` the name of the destination table that will accept these test records; this table should either not exist or should be empty
+
+> :warning: If you have set up the GeoMesa Accumulo distributed runtime to be isolated within
+> a namespace [as described in the GeoMesa installation guide](http://www.geomesa.org/documentation/user/installation_and_configuration.html#for-accumulo-1-6),
+> the value of ``<table>`` should include the namespace (e.g. ``myNamespace.geomesa``).
 
 You should see output similar to the following (not including some of Maven's output and log4j's warnings):
 
