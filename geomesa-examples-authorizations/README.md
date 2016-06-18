@@ -156,6 +156,8 @@ Follow the instructions [here](../geomesa-examples-gdelt/), with the following c
    -visibilities <visibilities>
 ```
 
+You can also ingest data with visibilities using geomesa command line tools by including the --visibilities option, specifically `--visibilities user` in this example.
+
 The visibility string can be anything valid for your Accumulo instance. For the rest of this exercise,
 we are going to assume the visibility string is `user`, and the Accumulo table is `gdelt_auths`. You
 can see the visibilities that are currently enabled for your user through the Accumulo shell:
@@ -205,7 +207,7 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
-To build, run
+Cloning the repository should only take a few seconds.  To build it, run
 
 ```bash
 $ mvn clean install -pl geomesa-examples-authorizations
@@ -259,10 +261,10 @@ No results
 The first query should return 1 or more results. The second query should return 0 results, since
 they are hidden by visibilities.
 
-## Insight into How the Tutorial Works
+## Insight into How the Authorizations Tutorial Works
 
 The code for querying with authorizations is available in the
-class `com.example.geomesa.authorizations.AuthorizationsTutorial`.
+class [`com.example.geomesa.authorizations.AuthorizationsTutorial`](https://github.com/geomesa/geomesa-tutorials/blob/master/geomesa-examples-authorizations/src/main/java/com/example/geomesa/authorizations/AuthorizationsTutorial.java).
 
 The interesting code for this tutorial is contained in the `main` method:
 
@@ -305,12 +307,11 @@ look up the user's details in LDAP.
 Once we have a user's authentication and authorizations, we will apply them to the GeoMesa query using
 a custom `AuthorizationsProvider` implementation.
 
-**Note: It is assumed for the rest of the tutorial that you have created the GeoServer
-data stores and layers outlined in the [GDELT tutorial](../geomesa-examples-gdelt/).**
+> :warning: Note: It is assumed for the rest of the tutorial that you have created the GeoServer data stores and layers outlined in the [GDELT tutorial](../geomesa-examples-gdelt/).
 
 ### Run GeoServer in Tomcat
 
-*Note: If you are already running GeoServer in Tomcat, you can skip this step.*
+> :warning: Note: If you are already running GeoServer in Tomcat, you can skip this step.
 
 GeoServer ships by default with an embedded Jetty servlet. In order to use
 PKI login, we need to install it in Tomcat instead.
@@ -376,7 +377,7 @@ Verify that the changes were applied by re-starting Tomcat, and checking that th
 
 ### Install an LDAP Server for Storing Authorizations
 
-*Note: If you are already have an LDAP server set up, you can skip this step.*
+> :warning: Note: If you are already have an LDAP server set up, you can skip this step.*
 
 1. Download and install [ApacheDS](http://directory.apache.org/apacheds/)
 2. Either run as a service, or run through the start scripts:
@@ -457,7 +458,7 @@ to our Accumulo authorizations. If you are using different authorizations, you w
 the attribute to match.
 
 The tutorial code includes a test case for connecting to LDAP, in the class
-`com.example.geomesa.authorizations.LdapAuthorizationsProviderTest`.
+[`com.example.geomesa.authorizations.LdapAuthorizationsProviderTest`](https://github.com/geomesa/geomesa-tutorials/blob/master/geomesa-examples-authorizations/src/main/java/com/example/geomesa/authorizations/LdapAuthorizationsProviderTest.java).
 
 Once you have modified `geomesa-ldap.properties` to connect to your LDAP, you can test the connection
 by running this test class: 
@@ -484,7 +485,7 @@ the provider class is specified as the `EmptyAuthorizationsProvider`.
 
 1. Ensure that your LDAP configuration is correct by running `LdapAuthorizationsProviderTest`, as
 described above.
-2. Change the provider class in `src/main/resources/META-INF/services/org.locationtech.geomesa.security.AuthorizationsProvider`
+2. Change the provider class in single line file `src/main/resources/META-INF/services/org.locationtech.geomesa.security.AuthorizationsProvider`
 to be `com.example.geomesa.authorizations.LdapAuthorizationsProvider`
 3. Rebuild the tutorial JAR and install the **_unshaded original_** jar in GeoServer:
 
@@ -518,8 +519,8 @@ You should see the normal data come back, with many red points indicating the da
 Now try the same query, but use the 'scott' certificate. This time, there should be no data returned,
 as the 'scott' user does not have any authorizations set up in LDAP.
 
-**_Note: a simple way to use different certificates at once is to open multiple 'incognito' or
-'private' browser windows._**
+> :warning: Note: a simple way to use different certificates at once is to open multiple 'incognito' or
+'private' browser windows.
 
 ## Querying GeoServer through a Web Feature Service (WFS) with a Java Client
 
@@ -587,10 +588,10 @@ INFO: Cached XML schema: https://localhost:8443/geoserver/wfs?service=WFS&versio
 No results
 ```
 
-## Insight into How the Tutorial Works
+## Insight into How the GeoServerAuthorizations Tutorial Works
 
 The code for querying through WFS is available in the class
-`com.example.geomesa.authorizations.GeoServerAuthorizationsTutorial`. The interesting code for this tutorial is
+[`com.example.geomesa.authorizations.GeoServerAuthorizationsTutorial`](https://github.com/geomesa/geomesa-tutorials/blob/master/geomesa-examples-authorizations/src/main/java/com/example/geomesa/authorizations/GeoServerAuthorizationsTutorial.java). The interesting code for this tutorial is
 contained in the `main` method:
 
 ```java
