@@ -18,7 +18,7 @@
 
     <groupId>com.example.geomesa</groupId>
     <artifactId>geomesa-tutorials</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.3-SNAPSHOT</version>
 
     <name>GeoMesa Tutorials and Examples</name>
     <packaging>pom</packaging>
