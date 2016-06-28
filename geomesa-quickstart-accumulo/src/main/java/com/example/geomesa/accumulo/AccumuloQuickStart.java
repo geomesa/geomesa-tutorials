@@ -11,8 +11,17 @@ package com.example.geomesa.accumulo;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.vividsolutions.jts.geom.Geometry;
-import org.apache.commons.cli.*;
-import org.geotools.data.*;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
@@ -117,8 +126,6 @@ public class AccumuloQuickStart {
             dsConf.put(param, cmd.getOptionValue(param));
         }
         if (dsConf.get(AUTHS) == null) dsConf.put(AUTHS, "");
-        // disable stat collection for this test
-        dsConf.put("collectStats", "false");
         return dsConf;
     }
 
@@ -348,5 +355,7 @@ public class AccumuloQuickStart {
                 "(Who = 'Addams')",
                 5,
                 "What");
+
+        dataStore.dispose();
     }
 }
