@@ -7,6 +7,8 @@ import org.joda.time.{DateTimeZone, DateTime}
 import org.opengis.filter.Filter
 import org.scalacheck.Gen
 
+import scala.collection.JavaConversions._
+
 /**
   * Created by mzimmerman on 7/8/16.
   */
@@ -43,6 +45,13 @@ class FilterGenerator {
     gen
   }
 
+  def genAttr[T](attr: String, value: Gen[T]): Gen[Filter] = {
+    val gen = for {
+      x <- value
+    } yield ff.equals(ff.property(attr), ff.literal(x))
+    gen
+  }
+
   def genGeomBBox(property: String): Gen[Filter] = {
     val gen = for {
       (minX, maxX) <- buildRange(minLat, maxLat)
@@ -63,17 +72,37 @@ class FilterGenerator {
     gen
   }
 
-  def runSamples[T](gen: Gen[T], n: Int = 50) = {
-    (0 until n).map( _ => gen.sample )
+  def genAtom = Gen.oneOf(
+    genGeomBBox("Where"),
+    genTimeBetween("When"),
+    genAttr("color", Gen.oneOf("blue", "red", "green", "orange", "yellow", "purple", "black", "white")),
+    genAttr("age", Gen.choose(1, 110)),
+    genAttr("name", Gen.oneOf("James", "John", "Peter", "Hannah", "Claire", "Gabriel")),
+    //genAttr("flag", Gen.oneOf(true, false)),
+    genAttr("country", Gen.oneOf("US", "GB", "CH", "NZ", "FR")),
+    genAttr("randInt", Gen.choose(0, 100)),
+    genAttr("randDouble", Gen.choose(0.0, 1.0)),
+    genAttr("score", Gen.choose[Float](0.0f, 5.0f))
+  )
+
+  def genNumberOfAtoms = Gen.choose(1,4)
+
+  def genFlatAnd: Gen[Filter] = {
+    for {
+      n <- genNumberOfAtoms
+      l <- Gen.listOfN(n, genAtom)
+    } yield if (l.length == 1) l.head else ff.and(l)
+  }
+
+  def runSamples[T](gen: Gen[T], n: Int = 50)(thunk: T => Any) = {
+    (0 until n).map( _ => gen.sample.map(thunk) )
   }
 }
 
 object FilterGenerator {
   def main(args: Array[String]): Unit = {
     val f = new FilterGenerator()
-    f.runSamples(f.genTimeBetween("When")).foreach {
-      case Some(x) => println(ECQL.toCQL(x))
-      case None =>
-    }
+    f.runSamples(f.genFlatAnd, 50)(x => println(ECQL.toCQL(x)))
   }
 }
+
