@@ -27,6 +27,7 @@
         <module>geomesa-quickstart-kafka</module>
         <module>geomesa-quickstart-hbase</module>
         <module>geomesa-quickstart-storm</module>
+        <module>geomesa-test-filter</module>
     </modules>
 
     <properties>
@@ -44,6 +45,8 @@
         <kafka.version>0.8.2.1</kafka.version>
         <storm.version>0.9.6</storm.version>
         <hbase.version>1.1.5</hbase.version>
+        <scala.version>2.11.7</scala.version>
+        <scala.abi.version>2.11</scala.abi.version>
     </properties>
 
     <dependencyManagement>
@@ -239,6 +242,34 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.scala-lang</groupId>
+                                <artifactId>scala-reflect</artifactId>
+                                <version>${scala.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <jvmArgs>
+                            <jvmArg>-Xms1024m</jvmArg>
+                            <jvmArg>-Xmx8G</jvmArg>
+                            <jvmArg>-Duser.timezone=UTC</jvmArg>
+                            <jvmArg>-Djava.awt.headless=true</jvmArg>
+                        </jvmArgs>
+                        <args>
+                            <arg>-nowarn</arg>
+                            <arg>-unchecked</arg>
+                            <arg>-deprecation</arg>
+                        </args>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                        <scalaVersion>${scala.version}</scalaVersion>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
