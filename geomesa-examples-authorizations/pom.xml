@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.example.geomesa</groupId>
         <artifactId>geomesa-tutorials</artifactId>
-        <version>1.2.3.1-SNAPSHOT</version>
+        <version>1.2.4.0</version>
     </parent>
 
     <artifactId>geomesa-examples-authorizations</artifactId>
