@@ -73,6 +73,10 @@ public class KafkaQuickStart {
                 .create(ZK_PATH);
         options.addOption(zkPath);
 
+        Option automated = OptionBuilder.withArgName("automated")
+                .create("automated");
+        options.addOption(automated);
+
         return options;
     }
 
@@ -198,7 +202,7 @@ public class KafkaQuickStart {
             producerDS.createSchema(preppedOutputSft);
 
         System.out.println("Register KafkaDataStore in GeoServer (Press enter to continue)");
-        System.in.read();
+        if (!cmd.hasOption("automated")) System.in.read();
 
         // the live consumer must be created before the producer writes features
         // in order to read streaming data.

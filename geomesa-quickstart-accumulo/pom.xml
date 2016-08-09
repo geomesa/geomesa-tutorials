@@ -73,4 +73,55 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <id>live-test</id>
+            <properties>
+                <instanceId>tcloud</instanceId>
+                <zookeepers>tzoo1,tzoo2,tzoo3</zookeepers>
+                <user>root</user>
+                <password>secret</password>
+                <geomesa.accumulo.namespace>ckelly_125SNAPSHOT</geomesa.accumulo.namespace>
+                <tableName>${geomesa.accumulo.namespace}.AccumuloQuickStart_125</tableName>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                          <execution>
+                            <goals>
+                              <goal>exec</goal>
+                            </goals>
+                          </execution>
+                        </executions>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>com.example.geomesa.accumulo.AccumuloQuickStart</argument>
+                                <argument>-instanceId</argument>
+                                <argument>${instanceId}</argument>
+                                <argument>-zookeepers</argument>
+                                <argument>${zookeepers}</argument>
+                                <argument>-user</argument>
+                                <argument>${user}</argument>
+                                <argument>-password</argument>
+                                <argument>${password}</argument>
+                                <argument>-tableName</argument>
+                                <argument>${tableName}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
