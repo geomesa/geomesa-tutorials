@@ -114,6 +114,12 @@ You should see output similar to the following (not including some of Maven's ou
     Feature ID Observation.990 | Who: Addams | What: 990
     Feature ID Observation.987 | Who: Addams | What: 987
 
+The quick start code may also be run via Maven using the ``live-test`` profile:
+
+```bash
+$ mvn -Plive-test exec:exec -DinstanceId=<instance> -Dzookeepers=<zookeepers> -Duser=<user> -Dpassword=<password> -DtableName=<tableName>
+```
+
 Looking at the Code
 -------------------
 
