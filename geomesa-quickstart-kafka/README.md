@@ -63,7 +63,7 @@ Run the Code
 On the command-line, run:
 
 ```bash
-$ java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers>
+$ java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-$VERSION.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers>
 ```
 
 where you provide the values for the following arguments:
@@ -75,7 +75,7 @@ The program will create some metadata in Zookeeper and an associated topic in yo
 and pause execution to let you add the newly created `KafkaDataStore` to GeoServer. Once GeoServer
 has been configured, we'll pick back up with the paused program.
 
-Register the Layer in GeoServer
+Register the Store in GeoServer
 -------------------------------
 
 Log into GeoServer using your credentials. Click “Stores” in the left-hand gutter and
@@ -99,8 +99,15 @@ Click "Save" and GeoServer will search your Kafka instance for any GeoMesa-manag
 Publish the Layer
 -----------------
 
-GeoServer should find the `KafkaQuickStart` feature type and present it as
-a layer that can be published. Click on the "Publish" link. You will be taken to the Edit Layer screen. 
+GeoServer should find the `KafkaQuickStart` feature type in the data store and redirect you 
+to the "New Layer" page, presenting the feature type as a layer that can be published. 
+Click on the "Publish" link. You will be taken to the "Edit Layer" page.
+
+> :warning: If you have not yet run the quick start code as described in **Run the Code** above, the
+> feature type will not have been registered and you will not get a "New Layer" page after saving
+> the store. In this case, run the code as described above, click on "Layers" in the left-hand
+> gutter, click on "Add a new resource", and select your data store in the pulldown next to 
+> "Add layer from". The link to publish the `KafkaQuickStart` feature should appear.
 
 You can leave most fields as default. In the Data pane, you'll need to enter
 values for the bounding boxes. In this case, you can click on the links to
