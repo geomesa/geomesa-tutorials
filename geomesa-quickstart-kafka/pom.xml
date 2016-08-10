@@ -58,8 +58,8 @@
             </activation>
             <id>live-test</id>
             <properties>
-                <brokers>localhost:9092</brokers>
-                <zookeepers>localhost:2181</zookeepers>
+                <brokers>broker</brokers>
+                <zookeepers>zookeeper</zookeepers>
             </properties>
             <build>
                 <plugins>

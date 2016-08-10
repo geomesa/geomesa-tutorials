@@ -80,12 +80,12 @@
             </activation>
             <id>live-test</id>
             <properties>
-                <instanceId>tcloud</instanceId>
-                <zookeepers>tzoo1,tzoo2,tzoo3</zookeepers>
-                <user>root</user>
-                <password>secret</password>
-                <geomesa.accumulo.namespace>ckelly_125SNAPSHOT</geomesa.accumulo.namespace>
-                <tableName>${geomesa.accumulo.namespace}.AccumuloQuickStart_125</tableName>
+                <instanceId>cloud</instanceId>
+                <zookeepers>zoo</zookeepers>
+                <user>user</user>
+                <password>password</password>
+                <geomesa.accumulo.namespace>namespace</geomesa.accumulo.namespace>
+                <tableName>${geomesa.accumulo.namespace}.AccumuloQuickStart</tableName>
             </properties>
             <build>
                 <plugins>
