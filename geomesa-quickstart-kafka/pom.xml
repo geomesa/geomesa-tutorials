@@ -51,4 +51,46 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <id>live-test</id>
+            <properties>
+                <brokers>broker</brokers>
+                <zookeepers>zookeeper</zookeepers>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.5.0</version>
+                        <executions>
+                          <execution>
+                            <goals>
+                              <goal>exec</goal>
+                            </goals>
+                          </execution>
+                        </executions>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>com.example.geomesa.kafka.KafkaQuickStart</argument>
+                                <argument>-brokers</argument>
+                                <argument>${brokers}</argument>
+                                <argument>-zookeepers</argument>
+                                <argument>${zookeepers}</argument>
+                                <argument>-automated</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

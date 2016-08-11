@@ -75,6 +75,17 @@ The program will create some metadata in Zookeeper and an associated topic in yo
 and pause execution to let you add the newly created `KafkaDataStore` to GeoServer. Once GeoServer
 has been configured, we'll pick back up with the paused program.
 
+Optional command-line arguments for ``KafkaQuickStart`` are:
+
+* ``-zkPath <zkpath>``: used for specifiying the Zookeeper path for storing GeoMesa metadata. Defaults to "/geomesa/ds/kafka" and ordinarily does not need to be changed
+* ``-automated``: omits the pause in execution for configuring GeoServer.
++
+The class may also be run using Maven via the ``live-test`` profile.
+
+```bash
+$ mvn -Plive-test exec:exec -Dbrokers=<brokers> -Dzookeepers=<zookeepers>
+```
+
 Register the Store in GeoServer
 -------------------------------
 
