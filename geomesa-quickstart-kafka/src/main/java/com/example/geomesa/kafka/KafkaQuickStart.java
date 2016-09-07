@@ -86,6 +86,7 @@ public class KafkaQuickStart {
         for (String param : KAFKA_CONNECTION_PARAMS) {
             dsConf.put(param, cmd.getOptionValue(param));
         }
+        dsConf.put("useCQCache", "true");
         return dsConf;
     }
 

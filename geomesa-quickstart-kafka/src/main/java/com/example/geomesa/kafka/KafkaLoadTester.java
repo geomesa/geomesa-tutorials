@@ -136,7 +136,7 @@ public class KafkaLoadTester {
         // create the schema which creates a topic in Kafka
         // (only needs to be done once)
         final String sftName = "KafkaStressTest";
-        final String sftSchema = "name:String,age:Int,step:Double,lat:Double,dtg:Date,*geom:Point:srid=4326";
+        final String sftSchema = "name:String:cq-index=hash,age:Int,step:Double,lat:Double,dtg:Date,*geom:Point:srid=4326";
         SimpleFeatureType sft = SimpleFeatureTypes.createType(sftName, sftSchema);
         // set zkPath to default if not specified
         String zkPath = (dsConf.get(ZK_PATH) == null) ? "/geomesa/ds/kafka" : dsConf.get(ZK_PATH);

@@ -20,13 +20,19 @@
     <name>GeoMesa Quickstart - Kafka</name>
 
     <dependencies>
-        <dependency>
+		<!--<dependency>
             <groupId>org.locationtech.geomesa</groupId>
             <artifactId>geomesa-kafka-datastore</artifactId>
-        </dependency>
+		</dependency>-->
+		<dependency>
+			<groupId>org.locationtech.geomesa</groupId>
+			<artifactId>geomesa-kafka-09-datastore</artifactId>
+			<version>${geomesa.version}</version>
+		</dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.11</artifactId>
+            <version>0.9.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
