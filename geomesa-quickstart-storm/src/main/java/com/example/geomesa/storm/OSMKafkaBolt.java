@@ -64,7 +64,7 @@ public class OSMKafkaBolt extends BaseRichBolt {
             ds = DataStoreFinder.getDataStore(connectionParams);
             SimpleFeatureType featureType = ds.getSchema(featureName);
             featureBuilder = new SimpleFeatureBuilder(featureType);
-            featureWriter = ds.getFeatureWriter(featureName, Transaction.AUTO_COMMIT);
+            featureWriter = ds.getFeatureWriterAppend(featureName, Transaction.AUTO_COMMIT);
         } catch (IOException e) {
             throw new RuntimeException("Unable to initialize feature writer", e);
         }
