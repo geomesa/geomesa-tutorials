@@ -6,7 +6,7 @@
  * http://www.opensource.org/licenses/apache2.0.php.
  */
 
-package com.example.geomesa.kafka;
+package com.example.geomesa.kafka10;
 
 import org.apache.commons.cli.*;
 import org.geotools.data.DataStore;
@@ -23,9 +23,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
-import org.locationtech.geomesa.kafka.KafkaDataStoreHelper;
-import org.locationtech.geomesa.kafka.ReplayConfig;
-import org.locationtech.geomesa.kafka.ReplayTimeHelper;
+import org.locationtech.geomesa.kafka10.KafkaDataStoreHelper;
+import org.locationtech.geomesa.kafka10.ReplayConfig;
+import org.locationtech.geomesa.kafka10.ReplayTimeHelper;
 import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Property;
@@ -191,7 +191,7 @@ public class KafkaQuickStart {
 
         // create the schema which creates a topic in Kafka
         // (only needs to be done once)
-        final String sftName = "KafkaQuickStart";
+        final String sftName = "KafkaQuickStart10";
         final String sftSchema = "name:String,age:Int,dtg:Date,*geom:Point:srid=4326";
         SimpleFeatureType sft = SimpleFeatureTypes.createType(sftName, sftSchema);
         // set zkPath to default if not specified
@@ -200,9 +200,10 @@ public class KafkaQuickStart {
         // only create the schema if it hasn't been created already
         if (!Arrays.asList(producerDS.getTypeNames()).contains(sftName))
             producerDS.createSchema(preppedOutputSft);
-
-        System.out.println("Register KafkaDataStore in GeoServer (Press enter to continue)");
-        if (!cmd.hasOption("automated")) System.in.read();
+        if (!cmd.hasOption("automated")) {
+            System.out.println("Register KafkaDataStore in GeoServer (Press enter to continue)");
+            System.in.read();
+        }
 
         // the live consumer must be created before the producer writes features
         // in order to read streaming data.

@@ -6,25 +6,24 @@
  * http://www.opensource.org/licenses/apache2.0.php.
  */
 
-package com.example.geomesa.kafka;
+package com.example.geomesa.kafka08;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import org.apache.commons.cli.*;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.locationtech.geomesa.kafka.KafkaDataStoreHelper;
+import org.locationtech.geomesa.kafka08.KafkaDataStoreHelper;
+import org.apache.commons.cli.*;
 import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

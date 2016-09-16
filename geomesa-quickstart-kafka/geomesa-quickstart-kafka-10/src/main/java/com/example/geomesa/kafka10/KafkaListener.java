@@ -6,18 +6,19 @@
  * http://www.opensource.org/licenses/apache2.0.php.
  */
 
-package com.example.geomesa.kafka;
+package com.example.geomesa.kafka10;
 
-import org.apache.commons.cli.*;
 import org.geotools.data.*;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.locationtech.geomesa.kafka.KafkaFeatureEvent;
+import org.locationtech.geomesa.kafka10.KafkaFeatureEvent;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.Name;
-
+import org.apache.commons.cli.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class KafkaListener {
     public static final String KAFKA_BROKER_PARAM = "brokers";
