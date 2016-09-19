@@ -21,7 +21,7 @@ Prerequisites
 -------------
 
 * basic knowledge of [GeoTools](http://www.geotools.org), [GeoServer](http://geoserver.org), and Kafka
-* an instance of Kafka 0.8.2.x with (an) appropriate Zookeeper instance(s)
+* an instance of Kafka 0.8.2.x, 0.9.0.1, or 0.10.0.1 with (an) appropriate Zookeeper instance(s)
 * an instance of GeoServer version 2.8.1 with the GeoMesa Kafka plugin installed
 * [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Apache Maven](http://maven.apache.org/) 3.2.2 or better
@@ -46,8 +46,19 @@ $ cd geomesa-tutorials
 
 To build, run
 
+For Kafka 0.8.2.1
 ```bash
-$ mvn clean install -pl geomesa-quickstart-kafka
+$ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-08
+```
+
+For Kafka 0.9.0.1
+```bash
+$ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-09
+```
+
+For Kafka 0.10.0.1
+```bash
+$ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-10
 ```
 
 > :warning: Note: ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
@@ -62,8 +73,22 @@ Run the Code
 
 On the command-line, run:
 
+For Kafka 0.8.2.1
 ```bash
-$ java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-$VERSION.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers>
+$ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-08/target/geomesa-quickstart-kafka-08-$VERSION.jar com.example.geomesa.kafka08.KafkaQuickStart \
+> -brokers <brokers> -zookeepers <zookeepers>
+```
+
+For Kafka 0.9.0.1
+```bash
+$ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-09/target/geomesa-quickstart-kafka-09-$VERSION.jar com.example.geomesa.kafka09.KafkaQuickStart \
+> -brokers <brokers> -zookeepers <zookeepers>
+```
+
+For Kafka 0.10.0.1
+```bash
+$ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-10/target/geomesa-quickstart-kafka-10-$VERSION.jar com.example.geomesa.kafka10.KafkaQuickStart \
+> -brokers <brokers> -zookeepers <zookeepers>
 ```
 
 where you provide the values for the following arguments:
