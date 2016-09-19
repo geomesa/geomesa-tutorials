@@ -34,6 +34,23 @@ Ensure your Kafka and Zookeeper instances are running. You can use Kafka's
 [quickstart](http://kafka.apache.org/documentation.html#quickstart) to get Kafka/Zookeeper
 instances up and running quickly.
 
+There are now three versions of Kafka that are supported with GeoMesa. In order to use Kafka versions 0.9.0.1 and
+0.10.0.1, you must build GeoMesa with the following commands:
+
+```bash
+$ cd /path/to/geomesa
+```
+
+For Kafka 0.9.0.1
+```bash
+$ mvn clean install -Pkafka09,scala-2.11
+```
+
+For Kafka 0.10.0.1
+```bash
+$ mvn clean install -Pkafka10,scala-2.11
+```
+
 Download and Build the Tutorial
 --------------------------
 
@@ -53,12 +70,12 @@ $ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-08
 
 For Kafka 0.9.0.1
 ```bash
-$ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-09
+$ mvn clean install -Pkafka09 -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-09
 ```
 
 For Kafka 0.10.0.1
 ```bash
-$ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-10
+$ mvn clean install -Pkafka10 -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-10
 ```
 
 > :warning: Note: ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
@@ -236,7 +253,9 @@ The code in ``com.example.geomesa.kafa.KafkaListener`` implements a simple ``Fea
 the messages received. Open up a second terminal window and run:
 
 ```bash
-$ java -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaListener -brokers <brokers> -zookeepers <zookeepers>
+$ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-$KAFKA_VERSION/target/geomesa-quickstart-kafka-$KAFKA_VERSION-${geomesa.version}.jar \
+> com.example.geomesa.kafka$KAFKA_VERSION.KafkaListener \
+> -brokers <brokers> -zookeepers <zookeepers>
 ```
 
 and use the same settings for ``<brokers>`` and ``<zookeepers>``. Then in the first terminal window, re-run the
@@ -279,7 +298,9 @@ consumerFS.addFeatureListener(new FeatureListener() {
 Additionally, the ``KafkaQuickStart`` class run above can generate a 'clear' control message at the end of the run if you specify "-Dclear=true" on the commandline.  This will generate a Feature removed ``FeatureEvent`` with a ``Filter.INCLUDE``.
 
 ```bash
-$ java -Dclear=true -cp geomesa-quickstart-kafka/target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaQuickStart -brokers <brokers> -zookeepers <zookeepers> 
+$ java -Dclear=true -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-$KAFKA_VERSION/target/geomesa-quickstart-kafka-$KAFKA_VERSION-${geomesa.version}.jar \
+> com.example.geomesa.kafka$KAFKA_VERSION.KafkaQuickStart \
+> -brokers <brokers> -zookeepers <zookeepers> 
 ```
 
 KafkaDataStore Load Test
@@ -288,7 +309,9 @@ KafkaDataStore Load Test
 For those interested in load testing the KafkaDataStore, there is a simple utility with constructs any number of SimpleFeatures, rolls a random latitude, and then have them step left or right.
 
 ```bash
-$ java -cp target/geomesa-quickstart-kafka-${geomesa.version}.jar com.example.geomesa.kafka.KafkaLoadTester -brokers <brokers> -zookeepers <zookeepers> -count <count>
+$ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-$KAFKA_VERSION/target/geomesa-quickstart-kafka-$KAFKA_VERSION-${geomesa.version}.jar \
+> com.example.geomesa.kafka$KAFKA_VERSION.KafkaLoadTester \
+> -brokers <brokers> -zookeepers <zookeepers> -count <count>
 ```
 The 'count' parameter is optional.  Without it, the tool defaults to 1000 SimpleFeatures.
 

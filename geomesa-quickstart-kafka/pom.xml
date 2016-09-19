@@ -11,8 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>geomesa-quickstart-kafka-10</module>
-        <module>geomesa-quickstart-kafka-09</module>
+        <!-- GeoMesa Kafka 0.9 and 0.10 not yet being distributed -->
+        <!--<module>geomesa-quickstart-kafka-10</module>-->
+        <!--<module>geomesa-quickstart-kafka-09</module>-->
         <module>geomesa-quickstart-kafka-08</module>
     </modules>
 
