@@ -30,7 +30,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>1.2.5</geomesa.version>
+        <geomesa.version>1.2.6</geomesa.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
