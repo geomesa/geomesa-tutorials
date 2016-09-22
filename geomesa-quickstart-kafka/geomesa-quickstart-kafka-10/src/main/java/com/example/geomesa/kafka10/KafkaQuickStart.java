@@ -42,6 +42,7 @@ public class KafkaQuickStart {
     public static final String KAFKA_BROKER_PARAM = "brokers";
     public static final String ZOOKEEPERS_PARAM = "zookeepers";
     public static final String ZK_PATH = "zkPath";
+    public static final String VISIBILITY = "visibility";
 
     public static final String[] KAFKA_CONNECTION_PARAMS = new String[] {
             KAFKA_BROKER_PARAM,
@@ -73,6 +74,12 @@ public class KafkaQuickStart {
                 .create(ZK_PATH);
         options.addOption(zkPath);
 
+        Option visibility = OptionBuilder.withArgName(VISIBILITY)
+                .hasArg()
+                .create(VISIBILITY);
+        options.addOption(visibility);
+
+
         Option automated = OptionBuilder.withArgName("automated")
                 .create("automated");
         options.addOption(automated);
@@ -90,7 +97,7 @@ public class KafkaQuickStart {
     }
 
     // add a SimpleFeature to the producer every half second
-    public static void addSimpleFeatures(SimpleFeatureType sft, FeatureStore producerFS)
+    public static void addSimpleFeatures(SimpleFeatureType sft, FeatureStore producerFS, String visibility)
             throws InterruptedException, IOException {
         final int MIN_X = -180;
         final int MAX_X = 180;
@@ -122,6 +129,11 @@ public class KafkaQuickStart {
             builder.add(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toDate()); // dtg
             builder.add(WKTUtils$.MODULE$.read("POINT(" + (MIN_X + DX * i) + " " + (MAX_Y - DY * i) + ")")); // geom
             SimpleFeature feature2 = builder.buildFeature("2");
+
+            if (visibility != null) {
+                feature1.getUserData().put("geomesa.feature.visibility", visibility);
+                feature2.getUserData().put("geomesa.feature.visibility", visibility);
+            }
 
             // write the SimpleFeatures to Kafka
             featureCollection.add(feature1);
@@ -214,7 +226,10 @@ public class KafkaQuickStart {
         // creates and adds SimpleFeatures to the producer every 1/5th of a second
         System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
         Instant replayStart = new Instant();
-        addSimpleFeatures(sft, producerFS);
+
+        String vis = cmd.getOptionValue(VISIBILITY);
+        if(vis != null) System.out.println("Writing features with " + vis);
+        addSimpleFeatures(sft, producerFS, vis);
         Instant replayEnd = new Instant();
 
         // read from Kafka after writing all the features.
