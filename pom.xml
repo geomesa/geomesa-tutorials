@@ -30,7 +30,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>1.3.0-m0</geomesa.version>
+        <geomesa.version>1.3.0-m1-SNAPSHOT</geomesa.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -227,19 +227,6 @@
     <profiles>
         <profile>
             <id>live-test</id>
-        </profile>
-
-        <profile>
-            <id>kafka09</id>
-            <modules>
-                <module>geomesa-quickstart-kafka/geomesa-quickstart-kafka-09</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>kafka10</id>
-            <modules>
-                <module>geomesa-quickstart-kafka/geomesa-quickstart-kafka-10</module>
-            </modules>
         </profile>
     </profiles>
 

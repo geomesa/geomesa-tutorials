@@ -17,7 +17,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.locationtech.geomesa.kafka10.KafkaDataStoreHelper;
+import org.locationtech.geomesa.kafka.KafkaDataStoreHelper;
 import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Property;
