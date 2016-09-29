@@ -228,19 +228,6 @@
         <profile>
             <id>live-test</id>
         </profile>
-
-        <profile>
-            <id>kafka09</id>
-            <modules>
-                <module>geomesa-quickstart-kafka/geomesa-quickstart-kafka-09</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>kafka10</id>
-            <modules>
-                <module>geomesa-quickstart-kafka/geomesa-quickstart-kafka-10</module>
-            </modules>
-        </profile>
     </profiles>
 
     <scm>
