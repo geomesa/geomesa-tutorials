@@ -119,6 +119,7 @@ public class KafkaLoadTester {
 
         // create the producer and consumer KafkaDataStore objects
         Map<String, String> dsConf = getKafkaDataStoreConf(cmd);
+        dsConf.put("partitions", "10");
         dsConf.put("isProducer", "true");
         DataStore producerDS = DataStoreFinder.getDataStore(dsConf);
         dsConf.put("isProducer", "false");
@@ -163,6 +164,13 @@ public class KafkaLoadTester {
         System.out.println("Building a list of " + numFeats + " SimpleFeatures.");
         List<SimpleFeature> features = IntStream.range(1, numFeats).mapToObj(i -> createFeature(builder, i)).collect(Collectors.toList());
 
+        //int cyclesToSkip = 50000/numFeats;
+
+        Long startTime = null;
+        Long featuresSinceStartTime = 0L;
+        int cyclesToSkip = 50000/numFeats;
+        int cycle = 0;
+
         while (true) {
             features.forEach( feat -> {
                         try {
@@ -176,9 +184,25 @@ public class KafkaLoadTester {
                         updateFeature(feat);
                     }
             );
+            Integer consumerSize = consumerFS.getFeatures().size();
+            //System.out.println("Consumer has size: " + consumerSize);
+            cycle++;
+            featuresSinceStartTime += consumerSize;
+            if (cycle >= cyclesToSkip || startTime == null) {
+                Long endTime = System.currentTimeMillis();
+                if ( startTime != null ) {
+                    Long diffTime = endTime - startTime;
+                    Double rate = (featuresSinceStartTime.doubleValue() * 1000.0)/diffTime.doubleValue();
+                    //System.out.println(featuresSinceStartTime);
+                    //System.out.println(diffTime);
+                    System.out.printf("%.1f feats/sec (%d/%d)\n", rate, featuresSinceStartTime, diffTime);
+                }
+                cycle = 0;
+                startTime = endTime;
+                featuresSinceStartTime = 0L;
+            }
 
-            System.out.println("Consumer has size: " + consumerFS.getFeatures().size());
-            System.out.println("At " + new Date() + " sleeping before writing more features.");
+            System.out.println("At " + new Date() + " wrote "+consumerSize+" features");
         }
     }
 
