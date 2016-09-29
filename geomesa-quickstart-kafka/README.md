@@ -34,25 +34,9 @@ Ensure your Kafka and Zookeeper instances are running. You can use Kafka's
 [quickstart](http://kafka.apache.org/documentation.html#quickstart) to get Kafka/Zookeeper
 instances up and running quickly.
 
-There are now three versions of Kafka that are supported with GeoMesa. The Kafka 0.9.0.1- and 0.10.0.1-compatible
-data stores were not built by default or published as artifacts in GeoMesa release 1.3.0-m0 (but are in subsequent
-releases). In order to use Kafka versions 0.9.0.1 and 0.10.0.1 with GeoMesa 1.3.0-m0, you must build GeoMesa from
-source with the following commands:
-
-```bash
-$ cd /path/to/geomesa
-```
-
-For Kafka 0.9.0.1
-```bash
-$ mvn clean install -Pkafka09,scala-2.11
-```
-
-For Kafka 0.10.0.1
-```bash
-$ mvn clean install -Pkafka10,scala-2.11
-```
-
+There are now three versions of Kafka that are supported with GeoMesa, and
+ there are separate tutorials for each build. 
+ 
 Download and Build the Tutorial
 --------------------------
 
@@ -83,9 +67,6 @@ $ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-10
 > :warning: Note: ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
 
 <span/>
-
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
-> Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 Run the Code
 ------------
