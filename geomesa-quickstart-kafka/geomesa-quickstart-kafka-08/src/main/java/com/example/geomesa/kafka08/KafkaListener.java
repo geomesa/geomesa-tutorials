@@ -9,7 +9,7 @@
 package com.example.geomesa.kafka08;
 
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.locationtech.geomesa.kafka08.KafkaFeatureEvent;
+import org.locationtech.geomesa.kafka.KafkaFeatureEvent;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.Name;
