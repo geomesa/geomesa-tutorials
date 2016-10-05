@@ -163,7 +163,15 @@ public class KafkaLoadTester {
         System.out.println("Building a list of " + numFeats + " SimpleFeatures.");
         List<SimpleFeature> features = IntStream.range(1, numFeats).mapToObj(i -> createFeature(builder, i)).collect(Collectors.toList());
 
+        // set variables to estimate feature production rate
+        Long startTime = null;
+        Long featuresSinceStartTime = 0L;
+        int cycle = 0;
+        int cyclesToSkip = 50000/numFeats; // collect enough features
+                                           // to get an accurate rate estimate
+
         while (true) {
+            // write features
             features.forEach( feat -> {
                         try {
                             DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
@@ -177,8 +185,24 @@ public class KafkaLoadTester {
                     }
             );
 
-            System.out.println("Consumer has size: " + consumerFS.getFeatures().size());
-            System.out.println("At " + new Date() + " sleeping before writing more features.");
+            // count features written
+            Integer consumerSize = consumerFS.getFeatures().size();
+            cycle++;
+            featuresSinceStartTime += consumerSize;
+            System.out.println("At " + new Date() + " wrote "+consumerSize+" features");
+
+            // if we've collected enough features, calculate the rate
+            if (cycle >= cyclesToSkip || startTime == null) {
+                Long endTime = System.currentTimeMillis();
+                if ( startTime != null ) {
+                    Long diffTime = endTime - startTime;
+                    Double rate = (featuresSinceStartTime.doubleValue() * 1000.0)/diffTime.doubleValue();
+                    System.out.printf("%.1f feats/sec (%d/%d)\n", rate, featuresSinceStartTime, diffTime);
+                }
+                cycle = 0;
+                startTime = endTime;
+                featuresSinceStartTime = 0L;
+            }
         }
     }
 
