@@ -33,12 +33,17 @@ public class KafkaLoadTester {
     public static final String KAFKA_BROKER_PARAM = "brokers";
     public static final String ZOOKEEPERS_PARAM = "zookeepers";
     public static final String ZK_PATH = "zkPath";
+    public static final String PARTITIONS = "partitions";
+    public static final String REPLICATION = "replication";
+    public static final String VISIBILITY = "visibility";
     public static final String LOAD = "count";
 
     public static final String[] KAFKA_CONNECTION_PARAMS = new String[] {
             KAFKA_BROKER_PARAM,
             ZOOKEEPERS_PARAM,
-            ZK_PATH
+            ZK_PATH,
+            PARTITIONS,
+            REPLICATION
     };
 
     // reads and parse the command line args
@@ -65,11 +70,29 @@ public class KafkaLoadTester {
                 .create(ZK_PATH);
         options.addOption(zkPath);
 
+        Option partitions = OptionBuilder.withArgName(PARTITIONS)
+                .hasArg()
+                .withDescription("Number of partitions to use in Kafka topics")
+                .create(PARTITIONS);
+        options.addOption(partitions);
+
+        Option replication = OptionBuilder.withArgName(REPLICATION)
+                .hasArg()
+                .withDescription("Replication factor to use in Kafka topics")
+                .create(REPLICATION);
+        options.addOption(replication);
+
         Option load = OptionBuilder.withArgName(LOAD)
                 .hasArg()
                 .withDescription("Number of entities to simulate.")
                 .create(LOAD);
         options.addOption(load);
+
+        Option visibility = OptionBuilder.withArgName(VISIBILITY)
+                .hasArg()
+                .withDescription("Visibilities to set on each feature created")
+                .create(VISIBILITY);
+        options.addOption(visibility);
 
         return options;
     }
@@ -78,12 +101,14 @@ public class KafkaLoadTester {
     public static Map<String, String> getKafkaDataStoreConf(CommandLine cmd) {
         Map<String, String> dsConf = new HashMap<>();
         for (String param : KAFKA_CONNECTION_PARAMS) {
-            dsConf.put(param, cmd.getOptionValue(param));
+            String value = cmd.getOptionValue(param);
+            if (value != null)
+                dsConf.put(param, value);
         }
         return dsConf;
     }
 
-    public static SimpleFeature createFeature(SimpleFeatureBuilder builder, int i) {
+    public static SimpleFeature createFeature(SimpleFeatureBuilder builder, int i, String visibility) {
         final String[] PEOPLE_NAMES = {"James", "John", "Peter", "Hannah", "Claire", "Gabriel"};
         final Random random = new Random();
 
@@ -97,7 +122,11 @@ public class KafkaLoadTester {
         builder.add(lat);
         builder.add(new Date()); // dtg
         builder.add(WKTUtils$.MODULE$.read("POINT(" + -180.0 + " " + lat + ")")); // geom
-        return builder.buildFeature(Integer.toString(i));
+        SimpleFeature feat = builder.buildFeature(Integer.toString(i));
+        if (visibility != null) {
+            feat.getUserData().put("geomesa.feature.visibility", visibility);
+        }
+        return feat;
     }
 
     // prints out attribute values for a SimpleFeature
@@ -117,9 +146,17 @@ public class KafkaLoadTester {
         CommandLineParser parser = new BasicParser();
         Options options = getCommonRequiredOptions();
         CommandLine cmd = parser.parse(options, args);
+        String visibility = getVisibility(cmd);
+
+        if (visibility == null) {
+            System.out.println("visibility: null");
+        } else {
+            System.out.println("visibility: '"+visibility+"'");
+        }
 
         // create the producer and consumer KafkaDataStore objects
         Map<String, String> dsConf = getKafkaDataStoreConf(cmd);
+        System.out.println("KDS config: "+dsConf);
         dsConf.put("isProducer", "true");
         DataStore producerDS = DataStoreFinder.getDataStore(dsConf);
         dsConf.put("isProducer", "false");
@@ -162,7 +199,7 @@ public class KafkaLoadTester {
         Integer numFeats = getLoad(cmd);
 
         System.out.println("Building a list of " + numFeats + " SimpleFeatures.");
-        List<SimpleFeature> features = IntStream.range(1, numFeats).mapToObj(i -> createFeature(builder, i)).collect(Collectors.toList());
+        List<SimpleFeature> features = IntStream.range(1, numFeats).mapToObj(i -> createFeature(builder, i, visibility)).collect(Collectors.toList());
 
         // set variables to estimate feature production rate
         Long startTime = null;
@@ -232,5 +269,9 @@ public class KafkaLoadTester {
     public static Integer getLoad(CommandLine cmd) {
         String count = cmd.getOptionValue(LOAD, "1000");
         return Integer.parseInt(count);
+    }
+
+    public static String getVisibility(CommandLine cmd) {
+        return cmd.getOptionValue(VISIBILITY);
     }
 }
