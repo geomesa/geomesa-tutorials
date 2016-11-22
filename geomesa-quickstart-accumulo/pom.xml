@@ -116,6 +116,7 @@
                                 <argument>${password}</argument>
                                 <argument>-tableName</argument>
                                 <argument>${tableName}</argument>
+                                <argument>-deleteTable</argument>
                             </arguments>
                         </configuration>
                     </plugin>

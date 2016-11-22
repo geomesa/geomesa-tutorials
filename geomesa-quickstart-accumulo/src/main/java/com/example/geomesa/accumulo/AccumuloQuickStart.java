@@ -11,6 +11,13 @@ package com.example.geomesa.accumulo;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.vividsolutions.jts.geom.Geometry;
+import org.apache.accumulo.core.client.ZooKeeperInstance;
+import org.apache.accumulo.core.client.impl.ClientContext;
+import org.apache.accumulo.core.client.impl.Credentials;
+import org.apache.accumulo.core.client.impl.TableOperationsImpl;
+import org.apache.accumulo.core.client.security.tokens.PasswordToken;
+import org.apache.accumulo.core.conf.AccumuloConfiguration;
+import org.apache.accumulo.core.conf.DefaultConfiguration;
 import org.apache.commons.cli.*;
 import org.geotools.data.*;
 import org.geotools.data.simple.SimpleFeatureStore;
@@ -49,6 +56,7 @@ public class AccumuloQuickStart {
     static final String PASSWORD = "password";
     static final String AUTHS = "auths";
     static final String TABLE_NAME = "tableName";
+    static final String DELETE_TABLE = "deleteTable";
 
     // sub-set of parameters that are used to create the Accumulo DataStore
     static final String[] ACCUMULO_CONNECTION_PARAMS = new String[] {
@@ -107,6 +115,11 @@ public class AccumuloQuickStart {
                 .withDescription("the name of the Accumulo table to use -- or create, if it does not already exist -- to contain the new data")
                 .create(TABLE_NAME);
         options.addOption(tableNameOpt);
+
+        Option deleteTableOpt = OptionBuilder.withArgName(DELETE_TABLE)
+                .withDescription("Delete table upon successful exit of the Accumulo Quickstart")
+                .create(DELETE_TABLE);
+        options.addOption(deleteTableOpt);
 
         return options;
     }
@@ -347,5 +360,23 @@ public class AccumuloQuickStart {
                 "What");
 
         dataStore.dispose();
+
+        if(cmd.hasOption(DELETE_TABLE)) {
+            ZooKeeperInstance zk = new ZooKeeperInstance(cmd.getOptionValue(INSTANCE_ID), cmd.getOptionValue(ZOOKEEPERS));
+            PasswordToken pword = new PasswordToken(cmd.getOptionValue(PASSWORD));
+            Credentials creds = new Credentials(cmd.getOptionValue(USER), pword);
+            AccumuloConfiguration conf = new DefaultConfiguration();
+            ClientContext clientContext = new ClientContext(zk, creds, conf);
+            TableOperationsImpl tableOps = new TableOperationsImpl(clientContext);
+            String prefix = cmd.getOptionValue(TABLE_NAME);
+            tableOps.delete(prefix + "_AccumuloQuickStart_z3_v3");
+            tableOps.delete(prefix + "_stats");
+            tableOps.delete(prefix + "_records_v2");
+            tableOps.delete(prefix + "_attr_v3");
+            tableOps.delete(prefix + "_queries");
+            tableOps.delete(prefix + "_z2_v2");
+            tableOps.delete(prefix);
+        }
+        System.exit(0);
     }
 }
