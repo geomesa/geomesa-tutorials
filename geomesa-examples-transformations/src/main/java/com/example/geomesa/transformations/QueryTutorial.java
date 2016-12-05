@@ -1,12 +1,19 @@
 package com.example.geomesa.transformations;
 
-import org.apache.commons.cli.*;
-import org.geotools.data.*;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQLException;
-import org.locationtech.geomesa.accumulo.data.AccumuloFeatureStore;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -403,8 +410,7 @@ public class QueryTutorial {
                 simpleFeatureTypeName);
 
         // get the feature store used to query the GeoMesa data
-        FeatureStore featureStore = (AccumuloFeatureStore) dataStore.getFeatureSource(
-                simpleFeatureTypeName);
+        FeatureStore featureStore = (FeatureStore) dataStore.getFeatureSource(simpleFeatureTypeName);
 
         // execute some queries
         basicQuery(simpleFeatureTypeName, featureStore);

@@ -25,7 +25,6 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.locationtech.geomesa.accumulo.index.Constants;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.interop.WKTUtils;
 import org.opengis.feature.Feature;
@@ -139,7 +138,7 @@ public class AccumuloQuickStart {
 
         // use the user-data (hints) to specify which date-time field is meant to be indexed;
         // if you skip this step, your data will still be stored, it simply won't be indexed
-        simpleFeatureType.getUserData().put(Constants.SF_PROPERTY_START_TIME, "When");
+        simpleFeatureType.getUserData().put(SimpleFeatureTypes.DEFAULT_DATE_KEY, "When");
 
         return simpleFeatureType;
     }
