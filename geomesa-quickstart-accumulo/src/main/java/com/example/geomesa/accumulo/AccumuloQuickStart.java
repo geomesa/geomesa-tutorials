@@ -32,6 +32,8 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
+import org.locationtech.geomesa.accumulo.index.AccumuloWritableIndex$;
 import org.locationtech.geomesa.accumulo.index.Constants;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.interop.WKTUtils;
@@ -42,6 +44,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
+import scala.collection.Seq;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -319,7 +322,7 @@ public class AccumuloQuickStart {
 
         // verify that we can see this Accumulo destination in a GeoTools manner
         Map<String, String> dsConf = getAccumuloDataStoreConf(cmd);
-        DataStore dataStore = DataStoreFinder.getDataStore(dsConf);
+        AccumuloDataStore dataStore = (AccumuloDataStore) DataStoreFinder.getDataStore(dsConf);
         assert dataStore != null;
 
         // establish specifics concerning the SimpleFeatureType to store
@@ -358,25 +361,14 @@ public class AccumuloQuickStart {
                 "(Who = 'Addams')",
                 5,
                 "What");
-
-        dataStore.dispose();
-
         if(cmd.hasOption(DELETE_TABLE)) {
-            ZooKeeperInstance zk = new ZooKeeperInstance(cmd.getOptionValue(INSTANCE_ID), cmd.getOptionValue(ZOOKEEPERS));
-            PasswordToken pword = new PasswordToken(cmd.getOptionValue(PASSWORD));
-            Credentials creds = new Credentials(cmd.getOptionValue(USER), pword);
-            AccumuloConfiguration conf = new DefaultConfiguration();
-            ClientContext clientContext = new ClientContext(zk, creds, conf);
-            TableOperationsImpl tableOps = new TableOperationsImpl(clientContext);
-            String prefix = cmd.getOptionValue(TABLE_NAME);
-            tableOps.delete(prefix + "_AccumuloQuickStart_z3_v3");
-            tableOps.delete(prefix + "_stats");
-            tableOps.delete(prefix + "_records_v2");
-            tableOps.delete(prefix + "_attr_v3");
-            tableOps.delete(prefix + "_queries");
-            tableOps.delete(prefix + "_z2_v2");
-            tableOps.delete(prefix);
+            System.out.println("Deleting tables");
+            dataStore.delete();
+            // query audit table not deleted;
+            String queryTable = cmd.getOptionValue(TABLE_NAME) + "_queries";
+            if (dataStore.tableOps().exists(queryTable)) dataStore.tableOps().delete(queryTable);
         }
+        dataStore.dispose();
         System.exit(0);
     }
 }
