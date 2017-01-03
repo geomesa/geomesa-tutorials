@@ -3,7 +3,7 @@ package com.example.geomesa.authorizations;
 import com.google.common.base.Joiner;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
-import org.locationtech.geomesa.accumulo.index.Constants;
+import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.util.ArrayList;
@@ -125,7 +125,7 @@ public class GdeltFeature {
 
         SimpleFeatureType featureType = DataUtilities.createType(featureName, spec);
         //This tells GeoMesa to use this Attribute as the Start Time index
-        featureType.getUserData().put(Constants.SF_PROPERTY_START_TIME, Attributes.SQLDATE.name());
+        featureType.getUserData().put(SimpleFeatureTypes.DEFAULT_DATE_KEY, Attributes.SQLDATE.name());
         return featureType;
     }
 }

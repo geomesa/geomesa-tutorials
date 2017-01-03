@@ -14,7 +14,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.cql2.CQLException;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
-import org.locationtech.geomesa.accumulo.data.AccumuloFeatureStore;
 import org.locationtech.geomesa.security.AuthorizationsProvider;
 import org.locationtech.geomesa.security.DefaultAuthorizationsProvider;
 import org.opengis.feature.Feature;
@@ -120,8 +119,7 @@ public class AuthorizationsTutorial {
         Query query = new Query(simpleFeatureTypeName, cqlFilter);
 
         // get the feature store used to query the GeoMesa data
-        FeatureStore featureStore = (AccumuloFeatureStore) dataStore.getFeatureSource(
-                simpleFeatureTypeName);
+        FeatureStore featureStore = (FeatureStore) dataStore.getFeatureSource(simpleFeatureTypeName);
 
         // execute the query
         FeatureCollection results = featureStore.getFeatures(query);
@@ -200,11 +198,11 @@ public class AuthorizationsTutorial {
 
         // execute the query, with and without visibilities
         System.out.println("\nExecuting query with AUTHORIZED data store: auths are '"
-                           + ((AccumuloDataStore) authDataStore).authProvider()
+                           + ((AccumuloDataStore) authDataStore).config().authProvider()
                                                                 .getAuthorizations() + "'");
         executeQuery(simpleFeatureTypeName, authDataStore);
         System.out.println("Executing query with UNAUTHORIZED data store: auths are '"
-                           + ((AccumuloDataStore) noAuthDataStore).authProvider()
+                           + ((AccumuloDataStore) noAuthDataStore).config().authProvider()
                                                                   .getAuthorizations() + "'");
         executeQuery(simpleFeatureTypeName, noAuthDataStore);
     }

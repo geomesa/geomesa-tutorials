@@ -18,8 +18,8 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
-import org.locationtech.geomesa.accumulo.index.Constants;
 import org.locationtech.geomesa.jobs.interop.mapreduce.GeoMesaOutputFormat;
+import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -156,7 +156,7 @@ public class GDELTIngest {
         String spec = Joiner.on(",").join(attributes);
         SimpleFeatureType featureType = DataUtilities.createType(name, spec);
         //This tells GeoMesa to use this Attribute as the Start Time index
-        featureType.getUserData().put(Constants.SF_PROPERTY_START_TIME, "SQLDATE");
+        featureType.getUserData().put(SimpleFeatureTypes.DEFAULT_DATE_KEY, "SQLDATE");
         return featureType;
     }
 
