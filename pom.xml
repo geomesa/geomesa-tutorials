@@ -45,7 +45,7 @@
         <kafka10.version>0.10.0.1</kafka10.version>
         <kafka09.version>0.9.0.1</kafka09.version>
         <kafka08.version>0.8.2.1</kafka08.version>
-        <storm.version>0.9.6</storm.version>
+        <storm.version>1.0.2</storm.version>
         <hbase.version>1.1.5</hbase.version>
     </properties>
 
@@ -76,7 +76,6 @@
                 <artifactId>hadoop-client</artifactId>
                 <version>${hadoop.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.hbase</groupId>
                 <artifactId>hbase-client</artifactId>
@@ -91,9 +90,8 @@
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-core</artifactId>
                 <version>${storm.version}</version>
+                <scope>provided</scope>
             </dependency>
-
-
             <dependency>
                 <groupId>org.locationtech.geomesa</groupId>
                 <artifactId>geomesa-accumulo-datastore_${scala.abi.version}</artifactId>

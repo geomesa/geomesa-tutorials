@@ -69,6 +69,10 @@ public class OSMIngestProducer {
             log.error("File not found", e);
         }
 
+        if (bufferedReader == null) {
+            System.out.println("Buffered reader is null for " + cmd.getOptionValue(INGEST_FILE));
+        }
+
         //to assign messages to different partitions using default partitioner, need random key
         Random rnd = new Random();
         try {
