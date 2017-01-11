@@ -11,13 +11,6 @@ package com.example.geomesa.accumulo;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.vividsolutions.jts.geom.Geometry;
-import org.apache.accumulo.core.client.ZooKeeperInstance;
-import org.apache.accumulo.core.client.impl.ClientContext;
-import org.apache.accumulo.core.client.impl.Credentials;
-import org.apache.accumulo.core.client.impl.TableOperationsImpl;
-import org.apache.accumulo.core.client.security.tokens.PasswordToken;
-import org.apache.accumulo.core.conf.AccumuloConfiguration;
-import org.apache.accumulo.core.conf.DefaultConfiguration;
 import org.apache.commons.cli.*;
 import org.geotools.data.*;
 import org.geotools.data.simple.SimpleFeatureStore;
@@ -33,8 +26,6 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
-import org.locationtech.geomesa.accumulo.index.AccumuloWritableIndex$;
-import org.locationtech.geomesa.accumulo.index.Constants;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.interop.WKTUtils;
 import org.opengis.feature.Feature;
@@ -44,7 +35,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
-import scala.collection.Seq;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -155,7 +145,7 @@ public class AccumuloQuickStart {
 
         // use the user-data (hints) to specify which date-time field is meant to be indexed;
         // if you skip this step, your data will still be stored, it simply won't be indexed
-        simpleFeatureType.getUserData().put(Constants.SF_PROPERTY_START_TIME, "When");
+        simpleFeatureType.getUserData().put(SimpleFeatureTypes.DEFAULT_DATE_KEY, "When");
 
         return simpleFeatureType;
     }
