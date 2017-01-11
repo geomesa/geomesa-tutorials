@@ -198,10 +198,12 @@ public class AuthorizationsTutorial {
 
         // execute the query, with and without visibilities
         System.out.println("\nExecuting query with AUTHORIZED data store: auths are '"
-                           + ((AccumuloDataStore) authDataStore).config().authProvider().getAuthorizations() + "'");
+                           + ((AccumuloDataStore) authDataStore).config().authProvider()
+                                                                .getAuthorizations() + "'");
         executeQuery(simpleFeatureTypeName, authDataStore);
         System.out.println("Executing query with UNAUTHORIZED data store: auths are '"
-                           + ((AccumuloDataStore) noAuthDataStore).config().authProvider().getAuthorizations() + "'");
+                           + ((AccumuloDataStore) noAuthDataStore).config().authProvider()
+                                                                  .getAuthorizations() + "'");
         executeQuery(simpleFeatureTypeName, noAuthDataStore);
     }
 
