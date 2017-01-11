@@ -351,14 +351,17 @@ public class AccumuloQuickStart {
                 "(Who = 'Addams')",
                 5,
                 "What");
-        if(cmd.hasOption(DELETE_TABLE)) {
-            System.out.println("Deleting tables");
-            dataStore.delete();
+        if (cmd.hasOption(DELETE_TABLE)) {
+            System.out.println("Deleting tables...");
             // query audit table not deleted;
             String queryTable = cmd.getOptionValue(TABLE_NAME) + "_queries";
             if (dataStore.tableOps().exists(queryTable)) dataStore.tableOps().delete(queryTable);
+            dataStore.dispose();
+            dataStore.delete();
+            System.out.print("Complete");
+        } else {
+            dataStore.dispose();
         }
-        dataStore.dispose();
         System.exit(0);
     }
 }
