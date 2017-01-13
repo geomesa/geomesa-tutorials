@@ -67,7 +67,9 @@ $ mvn clean install -pl geomesa-examples-transformations
 ## Run the Tutorial
 
 > :warning: Before continuing, ensure that you have ingested the GDELT data set described
-in the GeoMesa GDELT [tutorial](../geomesa-examples-gdelt).
+in the GeoMesa GDELT [tutorial](../geomesa-examples-gdelt). If using GDELT data from a 
+time period different than that used in the geomesa-examples-gdelt, change the date range
+in the `QueryTutorial` `createBaseFilter` function and recompile.
 
 On the command line, run:
 
