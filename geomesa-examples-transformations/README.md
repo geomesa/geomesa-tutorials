@@ -32,7 +32,7 @@ This tutorial will show you how to write custom Java code using GeoMesa to do th
 
 You will need:
 
-* an instance of Accumulo 1.5 or 1.6 running on Hadoop 2.2.x
+* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x
 * an Accumulo user that has appropriate permissions to query your data
 * [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Apache Maven](http://maven.apache.org/) 3.2.2 or better
