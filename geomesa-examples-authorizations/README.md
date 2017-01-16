@@ -191,7 +191,7 @@ user,admin
 
 > :warning: Note: A user cannot set authorizations unless the user has the System.ALTER_USER permission.
 
-Next we'll grant permissions to the read the appropriate tables to ``user``
+Next we'll grant permissions to read the appropriate tables to ``user``
 and ``admin``. 
 
 ```bash
