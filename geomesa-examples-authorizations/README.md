@@ -39,7 +39,7 @@ authenticate with GeoServer and LDAP to store authorizations
 
 Before you begin, you must have the following:
 
-* an instance of Accumulo 1.5 or 1.6 running on Hadoop 2.2.x
+* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x
 * an Accumulo user that has appropriate permissions to query your data
 * [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Apache Maven](http://maven.apache.org/) 3.2.2 or better
@@ -190,6 +190,14 @@ user,admin
 ```
 
 > :warning: Note: A user cannot set authorizations unless the user has the System.ALTER_USER permission.
+
+Next we'll grant permissions to read the appropriate tables to ``user``
+and ``admin``. 
+
+```bash
+> grant -u user -p <table>.* Table.READ
+> grant -u admin -p <table>.* Table.READ
+```
 
 Once the GDELT data is ingested, you should see a visibility label in square brackets when you scan
 the spatio-temporal index table through the Accumulo shell:

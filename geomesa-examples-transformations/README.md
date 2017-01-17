@@ -32,7 +32,7 @@ This tutorial will show you how to write custom Java code using GeoMesa to do th
 
 You will need:
 
-* an instance of Accumulo 1.5 or 1.6 running on Hadoop 2.2.x
+* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x
 * an Accumulo user that has appropriate permissions to query your data
 * [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * [Apache Maven](http://maven.apache.org/) 3.2.2 or better
@@ -67,7 +67,9 @@ $ mvn clean install -pl geomesa-examples-transformations
 ## Run the Tutorial
 
 > :warning: Before continuing, ensure that you have ingested the GDELT data set described
-in the GeoMesa GDELT [tutorial](../geomesa-examples-gdelt).
+in the GeoMesa GDELT [tutorial](../geomesa-examples-gdelt). If using GDELT data from a 
+time period different than that used in the geomesa-examples-gdelt, change the date range
+in the `QueryTutorial` `createBaseFilter` function and recompile.
 
 On the command line, run:
 

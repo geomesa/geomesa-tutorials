@@ -16,10 +16,10 @@ Prerequisites
 
 You will need access to:
 
-* an instance of Accumulo 1.5 or 1.6
+* an instance of Accumulo 1.7 or 1.8
 * an Accumulo user with create-table and write permissions
 * an installation of Kafka 0.8
-* an installation of Storm 0.8
+* an installation of Storm 0.9+
 * an instance of GeoServer 2.8.1 with the GeoMesa Accumulo plugin installed
 
 In order to install the GeoMesa Accumulo GeoServer plugin, follow the instructions
