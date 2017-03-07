@@ -22,6 +22,7 @@
         <module>geomesa-examples-avro</module>
         <module>geomesa-examples-featurelevelvis</module>
         <module>geomesa-examples-gdelt</module>
+        <module>geomesa-examples-spark</module>
         <module>geomesa-examples-transformations</module>
         <module>geomesa-quickstart-accumulo</module>
         <module>geomesa-quickstart-kafka</module>
@@ -36,6 +37,7 @@
 
         <gt.version>15.1</gt.version>
         <scala.abi.version>2.11</scala.abi.version>
+        <scala.version>2.11.7</scala.version>
 
         <!-- environment specific variables-->
         <accumulo.version>1.7.2</accumulo.version>
