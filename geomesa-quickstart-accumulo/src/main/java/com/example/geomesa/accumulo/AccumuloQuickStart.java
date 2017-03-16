@@ -25,7 +25,9 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.locationtech.geomesa.accumulo.audit.AccumuloAuditService;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
+import org.locationtech.geomesa.index.utils.Releasable;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.interop.WKTUtils;
 import org.opengis.feature.Feature;
@@ -49,7 +51,7 @@ public class AccumuloQuickStart {
     static final String PASSWORD = "password";
     static final String AUTHS = "auths";
     static final String TABLE_NAME = "tableName";
-    static final String DELETE_TABLE = "deleteTable";
+    static final String DELETE_TABLES = "deleteTables";
 
     // sub-set of parameters that are used to create the Accumulo DataStore
     static final String[] ACCUMULO_CONNECTION_PARAMS = new String[] {
@@ -109,9 +111,9 @@ public class AccumuloQuickStart {
                 .create(TABLE_NAME);
         options.addOption(tableNameOpt);
 
-        Option deleteTableOpt = OptionBuilder.withArgName(DELETE_TABLE)
-                .withDescription("Delete table upon successful exit of the Accumulo Quickstart")
-                .create(DELETE_TABLE);
+        Option deleteTableOpt = OptionBuilder.withArgName(DELETE_TABLES)
+                .withDescription("Delete tables upon successful exit of the Accumulo Quickstart")
+                .create(DELETE_TABLES);
         options.addOption(deleteTableOpt);
 
         return options;
@@ -351,7 +353,7 @@ public class AccumuloQuickStart {
                 "(Who = 'Addams')",
                 5,
                 "What");
-        if (cmd.hasOption(DELETE_TABLE)) {
+        if (cmd.hasOption(DELETE_TABLES)) {
             System.out.println("Deleting tables...");
             // query audit table not deleted;
             String queryTable = cmd.getOptionValue(TABLE_NAME) + "_queries";

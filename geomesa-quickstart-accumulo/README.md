@@ -86,7 +86,7 @@ where you provide the following arguments:
 > a namespace [as described in the GeoMesa installation guide](http://www.geomesa.org/documentation/user/installation_and_configuration.html#for-accumulo-1-6),
 > the value of ``<table>`` should include the namespace (e.g. ``myNamespace.geomesa``).
 
-The Accumulo QuickStart allows you to delete the created tables upon successful completion of the QuickStart. Use the flag ``-deleteTable`` without an argument
+The Accumulo QuickStart allows you to delete the created tables upon successful completion of the QuickStart. Use the flag ``-deleteTables`` without an argument
 to specify that the tables should be deleted.
 
 You should see output similar to the following (not including some of Maven's output and log4j's warnings):
