@@ -90,7 +90,7 @@ $ java -cp target/geomesa-quickstart-hbase-$VERSION.jar com.example.geomesa.hbas
 ```
 
 The only argument passed is the name of the HBase table where GeoMesa will store the feature type information.
-It will also create a table called ``<featuretype>_z3`` which will store the Z3-indexed features.
+It will also create a table called ``<tablename>_<featuretype>_z3`` which will store the Z3-indexed features.
 
 You should see output similar to the following (not including some of Maven's output and
 log4j's warnings), which lists the features that match the specified query in the tutorial do
@@ -121,10 +121,10 @@ ROW                              COLUMN+CELL
                                  rid=4326,Why:String
 ```
 
-The features are stored in ``<featuretype>_z3`` (``QuickStart_z3`` in this example):
+The features are stored in ``<tablename>_<featuretype>_z3`` (``geomesa_QuickStart_z3`` in this example):
 
 ```
-hbase> scan 'QuickStart_z3', { LIMIT => 3 }
+hbase> scan 'geomesa_QuickStart_z3', { LIMIT => 3 }
 ROW                              COLUMN+CELL                                                                                  
  \x08\xF7\x0F#\x83\x91\xAE\xA2\x column=D:\x0F#\x83\x91\xAE\xA2\xA8PObservation.452, timestamp=1463593805801, value=\x02\x00\x
  A8P                             00\x00@Observation.45\xB2Clemen\xF3\x01\x00\x00\x00\x00\x00\x00\x01\xC4\x01\x00\x00\x01CM8\x0
