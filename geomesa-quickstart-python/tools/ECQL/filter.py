@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+#coding:utf-8
+"""
+filter.py
+
+Description:
+   These functions are helpers to build ECQL queries/filters to access data GeoMesa data.
+
+Created by: Jordan Muss
+
+Creation Date: 3-31-2017
+Version:       1.0
+
+Dependencies: 
+         Public:     jnius
+         Private:   setupJnius
+
+Updates:
+
+To Do:
+"""
+class ECQLQuery:
+    """ This is a helper class to allow python access to java Query & CQL functions."""
+    def __init__(self, JNI):
+        ''' This is sets up links to the java types & java Query and CQL functions.'''
+        self.jString = JNI.autoclass('java.lang.String')
+        self.Query = JNI.autoclass('org.geotools.data.Query')
+        self.CQL = JNI.autoclass('org.geotools.filter.text.cql2.CQL')
+    
+    def createFilter(self, filter_string):
+        ''' Create the (E)CQL filter from the prepared (python) string: '''
+        return self.CQL.toFilter(self.jString(filter_string))
+    
+    def createQuery(self, simpleFeatureTypeName, dataStore, filter_string):
+        ''' Return an ECQL filter query for iterating & additional processing: '''
+        jSFT_name = self.jString(simpleFeatureTypeName)
+        cqlFilter = self.createFilter(filter_string)
+        return self.Query(jSFT_name, cqlFilter)
+    
+    def getFeatures(self, simpleFeatureTypeName, dataStore, filter_string):
+        ''' Build & execute an ECQL query from a filter string for the DataStore.
+            Return an ECQL filter query for iterating & additional processing: '''
+        jSFT_name = self.jString(simpleFeatureTypeName)
+        query = self.createQuery(simpleFeatureTypeName, dataStore, filter_string)
+        #query = ecql.queryFeatures(simpleFeatureTypeName, dataStore, filter_string)
+        ''' Submit the query, which will return an iterator over matching features: '''
+        featureSource = dataStore.getFeatureSource(jSFT_name)
+        #featureItr = featureSource.getFeatures(query).features()
+        return featureSource.getFeatures(query)
+
+def createBBoxFilter(geomField, x0, y0, x1, y1):
+    ''' Create a bounding-box (BBOX) filter of a rectangular query area: '''
+    cqlGeometry = "BBOX({}, {}, {}, {}, {})".format(geomField, x0, y0, x1, y1)
+    return cqlGeometry
+
+def createDuringFilter(dateField, t0, t1):
+    ''' There are quite a few temporal predicates; the "DURING" predicate allows
+        for querries using a fixed range of date/times: '''
+    cqlDates = "({} DURING {}/{})".format(dateField, t0, t1)
+    return cqlDates
+
+def createAttributeFilter(attributesQuery):
+    ''' The GeoTools Filter constant "INCLUDE" is a default that means to accept
+        everything (other predicates that operate on other attribute types): '''
+    cqlAttributes = "INCLUDE" if attributesQuery is None else attributesQuery
+    return cqlAttributes
+
