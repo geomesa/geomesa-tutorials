@@ -15,3 +15,6 @@ target
 atlassian*
 geomesa-*.*.*-*
 **/src/main/resources/git.properties
+geomesa-quickstart-accumulo/src/main/java/com/example/geomesa/accumulo/AccumuloQuickStartRead.java
+*.pyc
+

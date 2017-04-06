@@ -1,2 +1,2 @@
-__all__ = ["utils", "tools"]
+__all__ = ["pyJavaClasses", "tools", "utils"]
 from . import *

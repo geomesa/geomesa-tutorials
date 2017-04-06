@@ -25,13 +25,22 @@ Dependencies:
          Private:   
 
 Interfaces:
-        setupJnius              This class setsup jnius to work with the necessary GeoMesa libraries. It tests
+        setupJnius              Class to set up jnius to work with the necessary GeoMesa libraries. It tests
                                       that the necessary packages are accessible, or fails with a sys.exit(-1). It also
                                       wraps some of the jnius classes with helper functions specific to GeoMesa cases.
 
-        DataStoreFinder     This class is a jnius Java reflection class that allows PyGeomesa to connect to
-                                       GeoMesa Accumulo databases.
+        DataStoreFinder     A jnius Java reflection class that allows PyGeomesa to connect to GeoMesa
+                                       Accumulo databases.
+
 Updates:
+        4-6-2017                Added cast wrapper to the class  for java object casting
+
+    @property
+    def cast(self, JavaClassPath,  jObject):
+        ''' Cast an object as a specific java object type:'''
+        #return _cast(JavaClassPath,  jObject)
+        return _cast
+
 
 To Do:
 """
@@ -45,15 +54,17 @@ class setupJnius:
     def __init__(self, classpath=None):
         ''' This is a kluge to allow autoclass & find_javaclass to be 'private' functions
             of this class. In reality, they are global to the geomesa_jnius_setup namespace'''
-        global _autoclass, _find_javaclass, _JavaClass, _JavaMethod, _MetaJavaClass
+        global _autoclass, _cast, _find_javaclass, _JavaClass, _JavaMethod, _JavaObject, _MetaJavaClass
         if classpath is not None:
             java_classpath = os.path.expanduser(classpath)
             os.environ['CLASSPATH'] = java_classpath
         try:
             from jnius import autoclass as _autoclass
+            from jnius import cast as _cast
             from jnius import find_javaclass as _find_javaclass
             from jnius import JavaClass as _JavaClass
             from jnius import JavaMethod as _JavaMethod
+            from jnius import JavaObject as _JavaObject
             from jnius import MetaJavaClass as _MetaJavaClass
         except:
             print("Error: the jnius package has not been installed. Please install it with:")
@@ -65,8 +76,16 @@ class setupJnius:
         else:
             print("Error:there are errors in your classpath; refer to the logged tests above.")
             sys.exit(-1)
+    
     def autoclass(self, JavaClass):
         return _autoclass(JavaClass)
+    
+    @property
+    def cast(self):#, JavaClassPath,  jObject):
+        ''' Cast an object as a specific java object type:'''
+        #return _cast(JavaClassPath,  jObject)
+        return _cast
+    
     def find_javaclass(self, JavaClass, msg=None):
         if msg is None : msg = JavaClass
         try:
@@ -81,8 +100,13 @@ class setupJnius:
     @property
     def JavaClass(self):
         return _JavaClass
+    
     def JavaMethod(self, jMethod, static=False):
         return _JavaMethod(jMethod, static=static)
+    
+    @property
+    def JavaObject(self):
+        return _JavaObject
     
     @property
     def MetaJavaClass(self):

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project PyMesa -->
-<!-- Saved: 2017-03-31, 15:33:15 -->
+<!-- Saved: 2017-04-06, 15:01:58 -->
 <!-- Copyright (C) 2017 Jordan Muss,  -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -16,28 +16,25 @@
   <Sources>
     <Source>__init__.py</Source>
     <Source>geomesa_quickstart_jnius.py</Source>
+    <Source>pyJavaClasses/FeatureTypes.py</Source>
+    <Source>pyJavaClasses/SimpleFeatureType.py</Source>
+    <Source>pyJavaClasses/__init__.py</Source>
+    <Source>pyJavaClasses/customJavaClasses.py</Source>
+    <Source>pyJavaClasses/datastore.py</Source>
+    <Source>pyJavaClasses/javaDateTime.py</Source>
     <Source>tools/ECQL/__init__.py</Source>
-    <Source>tools/ECQL/datastore.py</Source>
     <Source>tools/ECQL/filter.py</Source>
     <Source>tools/__init__.py</Source>
     <Source>utils/__init__.py</Source>
     <Source>utils/geomesa_command_line_parser.py</Source>
     <Source>utils/geomesa_jnius_setup.py</Source>
+    <Source>utils/quickstart_command_line_parser.py</Source>
   </Sources>
   <Forms/>
   <Translations/>
   <Resources/>
   <Interfaces/>
-  <Others>
-    <Other>geomesa-tutorials/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-examples-authorizations/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-examples-avro/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-examples-featurelevelvis/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-examples-gdelt/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-examples-spark/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-examples-transformations/README.md</Other>
-    <Other>geomesa-tutorials/geomesa-quickstart-accumulo/README.md</Other>
-  </Others>
+  <Others/>
   <Vcs>
     <VcsType>None</VcsType>
   </Vcs>

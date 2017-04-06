@@ -6,6 +6,7 @@ datastore.py
 Description:
    This function uses jnius and a parameter map to open a GeoMesa datastore. It
    returns the a DataStore java object, which is used to access the GeoMesa data.
+   It also includes functions to get information about the contents of a DataStore.
 
 Created by: Jordan Muss
 
@@ -37,3 +38,22 @@ def createAccumuloDBConf(JNI, conf_dict):
     for key, value in conf_dict.items():
         dsConf.put(key, value)
     return dsConf
+
+def getTableNames(dataStore):
+    ''' Return a list of Feature (type) names: '''
+    return dataStore.getTypeNames()
+
+def getTableFields(dataStore, feature):
+    ''' Return a dict with keys=feature field names, and values=basic feature descriptions: '''
+    schema = dataStore.getSchema(feature)
+    field_dict = {}
+    for field in schema.descriptors.toArray():
+        field_dict[field.localName] = {'default':field.defaultValue,
+                                                        'isNillable':field.isNillable(), 
+                                                        'descriptor':field.toString()}
+    return field_dict
+
+def deleteTable(dataStore, tablename):
+    ''' Drop a table (feature) from an geomesa accumulo database (table): '''
+    print("Warning:dropping {} from {}; this action cannot be reversed; all data will be lost!")
+    dataStore.removeSchema(tablename)

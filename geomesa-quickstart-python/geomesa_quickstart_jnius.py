@@ -40,7 +40,8 @@ from datetime import datetime
 '''----------------------------------------------------------------------------------------------------------------------'''
 from utils.geomesa_jnius_setup import *
 from utils.quickstart_command_line_parser import getArgs
-from tools.ECQL.datastore import getDataStore as getDataStore, createAccumuloDBConf
+from pyJavaClasses.datastore import getDataStore as getDataStore, createAccumuloDBConf
+from pyJavaClasses.FeatureTypes import simpleFeatureType
 from tools.ECQL import filter
 '''----------------------------------------------------------------------------------------------------------------------'''
 ''' Setup quickstart data access & display functions: '''
@@ -50,13 +51,13 @@ def queryFeaturesToDict(ecql, simpleFeatureTypeName, dataStore, filter_string):
     ''' Submit the query, which will return a features object: '''
     features = ecql.getFeatures(simpleFeatureTypeName, dataStore, filter_string)
     ''' Get an iterator of the matching features: '''
-    featureItr = features.features()
+    featureIter = features.features()
     
     ''' Loop through all results and put them into a dictionary for secondary processing: '''
     n = 0
     results = {}
-    while featureItr.hasNext():
-        feature = featureItr.next()
+    while featureIter.hasNext():
+        feature = featureIter.next()
         n += 1
         results[n] = {"who":feature.getProperty("Who").getValue(),
                               "what":feature.getProperty("What").getValue(),
@@ -66,7 +67,7 @@ def queryFeaturesToDict(ecql, simpleFeatureTypeName, dataStore, filter_string):
                               "x":feature.getProperty("Where").getValue().x,
                               "y":feature.getProperty("Where").getValue().y,
                               "why":feature.getProperty("Why").getValue().__str__() }
-    featureItr.close()
+    featureIter.close()
     return(results)
 
 def printQuickStart(quickStart_dict):
