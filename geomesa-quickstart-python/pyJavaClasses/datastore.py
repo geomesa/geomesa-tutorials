@@ -18,6 +18,7 @@ Dependencies:
          Private:   setupJnius
 
 Updates:
+        4-6-2017          getTableFields          Added functionality to get data type for fields
 
 To Do:
 """
@@ -48,9 +49,13 @@ def getTableFields(dataStore, feature):
     schema = dataStore.getSchema(feature)
     field_dict = {}
     for field in schema.descriptors.toArray():
-        field_dict[field.localName] = {'default':field.defaultValue,
-                                                        'isNillable':field.isNillable(), 
-                                                        'descriptor':field.toString()}
+        name = field.localName
+        descriptor = field.toString()
+        data_type = descriptor.split("{}:".format(name))[1].split(">")[0]
+        field_dict[name] = {'type':data_type, 
+                                         'default':field.defaultValue,
+                                         'isNillable':field.isNillable(), 
+                                         'descriptor':descriptor}
     return field_dict
 
 def deleteTable(dataStore, tablename):

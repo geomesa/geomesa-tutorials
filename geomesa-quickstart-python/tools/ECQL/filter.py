@@ -15,8 +15,19 @@ Dependencies:
          Public:     jnius
          Private:   setupJnius
 
-Updates:
+Interfaces:
+            ECQLQuery                Helper cass to allow python access to java Query & CQL functions. Has createFilter,
+                                              createQuery, & getFeatures methods
+            createBBoxFilter        Function to create a bounding-box (BBOX) filter string of a rectangular query area
+            createWithinFilter      Function to create a container (WITHIN) filter of a query area described by a polygon
+                                              or multipolygon WKT
+            createDuringFilter      Function to create a temporal query string for a fixed range of date/times (DURING)
+            createAttributeFilter   Function to create a query that accepts everything else (other predicates that operate
+                                               on other attribute types); this uses the GeoTools Filter constant "INCLUDE"
 
+Updates:
+            4-6-2017            createWithinFilter          Function to create a container (WITHIN) filter of a query area
+                                                                            described by a polygon or multipolygon WKT
 To Do:
 """
 class ECQLQuery:
@@ -53,15 +64,20 @@ def createBBoxFilter(geomField, x0, y0, x1, y1):
     cqlGeometry = "BBOX({}, {}, {}, {}, {})".format(geomField, x0, y0, x1, y1)
     return cqlGeometry
 
+def createWithinFilter(geomField, poly_descriptor):
+    ''' Create a container (WITHIN) filter of a query area described by a polygon or
+        multipolygon WKT: '''
+    cqlGeometry = "WITHIN({}, {})".format(geomField, poly_descriptor)
+    return cqlGeometry
+
 def createDuringFilter(dateField, t0, t1):
-    ''' There are quite a few temporal predicates; the "DURING" predicate allows
-        for querries using a fixed range of date/times: '''
+    ''' Create a temporal query string for a fixed range of date/times (DURING): '''
     cqlDates = "({} DURING {}/{})".format(dateField, t0, t1)
     return cqlDates
 
 def createAttributeFilter(attributesQuery):
-    ''' The GeoTools Filter constant "INCLUDE" is a default that means to accept
-        everything (other predicates that operate on other attribute types): '''
+    ''' The GeoTools Filter constant "INCLUDE" is a default meant to accept
+        everything else (other predicates that operate on other attribute types): '''
     cqlAttributes = "INCLUDE" if attributesQuery is None else attributesQuery
     return cqlAttributes
 
