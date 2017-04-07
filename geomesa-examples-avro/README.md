@@ -2,39 +2,42 @@ GeoMesa Avro Binary Format Example
 ==================================
 
 This example shows Java code for creating a `SimpleFeatureCollection`, serializing
- and immediately deserializing to and from the Avro format.
- 
+and immediately deserializing to and from the Avro format. 
  
 Prerequisites
 -------------
  
- None.
+None.
  
- Download and Build the Tutorial
- --------------------------
+Download and Build the Tutorial
+-------------------------------
  
- Pick a reasonable directory on your machine, and run:
+Pick a reasonable directory on your machine, and run:
  
- ```bash
- $ git clone https://github.com/geomesa/geomesa-tutorials.git
- $ cd geomesa-tutorials
- ```
+```bash
+$ git clone https://github.com/geomesa/geomesa-tutorials.git
+$ cd geomesa-tutorials
+```
+
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
+To build, run
  
- To build, run
- 
- ```bash
- $ mvn clean install -pl geomesa-examples-avro
- ```
+```bash
+$ mvn clean install -pl geomesa-examples-avro
+```
+
 Run the Tutorial
 ----------------
 
 On the command-line, run:
 
 ```bash
-$ java -cp geomesa-examples-avro/target/geomesa-examples-avro-${geomesa.version}.jar com.example.geomesa.avro.AvroExample
+$ java -cp geomesa-examples-avro/target/geomesa-examples-avro-$VERSION.jar com.example.geomesa.avro.AvroExample
 ``` 
  
- The code will print out the 10 arbitrary SimpleFeatures which were created and then serialized / deserialized.  Example output follows.
+The code will print out the 10 arbitrary SimpleFeatures which were created and then serialized / deserialized.  Example output follows.
  
      Creating 10 features.
      Writing features to Avro binary format.

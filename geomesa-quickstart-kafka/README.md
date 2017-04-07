@@ -10,8 +10,7 @@ This tutorial will show you how to:
 Background
 ----------
 
-[Apache Kafka](http://kafka.apache.org/) is
-> publish-subscribe messaging rethought as a distributed commit log.
+[Apache Kafka](http://kafka.apache.org/) is "publish-subscribe messaging rethought as a distributed commit log."
 
 In the context of GeoMesa, Kafka is a useful tool for working with streams of geospatial data.
 Interaction with Kafka in GeoMesa occurs with the KafkaDataStore which implements the
@@ -20,15 +19,15 @@ GeoTools [DataStore](http://docs.geotools.org/latest/userguide/library/data/data
 Prerequisites
 -------------
 
-* basic knowledge of [GeoTools](http://www.geotools.org), [GeoServer](http://geoserver.org), and Kafka
-* an instance of Kafka 0.8.2.x, 0.9.0.1, or 0.10.0.1 with (an) appropriate Zookeeper instance(s)
-* an instance of GeoServer version 2.8.1 with the GeoMesa Kafka plugin installed
-* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [Apache Maven](http://maven.apache.org/) 3.2.2 or better
-* a [git](http://git-scm.com/) client
+* basic knowledge of [GeoTools](http://www.geotools.org), [GeoServer](http://geoserver.org), and Kafka,
+* an instance of Kafka 0.8.2.x, 0.9.0.1, or 0.10.0.1 with (an) appropriate Zookeeper instance(s),
+* an instance of GeoServer version 2.9.1 with the GeoMesa Kafka plugin installed,
+* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+* [Apache Maven](http://maven.apache.org/) 3.2.2 or better, and
+* a [git](http://git-scm.com/) client.
 
 In order to install the GeoMesa Kafka GeoServer plugin, follow the instructions
-[here](https://github.com/locationtech/geomesa/tree/master/geomesa-gs-plugin/geomesa-kafka-gs-plugin).
+[here](http://www.geomesa.org/documentation/user/kafka/install.html).
 
 Ensure your Kafka and Zookeeper instances are running. You can use Kafka's
 [quickstart](http://kafka.apache.org/documentation.html#quickstart) to get Kafka/Zookeeper
@@ -64,7 +63,7 @@ For Kafka 0.10.0.1
 $ mvn clean install -pl geomesa-quickstart-kafka/geomesa-quickstart-kafka-10
 ```
 
-> :warning: Note: ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Kafka and Zookeeper in the root `pom.xml` match your environment.
 
 <span/>
 
@@ -93,8 +92,8 @@ $ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-10/target/geomesa-q
 
 where you provide the values for the following arguments:
 
-* ```<brokers>``` your Kafka broker instances, comma separated. For a local install, this would be `localhost:9092`.
-* ```<zookeepers>``` your Zookeeper nodes, comma separated. For a local install, this would be `localhost:2181`.
+* ``<brokers>`` your Kafka broker instances, comma separated. For a local install, this would be `localhost:9092`.
+* ``<zookeepers>`` your Zookeeper nodes, comma separated. For a local install, this would be `localhost:2181`.
 
 The program will create some metadata in Zookeeper and an associated topic in your Kafka instance,
 and pause execution to let you add the newly created `KafkaDataStore` to GeoServer. Once GeoServer
@@ -102,9 +101,9 @@ has been configured, we'll pick back up with the paused program.
 
 Optional command-line arguments for ``KafkaQuickStart`` are:
 
-* ``-zkPath <zkpath>``: used for specifiying the Zookeeper path for storing GeoMesa metadata. Defaults to "/geomesa/ds/kafka" and ordinarily does not need to be changed
+* ``-zkPath <zkpath>``: used for specifying the Zookeeper path for storing GeoMesa metadata. Defaults to "/geomesa/ds/kafka" and ordinarily does not need to be changed
 * ``-automated``: omits the pause in execution for configuring GeoServer.
-+
+
 The class may also be run using Maven via the ``live-test`` profile.
 
 ```bash
@@ -118,7 +117,7 @@ Log into GeoServer using your credentials. Click “Stores” in the left-hand g
 “Add new Store”. If you do not see the Kafka Data Store listed under Vector Data Sources,
 ensure the plugin and dependencies are in the right directory and restart GeoServer.
 
-Select the `Kafka Data Store` vector data source and enter the following parameters:
+Select the `Kafka (GeoMesa)` vector data source and enter the following parameters:
 
 * Basic Store Info
   * `workspace` this is dependent upon your GeoServer installation
@@ -180,7 +179,7 @@ As you refresh the page, you should see two `SimpleFeature`s that start on the l
 gradually move to the right side while crossing each other in the middle. As the two
 `SimpleFeature`s get updated, the older `SimpleFeature`s disappear from the display.
 
-!["GeoServer view"](../assets/geomesa-quickstart-kafka/layer-preview.png)
+![GeoServer view](../assets/geomesa-quickstart-kafka/layer-preview.png)
 
 Consumers Explained
 -------------------
@@ -227,13 +226,13 @@ For a deeper understanding of what's going on, we recommend exploring the source
 --------------------------------------
 
 The GeoTools API also includes a mechanism to fire off a
-[``FeatureEvent``](http://docs.geotools.org/stable/javadocs/index.html?org/geotools/data/FeatureEvent.Type.html)
+[FeatureEvent](http://docs.geotools.org/stable/javadocs/index.html?org/geotools/data/FeatureEvent.Type.html)
 each time there is an event (typically when the data are changed) in a ``DataStore``. A client may implement a
-[``FeatureListener``](http://docs.geotools.org/stable/javadocs/index.html?org/geotools/data/FeatureEvent.Type.html),
+[FeatureListener](http://docs.geotools.org/stable/javadocs/index.html?org/geotools/data/FeatureEvent.Type.html),
  which has a single method called ``changed()`` that is invoked as each ``FeatureEvent`` is fired.
 
-The code in ``com.example.geomesa.kafa.KafkaListener`` implements a simple ``FeatureListener`` that simply prints
-the messages received. Open up a second terminal window and run:
+The code in ``KafkaListener`` implements a simple ``FeatureListener`` that prints the messages received.
+Open up a second terminal window and run (with `$KAFKA_VERSION` set to "08", "09", or "10" as appropriate):
 
 ```bash
 $ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-$KAFKA_VERSION/target/geomesa-quickstart-kafka-$KAFKA_VERSION-${geomesa.version}.jar \
@@ -282,8 +281,8 @@ Additionally, the ``KafkaQuickStart`` class run above can generate a 'clear' con
 
 ```bash
 $ java -Dclear=true -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-$KAFKA_VERSION/target/geomesa-quickstart-kafka-$KAFKA_VERSION-${geomesa.version}.jar \
-> com.example.geomesa.kafka$KAFKA_VERSION.KafkaQuickStart \
-> -brokers <brokers> -zookeepers <zookeepers> 
+  com.example.geomesa.kafka$KAFKA_VERSION.KafkaQuickStart \
+  -brokers <brokers> -zookeepers <zookeepers> 
 ```
 
 KafkaDataStore Load Test
@@ -293,9 +292,10 @@ For those interested in load testing the KafkaDataStore, there is a simple utili
 
 ```bash
 $ java -cp geomesa-quickstart-kafka/geomesa-quickstart-kafka-$KAFKA_VERSION/target/geomesa-quickstart-kafka-$KAFKA_VERSION-${geomesa.version}.jar \
-> com.example.geomesa.kafka$KAFKA_VERSION.KafkaLoadTester \
-> -brokers <brokers> -zookeepers <zookeepers> -count <count>
+  com.example.geomesa.kafka$KAFKA_VERSION.KafkaLoadTester \
+  -brokers <brokers> -zookeepers <zookeepers> -count <count>
 ```
+
 The 'count' parameter is optional.  Without it, the tool defaults to 1000 SimpleFeatures.
 
 
@@ -307,7 +307,3 @@ maintain a real time state of SimpleFeatures or retrieve any arbitrary state pre
 in history. One can additionally process and analyze streams of data by integrating
 a data processing system like [Storm](https://storm.apache.org/) or [Samza](http://samza.apache.org).
 See the Storm [tutorial](../geomesa-quickstart-storm/) for more information on using Storm with GeoMesa.
-
-For additional information about the `KafkaDataStore`, see the
-[readme](https://github.com/locationtech/geomesa/blob/master/geomesa-kafka/geomesa-kafka-datastore/README.md)
-on github.
