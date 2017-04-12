@@ -31,7 +31,7 @@ Dependencies:
 How to use:
 Updates:
 
-To Do:
+To Do: Get queryFeaturesToDict from tools/ECQL/queryFormatters
 """
 from __future__ import print_function
 from datetime import datetime

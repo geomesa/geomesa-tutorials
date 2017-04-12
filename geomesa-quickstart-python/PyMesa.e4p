@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project PyMesa -->
-<!-- Saved: 2017-04-06, 15:01:58 -->
+<!-- Saved: 2017-04-11, 18:20:21 -->
 <!-- Copyright (C) 2017 Jordan Muss,  -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -16,6 +16,7 @@
   <Sources>
     <Source>__init__.py</Source>
     <Source>geomesa_quickstart_jnius.py</Source>
+    <Source>patricia.py</Source>
     <Source>pyJavaClasses/FeatureTypes.py</Source>
     <Source>pyJavaClasses/SimpleFeatureType.py</Source>
     <Source>pyJavaClasses/__init__.py</Source>
@@ -24,6 +25,7 @@
     <Source>pyJavaClasses/javaDateTime.py</Source>
     <Source>tools/ECQL/__init__.py</Source>
     <Source>tools/ECQL/filter.py</Source>
+    <Source>tools/ECQL/queryFormatters.py</Source>
     <Source>tools/__init__.py</Source>
     <Source>utils/__init__.py</Source>
     <Source>utils/geomesa_command_line_parser.py</Source>

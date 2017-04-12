@@ -54,13 +54,14 @@ class setupJnius:
     def __init__(self, classpath=None):
         ''' This is a kluge to allow autoclass & find_javaclass to be 'private' functions
             of this class. In reality, they are global to the geomesa_jnius_setup namespace'''
-        global _autoclass, _cast, _find_javaclass, _JavaClass, _JavaMethod, _JavaObject, _MetaJavaClass
+        global _autoclass, _cast, _detach, _find_javaclass, _JavaClass, _JavaMethod, _JavaObject, _MetaJavaClass
         if classpath is not None:
             java_classpath = os.path.expanduser(classpath)
             os.environ['CLASSPATH'] = java_classpath
         try:
             from jnius import autoclass as _autoclass
             from jnius import cast as _cast
+            from jnius import detach as _detach
             from jnius import find_javaclass as _find_javaclass
             from jnius import JavaClass as _JavaClass
             from jnius import JavaMethod as _JavaMethod
@@ -69,12 +70,14 @@ class setupJnius:
         except:
             print("Error: the jnius package has not been installed. Please install it with:")
             print("\t\tsudo -H pip install jnius\n\n")
+            _detach()
             sys.exit(-1)
         if self.testClasspath():
             self.classpath_status = True
             print("Your classpath is valid.")
         else:
             print("Error:there are errors in your classpath; refer to the logged tests above.")
+            _detach()
             sys.exit(-1)
     
     def autoclass(self, JavaClass):
@@ -85,6 +88,11 @@ class setupJnius:
         ''' Cast an object as a specific java object type:'''
         #return _cast(JavaClassPath,  jObject)
         return _cast
+    
+    @property
+    def detach(self):
+        ''' Detach jnius' native thread to the JVM:'''
+        return _detach
     
     def find_javaclass(self, JavaClass, msg=None):
         if msg is None : msg = JavaClass

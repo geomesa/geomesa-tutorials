@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 #coding:utf-8
-__all__ = ["filter", "queryFormatters"]
+__all__ = ["insert"]
 from . import *
