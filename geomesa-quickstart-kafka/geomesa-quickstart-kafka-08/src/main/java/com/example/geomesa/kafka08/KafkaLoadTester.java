@@ -37,6 +37,7 @@ public class KafkaLoadTester {
     public static final String REPLICATION = "replication";
     public static final String VISIBILITY = "visibility";
     public static final String LOAD = "count";
+    public static final String DELAY = "delay";
 
     public static final String[] KAFKA_CONNECTION_PARAMS = new String[] {
             KAFKA_BROKER_PARAM,
@@ -94,6 +95,12 @@ public class KafkaLoadTester {
                 .create(VISIBILITY);
         options.addOption(visibility);
 
+        Option delay = OptionBuilder.withArgName(DELAY)
+                .hasArg()
+                .withDescription("Delay (in ms) between each write of features")
+                .create(DELAY);
+        options.addOption(delay);
+
         return options;
     }
 
@@ -147,6 +154,7 @@ public class KafkaLoadTester {
         Options options = getCommonRequiredOptions();
         CommandLine cmd = parser.parse(options, args);
         String visibility = getVisibility(cmd);
+        Integer delay = getDelay(cmd);
 
         if (visibility == null) {
             System.out.println("visibility: null");
@@ -241,6 +249,12 @@ public class KafkaLoadTester {
                 startTime = endTime;
                 featuresSinceStartTime = 0L;
             }
+
+            // sleep before next write
+            if (delay != null) {
+                System.out.printf("Sleeping for %d ms\n", delay);
+                Thread.sleep(delay);
+            }
         }
     }
 
@@ -273,5 +287,14 @@ public class KafkaLoadTester {
 
     public static String getVisibility(CommandLine cmd) {
         return cmd.getOptionValue(VISIBILITY);
+    }
+
+    public static Integer getDelay(CommandLine cmd) {
+        String delay = cmd.getOptionValue(DELAY);
+        if (delay != null) {
+            return Integer.parseInt(delay);
+        } else {
+            return null;
+        }
     }
 }
