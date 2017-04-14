@@ -103,11 +103,15 @@ $ mvn clean install -am -pl :geomesa-accumulo-dist_2.11
 Upload the NiFi flow template
 -----------------------------
 
-The NiFi template provided [here](../assets/geomesa-QuickStart-accumulo/geoserver-layer-preview.png)
+The NiFi template provided [here](../assets/geomesa-quickstart-nifi/GeoMesa_Quickstart.xml)
 sets up a basic NiFi flow from a GetFile processor to a PutGeoMesa processor. 
-You will need to configure the PutGeoMesa processor for your Accumulo 
-Instance. Simply edit the PutGeoMesa configuration and edit the following 
-properties:
+To upload the NiFi template, download it to your local machine and in NiFi
+select the ```Upload Template``` option in the ```Operate``` side panel. 
+After uploading the template you can add it to the workspace by dragging 
+the ```New Template``` option from the NiFi main header into the workspace 
+and selecting the template from the drop down. You will need to configure 
+the PutGeoMesa processor for your Accumulo Instance. Simply edit the 
+PutGeoMesa configuration and edit the following properties:
 
 * ```instanceId``` Your Accumulo instance ID.
 * ```zookeepers``` A comma separated list of zookeeper IPs or hostnames.
@@ -212,12 +216,4 @@ Here are just a few simple ways you can play with the visualization:
   will change to a density heat-map. (NB: For this to work, you will
   have to first install the WPS module for GeoServer. See the official
   web site for a download.)
-
-
-
-
-
-
-
-
-    
+  
