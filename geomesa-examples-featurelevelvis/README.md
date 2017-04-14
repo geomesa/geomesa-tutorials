@@ -22,17 +22,18 @@ Prerequisites
 
 You will need:
 
--  an Accumulo 1.7 or 1.8 instance
--  an Accumulo user that has appropriate permissions to manage authorizations and query data
--  [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
--  [Apache Maven](http://maven.apache.org/) 3.2.2 or better
+-  an Accumulo 1.7 or 1.8 instance,
+-  an Accumulo user that has appropriate permissions to manage authorizations and query data,
+-  [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+-  [Apache Maven](http://maven.apache.org/) 3.2.2 or better, and
 -  a [git](http://git-scm.com/) client
 
-If you haven't already read the [Accumulo QuickStart](../geomesa-quickstart-accumulo),
-and make sure you have gone through the initial setup of GeoMesa.
+If you haven't already read both the [Installation](http://www.geomesa.org/documentation/user/install.html)
+section of the GeoMesa User Manual and the [Accumulo QuickStart](../geomesa-quickstart-accumulo),
+you should do so now, and make sure you have gone through the initial setup of GeoMesa.
 
 Additionally, you should be familiar with Accumulo's
-[Security Label Expression Syntax](https://accumulo.apache.org/1.5/accumulo_user_manual.html#_security_label_expressions),
+[Security Label Expression Syntax](https://accumulo.apache.org/1.7/accumulo_user_manual.html#_security_label_expressions),
 which we make use of when securing features in GeoMesa.
 
 Download and Build the Tutorial
@@ -45,17 +46,20 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
 To build, run
 
 ```bash
 $ mvn clean install -pl geomesa-examples-featurelevelvis
 ```
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root ``pom.xml`` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root ``pom.xml`` match your environment.
 
 <span/>
 
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> :warning: Note: Depending on the version, you may also need to build GeoMesa locally.
     Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 Run the Tutorial

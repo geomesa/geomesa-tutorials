@@ -15,11 +15,11 @@ tutorial only does a few things:
 
 Before you begin, you must have the following installed and configured:
 
-* [Java](http://java.oracle.com/) Development Kit 1.8
-* Apache [Maven](http://maven.apache.org/) 
-* a GitHub client
-* HBase 1.1.x (optional)
-* GeoServer 2.8.1 (optional)
+* [Java](http://java.oracle.com/) Development Kit 1.8,
+* Apache [Maven](http://maven.apache.org/),
+* a GitHub client,
+* HBase 1.2.x (optional), and
+* GeoServer 2.9.1 (optional).
 
 An existing HBase 1.1.x installation is helpful but not necessary. The tutorial
 described will work either with an existing HBase server or by downloading
@@ -33,7 +33,7 @@ is beyond the scope of this tutorial.
 
 (Skip this section if you have an existing HBase 1.1.x installation.)
 
-Download the HBase 1.1.5 binary distribution from http://www.apache.org/dyn/closer.cgi/hbase/ 
+Download the HBase 1.2.3 binary distribution from http://www.apache.org/dyn/closer.cgi/hbase/ 
 
 Follow the chapter in the HBase Manual for running a standalone instance
 of HBase (https://hbase.apache.org/book.html#quickstart). Note that this
@@ -49,7 +49,10 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
-The ```pom.xml``` file contains an explicit list of dependent libraries
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
+The ``pom.xml`` file contains an explicit list of dependent libraries
 that will be bundled together into the final tutorial.  You should confirm
 that the versions of HBase and Hadoop match what you are running; if it does
 not match, change the values of the ``hbase.version`` and ``hbase.hadoop.version``
@@ -57,10 +60,10 @@ properties. The version of GeoMesa that this tutorial targets matches
 the project version of the ``pom.xml``. (Note that this tutorial has been
 tested with GeoMesa 1.2.2 or later).
 
-(Note: The only reason these libraries are bundled into the final JAR is that
-this is easier for most people to do this than it is to set the classpath when
-running the tutorial. If you would rather not bundle these dependencies, mark
-them as ```provided``` in the POM, and update your classpath as appropriate.)
+> :warning: Note: The only reason these libraries are bundled into the final JAR is that
+> this is easier for most people to do this than it is to set the classpath when
+> running the tutorial. If you would rather not bundle these dependencies, mark
+> them as ```provided``` in the POM, and update your classpath as appropriate.
 
 GeoMesa's ``HBaseDataStore`` searches for a file called ``hbase-site.xml``,
 which among other things configures the Zookeeper host(s) and port. If this file
@@ -86,7 +89,9 @@ you need to run the tutorial.
 On the command line, run:
 
 ```bash
-$ java -cp target/geomesa-quickstart-hbase-$VERSION.jar com.example.geomesa.hbase.HBaseQuickStart --bigtable_table_name geomesa
+$ java -cp target/geomesa-quickstart-hbase-$VERSION.jar \
+  com.example.geomesa.hbase.HBaseQuickStart \
+  --bigtable_table_name geomesa
 ```
 
 The only argument passed is the name of the HBase table where GeoMesa will store the feature type information.
@@ -109,7 +114,7 @@ log4j's warnings), which lists the features that match the specified query in th
 To see how the data is stored in HBase, use the HBase shell.
 
 ```bash
-$ /path/to/hbase-1.1.5/bin/hbase shell
+$ /path/to/hbase-1.2.3/bin/hbase shell
 ```
     
 The type information is in the ``geomesa`` table (or whatever name you specified on the command line):
@@ -154,13 +159,13 @@ and build it with the `hbase` profile:
 $ mvn clean install -DskipTests -Phbase
 ```
 
-Go into the buld HBase GeoServer plugin module:
+Go into the built HBase GeoServer plugin module:
 
 ```
-$ cd geomesa-gs-plugin/geomesa-hbase-gs-plugin/target
+$ cd geomesa-hbase/geomesa-hbase-gs-plugin/target
 ```
 
-and extract the contents of the ``geomesa-hbase-gs-plugin-<version>-install.tar.gz``
+and extract the contents of the ``geomesa-hbase-gs-plugin_2.11-<version>-install.tar.gz``
 file into GeoServer's ``WEB-INF/lib`` directory. This distribution does not include
 the Hadoop or Zookeeper JARs; the following JARs should be copied from the ``lib``
 directory of your HBase or Hadoop installations into GeoServer's ``WEB-INF/lib``
@@ -231,4 +236,4 @@ will now show only those points matching your filter criterion.
 
 This is a CQL filter, which can be constructed
 in various ways to query our data. You can find more information
-about CQL from [GeoServer's CQL tutorial](http://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html).
+about CQL from [GeoServer's CQL tutorial](http://docs.geoserver.org/2.9.1/user/tutorials/cql/cql_tutorial.html).

@@ -8,15 +8,15 @@ This tutorial shows how to:
 
 ## Prerequisites
 
-> :warning: You will need access to a Hadoop 2.2.2 or better installation as well as an Accumulo 1.5-1.6 database.
+> :warning: You will need access to a Hadoop 2.2.2 or better installation as well as an Accumulo 1.7-1.8 database.
 
 You will also need:
 
 -  access to an Accumulo user that has both create-table and write
-   permissions
--  an instance of GeoServer 2.8.1 with the GeoMesa plugin installed,
--  [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
--  [Apache Maven](http://maven.apache.org) 3.2.2
+   permissions,
+-  an instance of GeoServer 2.9.1 with the GeoMesa plugin installed,
+-  [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+-  [Apache Maven](http://maven.apache.org) 3.2.2, and
 -  a [git](http://git-scm.com) client.
 
 ## Obtaining GDELT data
@@ -71,17 +71,20 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
 To build, run
 
 ```bash
 $ mvn clean install -pl geomesa-examples-gdelt
 ```
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
 <span/>
 
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> :warning: Note: Depending on the version, you may also need to build GeoMesa locally.
 > Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 ## Running the Ingest
@@ -140,7 +143,7 @@ field to use for the date index. We specify this field using the
 ``SimpleFeatureType``'s user data.
 
 ```java
-//This tells GeoMesa to use this Attribute as the Start Time index
+// This tells GeoMesa to use this attribute as the indexed date field
 featureType.getUserData().put(SimpleFeatureTypes.DEFAULT_DATE_KEY, "SQLDATE");
 ```
 
@@ -195,8 +198,8 @@ context.write(new Text(), simpleFeature);
 
 ### GeoServer Setup
 
-First, follow the [GeoMesa Deployment Tutorial](http://www.geomesa.org/geomesa-deployment/) to set
-up the GeoMesa GeoServer plugin if you haven't done so.
+First, follow [Installing GeoMesa Accumulo in GeoServer](http://www.geomesa.org/documentation/user/accumulo/install.html#installing-geomesa-accumulo-in-geoserver)
+to set up the GeoMesa Accumulo GeoServer plugin if you haven't done so.
 
 ### Register the GeoMesa DataStore with GeoServer
 
@@ -235,9 +238,9 @@ http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&lay
 
 ![Showing all GDELT events from Jan 1, 2013 to April 30, 2014](../assets/geomesa-examples-gdelt/Ukraine_Unfiltered.png)
 
-The above map is using the [Stamen Toner](http://maps.stamen.com/toner) layer as a base layer. For more
+The above map is using the [Stamen Toner](http://maps.stamen.com/toner/) layer as a base layer. For more
 information about adding multiple layers into one group see the
-[GeoServer documentation](http://docs.geoserver.org/stable/en/user/webadmin/data/layergroups.html).
+[GeoServer documentation](http://docs.geoserver.org/2.9.1/user/data/webadmin/layergroups.html).
 
 ### Filter
 
@@ -252,11 +255,11 @@ OpenLayers preview.
 ![Enter CQL Filter into Toolbar](../assets/geomesa-examples-gdelt/Geoserver_Layer_Preview_Drop_Down.png)
 
 Let's use a custom icon to display THREATEN events, by adding an [SLD
-style](http://docs.geoserver.org/latest/en/user/styling/index.html)
-to the layer. Add the SLD file [threat.sld](../assets/geomesa-examples-gdelt/2014-04-17-geomesa-gdelt-analysis/threat.sld)
+style](http://docs.geoserver.org/2.9.1/user/styling/index.html)
+to the layer. Add the SLD file [threat.sld](../assets/geomesa-examples-gdelt/threat.sld)
 to GeoServer (See the GeoServer
 documentation for [more information about adding SLD
-files](http://docs.geoserver.org/latest/en/user/styling/sld-working.html).
+files](http://docs.geoserver.org/2.9.1/user/styling/sld-working.html).
 For the ExternalGraphic in the SLD to work, move the image file to the
 specified location in your GeoServer installation.
 
@@ -264,13 +267,17 @@ specified location in your GeoServer installation.
 http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=geomesa:gdelt&CQL_FILTER=EventRootCode=13&styles=threat&bbox=31.6,44,37.4,47.75&width=1200&height=600&srs=EPSG:4326&format=application/openlayers&TIME=2013-01-01T00:00:00.000Z/2014-04-30T23:00:00.000Z
 ```
 
-![Showing GDELT events with CAMEO root code THREATEN from Jan 1, 2013 to April 30, 2014]
-(../assets/geomesa-examples-gdelt/Ukraine_Event_RootCode_Threaten.png)
+![Showing GDELT events with CAMEO root code THREATEN from Jan 1, 2013 to April 30, 2014](../assets/geomesa-examples-gdelt/Ukraine_Event_RootCode_Threaten.png)
 
 ### Heatmaps
 
 Use a heatmap to more clearly visualize multiple events in the same
-location or high volume of data in general. Add the SLD file [heatmap.sld](../assets/geomesa-examples-gdelt/heatmap.sld)
+location or high volume of data in general. 
+
+> :warning: Note: The heatmap style requires that ``geomesa-process`` be installed in your
+> GeoServer, as described in [GeoMesa Processes](http://www.geomesa.org/documentation/user/process.html).
+
+Add the SLD file [heatmap.sld](../assets/geomesa-examples-gdelt/heatmap.sld)
 to GeoServer.
 
 In the request below, the heatmap is before the points layer so that the
@@ -282,5 +289,4 @@ and will replace the default value assigned in the SLD.
 http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=geomesa:gdelt,geomesa:gdelt&CQL_FILTER=include;EventRootCode=13&styles=heatmap,threat&bbox=31.6,44,37.4,47.75&width=1200&height=600&srs=EPSG:4326&format=application/openlayers&TIME=2013-01-01T00:00:00.000Z/2014-04-30T23:00:00.000Z&env=radiusPixels:30
 ```
 
-![Showing heatmap with event overlay of GDELT events with CAMEO root code THREATEN from Jan 1, 2013 to April 30, 2014]
-(../assets/geomesa-examples-gdelt/Heatmap_Ukraine_EventRootCode_Threaten.png)
+![Showing heatmap with event overlay of GDELT events with CAMEO root code THREATEN from Jan 1, 2013 to April 30, 2014](../assets/geomesa-examples-gdelt/Heatmap_Ukraine_EventRootCode_Threaten.png)

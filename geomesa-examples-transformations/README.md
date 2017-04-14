@@ -15,12 +15,12 @@ very fast. They are analogous to the map tasks in a map-reduce job. Transformati
 also extensible; developers can implement new functions and plug them into the system
 using standard mechanisms from [Geotools](http://www.geotools.org/).  
 
-**Note:** when this tutorial refers to "projections", it means in the relational
-sense - see [Projection - Relational Algebra](http://en.wikipedia.org/wiki/Projection_\(relational_algebra\)).
-Projection also has [many other meanings](http://en.wikipedia.org/wiki/Projection_\(disambiguation\))
-in spatial discussions - they are not used in this tutorial. Although projections can also
-modify an attribute's value, in this tutorial we will refer to such modifications as
-"transformations" to keep things clearer.
+> :warning: Note: When this tutorial refers to "projections", it means in the relational
+> sense - see [Projection - Relational Algebra](http://en.wikipedia.org/wiki/Projection_\(relational_algebra\)).
+> Projection also has [many other meanings](http://en.wikipedia.org/wiki/Projection_\(disambiguation\))
+> in spatial discussions - they are not used in this tutorial. Although projections can also
+> modify an attribute's value, in this tutorial we will refer to such modifications as
+> "transformations" to keep things clearer.
 
 This tutorial will show you how to write custom Java code using GeoMesa to do the following:
 
@@ -32,11 +32,11 @@ This tutorial will show you how to write custom Java code using GeoMesa to do th
 
 You will need:
 
-* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x
-* an Accumulo user that has appropriate permissions to query your data
-* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [Apache Maven](http://maven.apache.org/) 3.2.2 or better
-* a [git](http://git-scm.com/) client
+* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x,
+* an Accumulo user that has appropriate permissions to query your data,
+* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+* [Apache Maven](http://maven.apache.org/) 3.2.2 or better, and
+* a [git](http://git-scm.com/) client.
 
 This tutorial queries the GDELT data set. Instructions on ingesting GDELT data are available [here](../geomesa-examples-gdelt).
 
@@ -51,24 +51,27 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
 To build, run
 
 ```bash
 $ mvn clean install -pl geomesa-examples-transformations
 ```
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
 <span/>
 
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> :warning: Note: Depending on the version, you may also need to build GeoMesa locally.
 > Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 ## Run the Tutorial
 
 > :warning: Before continuing, ensure that you have ingested the GDELT data set described
 in the GeoMesa GDELT [tutorial](../geomesa-examples-gdelt). If using GDELT data from a 
-time period different than that used in the geomesa-examples-gdelt, change the date range
+time period different than that used in the GDELT tutorial, change the date range
 in the `QueryTutorial` `createBaseFilter` function and recompile.
 
 On the command line, run:

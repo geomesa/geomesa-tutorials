@@ -23,12 +23,12 @@ Prerequisites
 
 Before you begin, you must have the following:
 
-* an instance of Accumulo 1.5, 1.6 or 1.7 running on Hadoop 2.2 or better
-* an Accumulo user that has both create-table and write permissions
-* the GeoMesa Accumulo distributed runtime [installed for your Accumulo instance](http://www.geomesa.org/documentation/user/installation_and_configuration.html#installing-the-accumulo-distributed-runtime-library)
-* a local copy of the [Java](http://java.oracle.com/) JDK 8
-* Apache [Maven](http://maven.apache.org/) installed
-* a GitHub client installed
+* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2 or better,
+* an Accumulo user that has both create-table and write permissions,
+* the GeoMesa Accumulo distributed runtime [installed for your Accumulo instance](http://www.geomesa.org/documentation/user/installation_and_configuration.html#installing-the-accumulo-distributed-runtime-library),
+* a local copy of the [Java](http://java.oracle.com/) JDK 8,
+* Apache [Maven](http://maven.apache.org/) installed, and
+* a GitHub client installed.
 
 Download and Build the Tutorial
 --------------------------
@@ -40,17 +40,20 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
 To build, run
 
 ```bash
 $ mvn clean install -pl geomesa-quickstart-accumulo
 ```
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
 <span/>
 
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> :warning: Note: Depending on the version, you may also need to build GeoMesa locally.
 > Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 About this Tutorial
@@ -76,11 +79,11 @@ $ java -cp geomesa-quickstart-accumulo/target/geomesa-quickstart-accumulo-${geom
 
 where you provide the following arguments:
 
-* ```<instance>``` the name of your Accumulo instance
-* ```<zookeepers>``` your Zookeeper nodes, separated by commas
-* ```<user>``` the name of an Accumulo user that has permissions to create, read and write tables
-* ```<password>``` the password for the previously-mentioned Accumulo user
-* ```<table>``` the name of the destination table that will accept these test records; this table should either not exist or should be empty
+* ``<instance>`` the name of your Accumulo instance
+* ``<zookeepers>`` your Zookeeper nodes, separated by commas
+* ``<user>`` the name of an Accumulo user that has permissions to create, read and write tables
+* ``<password>`` the password for the previously-mentioned Accumulo user
+* ``<table>`` the name of the destination table that will accept these test records; this table should either not exist or should be empty
 
 > :warning: If you have set up the GeoMesa Accumulo distributed runtime to be isolated within
 > a namespace [as described in the GeoMesa installation guide](http://www.geomesa.org/documentation/user/installation_and_configuration.html#for-accumulo-1-6),
@@ -160,24 +163,27 @@ Log into GeoServer using your user and password credentials. Click
 Data Store listed under Vector Data Sources, ensure the plugin is in the
 right directory and restart GeoServer.
 
-Select the ``Accumulo Feature Data Store`` vector data source, and enter
+Select the ``Accumulo (GeoMesa)`` vector data source, and enter
 the following parameters:
 
-* basic store info
-  * ``workspace`` this is dependent upon your GeoServer installation
-  * ``data source name`` pick a sensible name, such as, ``geomesa_quick_start``
-  * ``description`` this is strictly decorative; ``GeoMesa quick start``
-* connection parameters
-  * these are the same parameter values that you supplied on the
-    command-line when you ran the tutorial; they describe how to
-    connect to the Accumulo instance where your data reside
+Basic store info:
+
+   * ``workspace`` this is dependent upon your GeoServer installation
+   * ``data source name`` pick a sensible name, such as, ``geomesa_quick_start``
+   * ``description`` this is strictly decorative; ``GeoMesa quick start``
+
+Connection parameters:
+
+   * these are the same parameter values that you supplied on the
+     command-line when you ran the tutorial; they describe how to
+     connect to the Accumulo instance where your data reside
 
 Click "Save", and GeoServer will search your Accumulo table for any
 GeoMesa-managed feature types.
 
 ### Publish the layer
 
-GeoServer should recognize the ``QuickStart`` feature type, and should
+GeoServer should recognize the ``AccumuloQuickStart`` feature type, and should
 present that as a layer that could be published. Click on the "Publish"
 link.
 
@@ -197,7 +203,7 @@ Click on the "Save" button when you are done.
 
 Click on the "Layer Preview" link in the left-hand gutter. If you don't
 see the quick-start layer on the first page of results, enter the name
-of the layer you just created into the search box, and press <Enter>.
+of the layer you just created into the search box, and press `<Enter>`.
 
 Once you see your layer, click on the "OpenLayers" link, which will open
 a new tab. By default, the display that opens will not show all the
@@ -209,9 +215,9 @@ add the following to the end:
 
 That tells GeoServer to display the records for the entire month of January
 2014. You can find more information about the TIME parameter from
-[GeoServer's documentation](http://docs.geoserver.org/latest/en/user/services/wms/time.html).
+[GeoServer's documentation](http://docs.geoserver.org/2.9.1/user/services/wms/time.html).
 
-Once you press <Enter>, the display will update, and you should see a
+Once you press `<Enter>`, the display will update, and you should see a
 collection of red dots similar to the following image.
 
 ![Visualizing quick-start data](../assets/geomesa-quickstart-accumulo/geoserver-layer-preview.png)
@@ -233,15 +239,16 @@ Here are just a few simple ways you can play with the visualization:
   "play" icon. The display will now show only those points matching
   your filter criterion. This is a CQL filter, which can be constructed
   in various ways to query our data. You can find more information
-  about CQL from [GeoServer's CQL tutorial](http://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html).
+  about CQL from [GeoServer's CQL tutorial](http://docs.geoserver.org/2.9.1/user/tutorials/cql/cql_tutorial.html).
 
 ### Generating Heatmaps
 
 * To try out the DensityIterator, you can install the Heatmap SLD from
   the [GDELT Tutorial](../geomesa-examples-gdelt).
 * After configuring the SLD, in the URL, change ``styles=`` to be
-  ``styles=heatmap&density=true``. Once you press <Enter>, the display
-  will change to a density heat-map. (NB: For this to work, you will
-  have to first install the WPS module for GeoServer. See the official
-  web site for a download.)
+  ``styles=heatmap&density=true``. Once you press `<Enter>`, the display
+  will change to a density heat-map.
 
+> :warning: Note: For this to work, you will
+> have to first install the WPS module for GeoServer. See the official
+> web site for a download.

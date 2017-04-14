@@ -7,11 +7,12 @@ One of the most powerful features of Accumulo is the implementation of cell-leve
 by users that have the corresponding authorizations. This allows for the fine-grained protection of
 data, based on arbitrary labels.
 
-*Note: authorizations are distinct from table-level permissions, and operate at a much finer grain.*
+> :warning: Note: Authorizations are distinct from table-level permissions, and
+> operate at a much finer grain.
 
 If you are not familiar with Accumulo authorizations, you should review the relevant Accumulo
-[documentation](http://accumulo.apache.org/1.6/accumulo_user_manual.html#_security), with more
-examples [here](http://accumulo.apache.org/1.6/examples/visibility.html).
+[documentation](http://accumulo.apache.org/1.7/accumulo_user_manual.html#_security), with more
+examples [here](http://accumulo.apache.org/1.7/examples/visibility.html).
 
 ### Public Key Infrastructure (PKI)
 
@@ -39,18 +40,18 @@ authenticate with GeoServer and LDAP to store authorizations
 
 Before you begin, you must have the following:
 
-* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x
-* an Accumulo user that has appropriate permissions to query your data
+* an instance of Accumulo 1.7 or 1.8 running on Hadoop 2.2.x,
+* an Accumulo user that has appropriate permissions to query your data,
 * [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [Apache Maven](http://maven.apache.org/) 3.2.2 or better
-* a [git](http://git-scm.com/) client
+* [Apache Maven](http://maven.apache.org/) 3.2.2 or better, and
+* a [git](http://git-scm.com/) client.
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
 ## Visibilities in GeoMesa
 
 GeoMesa supports applying a single set of visibilities to all data in a `DataStore`. When
-configuring a `DataStore`, the visibilities can be set with the ```visibilities``` parameter:
+configuring a `DataStore`, the visibilities can be set with the ``visibilities`` parameter:
 
 ```java
 // create a map containing initialization data for the GeoMesa data store
@@ -108,8 +109,8 @@ public interface AuthorizationsProvider {
 When a GeoMesa `DataStore` is instantiated, it will scan for available service providers.
 Third-party implementations can be enabled by placing them on the classpath and including
 a special service descriptor file. See the Oracle
-[Javadoc](http://docs.oracle.com/javase/7/docs/api/javax/imageio/spi/ServiceRegistry.html) for
-details on implementing a service provider.
+[Javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html)
+for details on implementing a service provider.
 
 The GeoMesa `DataStore` will call `configure()` on the `AuthorizationsProvider` 
 implementation, passing in the parameter map from the call to `DataStoreFinder.getDataStore(Map params)`.
@@ -138,7 +139,7 @@ If there are no `AuthorizationsProvider`s found on the classpath, and the `auths
 not set, GeoMesa will default to using the authorizations associated with the underlying Accumulo
 connection (i.e. the `user` configuration value).
 
-> :warning: Note: this is not a recommended approach for a production system.
+> :warning: This is not a recommended approach for a production system.
 
 In addition, please note that the authorizations used in any scenario cannot exceed
 the authorizations of the underlying Accumulo connection.
@@ -216,17 +217,20 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
 Cloning the repository should only take a few seconds.  To build it, run
 
 ```bash
 $ mvn clean install -pl geomesa-examples-authorizations
 ```
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, etc in the root `pom.xml` match your environment.
 
 <span/>
 
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> :warning: Note: Depending on the version, you may also need to build GeoMesa locally.
 > Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 ## Run the Tutorial
@@ -368,7 +372,7 @@ field to what you used when ingesting data above.
 
 ### Configure GeoServer for PKI Login
 
-Follow the instructions located [here](http://docs.geoserver.org/stable/en/user/security/tutorials/cert/index.html)
+Follow the instructions located [here](http://docs.geoserver.org/2.9.1/user/security/tutorials/cert/index.html)
 in order to enable PKI login to GeoServer.
 
 In the step where you add the 'cert' filter to the 'Filter Chains', also add it to the 'rest', 'gwc'
@@ -376,7 +380,7 @@ and 'default' chains (in addition to web).
 
 We will be using the 'rod' and 'scott' users, so be sure to install those into your browser.
 
-> :warning: Note: make sure that you click the 'Save' button on all GeoServer screens. Otherwise,
+> :warning: Make sure that you click the 'Save' button on all GeoServer screens. Otherwise,
 your changes may be lost.
 
 Verify that the changes were applied by re-starting Tomcat, and checking that the
@@ -386,7 +390,7 @@ Verify that the changes were applied by re-starting Tomcat, and checking that th
 
 ### Install an LDAP Server for Storing Authorizations
 
-> :warning: Note: If you are already have an LDAP server set up, you can skip this step.*
+> :warning: Note: If you are already have an LDAP server set up, you can skip this step.
 
 1. Download and install [ApacheDS](http://directory.apache.org/apacheds/)
 2. Either run as a service, or run through the start scripts:
@@ -402,7 +406,9 @@ $ ./apacheds.sh
 We want to configure LDAP with a user to match the Spring Security PKIs we are testing with.
 The end result we want is to create the following user:
 
-```DN: cn=rod,ou=Spring Security,o=Spring Framework```
+```
+DN: cn=rod,ou=Spring Security,o=Spring Framework
+```
 
 In order to do that, we will use Apache Directory Studio.
 
@@ -460,7 +466,7 @@ previous steps. If you are using a different LDAP configuration, you will need t
 
 The `LdapAuthorizationsProvider` will look for a particular LDAP attribute that stores the user's
 authorizations in a comma-delimited list. For simplicity, in this tutorial we have re-purposed an
-existing attribute, ```employeeType```. The attribute to use can be modified through the property file.
+existing attribute, ``employeeType``. The attribute to use can be modified through the property file.
 
 When we inserted the 'rod' record into LDAP, we set his `employeeType` to 'user,admin', corresponding
 to our Accumulo authorizations. If you are using different authorizations, you will need to update
@@ -494,7 +500,7 @@ the provider class is specified as the `EmptyAuthorizationsProvider`.
 
 1. Ensure that your LDAP configuration is correct by running `LdapAuthorizationsProviderTest`, as
 described above.
-2. Change the provider class in single line file `src/main/resources/META-INF/services/org.locationtech.geomesa.security.AuthorizationsProvider`
+2. Change the provider class in the single line file `src/main/resources/META-INF/services/org.locationtech.geomesa.security.AuthorizationsProvider`
 to be `com.example.geomesa.authorizations.LdapAuthorizationsProvider`
 3. Rebuild the tutorial JAR and install the **_unshaded original_** jar in GeoServer:
 
@@ -504,7 +510,7 @@ to be `com.example.geomesa.authorizations.LdapAuthorizationsProvider`
        /path/to/tomcat/webapps/geoserver/WEB-INF/lib/
     ```
 
-    > :warning: Note: we want to use the unshaded jar since all the required dependencies are already installed in GeoServer.
+> :warning: Note: We want to use the unshaded jar since all the required dependencies are already installed in GeoServer.
 
 4. Restart GeoServer (or start it if it is not running).
 
@@ -528,7 +534,7 @@ You should see the normal data come back, with many red points indicating the da
 Now try the same query, but use the 'scott' certificate. This time, there should be no data returned,
 as the 'scott' user does not have any authorizations set up in LDAP.
 
-> :warning: Note: a simple way to use different certificates at once is to open multiple 'incognito' or
+> :warning: Note: A simple way to use different certificates at once is to open multiple 'incognito' or
 'private' browser windows.
 
 ## Querying GeoServer through a Web Feature Service (WFS) with a Java Client
@@ -536,7 +542,7 @@ as the 'scott' user does not have any authorizations set up in LDAP.
 GeoServer provides the ability to query data through a Web Feature Service (WFS). Using GeoTools, we
 can create a client in Java through a WFSDataStore. More details are available
 [here](http://docs.geotools.org/latest/userguide/library/data/wfs.html) and
-[here](http://docs.geoserver.org/stable/en/user/services/wfs/reference.html), although some of the
+[here](http://docs.geoserver.org/2.9.1/user/services/wfs/reference.html), although some of the
 documentation is out of date.
 
 We can leverage the same PKI and LDAP setup that we used through the web interface to authenticate

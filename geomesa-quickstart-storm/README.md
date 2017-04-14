@@ -1,9 +1,7 @@
 GeoMesa Storm Quick Start
 ============================
 
-Apache Storm is
-
-> a free and open source distributed realtime computation system.
+Apache Storm is "a free and open source distributed realtime computation system."
 
 You can leverage Storm to analyze and ingest data into GeoMesa in near real time. In this tutorial, we will:
 
@@ -16,24 +14,24 @@ Prerequisites
 
 You will need access to:
 
-* an instance of Accumulo 1.7 or 1.8
-* an Accumulo user with create-table and write permissions
-* an installation of Kafka 0.8
-* an installation of Storm 0.9+
-* an instance of GeoServer 2.8.1 with the GeoMesa Accumulo plugin installed
+* an instance of Accumulo 1.7 or 1.8,
+* an Accumulo user with create-table and write permissions,
+* an installation of Kafka 0.8+,
+* an installation of Storm 0.9+, and
+* an instance of GeoServer 2.9.1 with the GeoMesa Accumulo plugin installed.
 
 In order to install the GeoMesa Accumulo GeoServer plugin, follow the instructions
-[here](https://github.com/locationtech/geomesa/tree/master/geomesa-gs-plugin/geomesa-accumulo-gs-plugin).
+[here](http://www.geomesa.org/documentation/user/accumulo/install.html).
 
 You will also need:
 
-* The [xz](http://tukanni.org/xz/) data compression tool
-* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* [Apache Maven](http://maven.apache.org) 3.2.2 or better
-* a [git](http://git-scm.com/) client
+* The [xz](http://tukaani.org/xz/) data compression tool,
+* [Java JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html),
+* [Apache Maven](http://maven.apache.org) 3.2.2 or better, and
+* a [git](http://git-scm.com/) client.
 
 Download and Build the Tutorial
---------------------------
+-------------------------------
 
 Pick a reasonable directory on your machine, and run:
 
@@ -42,26 +40,27 @@ $ git clone https://github.com/geomesa/geomesa-tutorials.git
 $ cd geomesa-tutorials
 ```
 
+> :warning: Note: You may need to download a particular release of the tutorials project
+> to target a particular GeoMesa release.
+
 To build, run
 
-```
+```bash
 $ mvn clean install -pl geomesa-quickstart-storm
 ```
 
-> :warning: Note: ensure that the version of Accumulo, Hadoop, Storm, etc in the root `pom.xml` match your environment.
+> :warning: Note: Ensure that the version of Accumulo, Hadoop, Storm, etc in the root `pom.xml` match your environment.
 
-<span/>
-
-> :warning: Note: depending on the version, you may also need to build GeoMesa locally.
+> :warning: Note: Depending on the version, you may also need to build GeoMesa locally.
 > Instructions can be found [here](https://github.com/locationtech/geomesa/).
 
 Obtaining OSM Data
 ------------------
 
 In this demonstration, we will use the `simple-gps-points` OSM data that contains only the location of an observation.
-Download the [OSM](http://planet.openstreetmap.org/) data here: [http://planet.openstreetmap.org/gps/simple-gps-points-120312.txt.xz]().
+Download the [OSM](http://planet.openstreetmap.org/) data [here](http://planet.openstreetmap.org/gps/simple-gps-points-120312.txt.xz).
 
-> :warning: Note: the file is approximately 7 GB.
+> :warning: Note: The file is approximately 7 GB.
 
 Use the following command to unpack the data:
 
@@ -70,7 +69,7 @@ $ xz simple-gps-points-120312.txt.xz
 ```
 
 Deploy the Ingest Topology
-------------------------------
+--------------------------
 
 The quickstart topology will read messages off of a Kafka topic, parse them into `SimpleFeature`s,
 and write them to Accumulo.
@@ -94,12 +93,25 @@ Run Data through the System
 
 We use Kafka as the input to our Storm topology. First, create a topic to send data:
 
+For Kafka 0.8 use the following command.
+
 ```bash
 $ kafka-create-topic.sh      \
     --zookeeper <zookeepers> \
     --replica 3              \
     --partition 10           \
-    --topic OSM              \
+    --topic OSM
+```
+
+For Kafka 0.9+ use the following command.
+
+```bash
+$ kafka-topics.sh          \
+    --create               \
+    --zookeeper localhost  \
+    --replication-factor 3 \
+    --partitions 10        \
+    --topic OSM
 ```
 
 Note that we create a topic with several partitions in order to parallelize the ingest from the producer
@@ -112,7 +124,7 @@ $ java -cp geomesa-quickstart-storm/target/geomesa-quickstart-storm-$VERSION.jar
     com.example.geomesa.storm.OSMIngestProducer \
     -ingestFile simple-gps-points-120312.txt    \
     -topic OSM                                  \
-    -brokers <kafka broker list>                \
+    -brokers <kafka broker list>
 ```
 
 Note that Kafka's default partitioner class assigns a message partition based on a hash of the provided key. 
@@ -220,20 +232,24 @@ file to GeoServer, call it OSMPoint.sld. Then browse to the following URL:
 http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=geomesa:OSM&styles=OSMPoint&bbox=-87.63,41.88,-87.61,41.9&width=1400&height=600&srs=EPSG:4326&format=application/openlayers
 ```
 
-!["Showing all OSM events in Chicago before Mar 12, 2012"](../assets/geomesa-quickstart-storm/ChicagoPoint.png)
+![Showing all OSM events in Chicago before Mar 12, 2012](../assets/geomesa-quickstart-storm/ChicagoPoint.png)
 
 Heatmaps
 --------
 
-Use a heatmap to more clearly visualize a high volume of data in the same location. Add
-this [SLD](../assets/geomesa-quickstart-storm/heatmap.sld) file to
+Use a heatmap to more clearly visualize a high volume of data in the same location. 
+
+> :warning: Note: The heatmap style requires that `geomesa-process` be installed in your
+> GeoServer, as described [here](http://www.geomesa.org/documentation/user/process.html).
+
+Add the [heatmap.sld](../assets/geomesa-quickstart-storm/heatmap.sld) file to
 GeoServer, then browse to the following URL:
 
 ```
 http://localhost:8080/geoserver/wms?service=WMS&version=1.1.0&request=GetMap&layers=geomesa:OSM&styles=heatmap&bbox=-87.63,41.88,-87.61,41.9&width=1400&height=600&srs=EPSG:4326&format=application/openlayers
 ```
 
-!["Showing heatmap of OSM events in Chicago before Mar 12, 2012"](../assets/geomesa-quickstart-storm/ChicagoDensity.png)
+![Showing heatmap of OSM events in Chicago before Mar 12, 2012](../assets/geomesa-quickstart-storm/ChicagoDensity.png)
 
 Conclusion
 ----------
