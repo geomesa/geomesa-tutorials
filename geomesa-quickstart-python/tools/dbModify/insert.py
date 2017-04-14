@@ -13,7 +13,7 @@ Version:       1.0
 
 Dependencies: 
          Public:     jnius, json
-         Private:   ECQL, setupJnius
+         Private:   ECQL, SetupJnius
 
 Interfaces:
             queryFeaturesToDict         something
@@ -26,7 +26,7 @@ To Do:
 from __future__ import print_function
 
 def insert(JNI, ecql, simpleFeatureTypeName, dataStore, filter_string, field_dict, print_num=10):
-    ''' Insert data into an accumulo simpleFeatureType (table): '''
+    ''' Insert data into an Accumulo simpleFeatureType (table): '''
     jLong = JNI.autoclass('java.lang.Long')
     WKTUtils = JNI.autoclass("org.locationtech.geomesa.utils.interop.WKTUtils")
     dfc = JNI.autoclass("org.geotools.feature.DefaultFeatureCollection")

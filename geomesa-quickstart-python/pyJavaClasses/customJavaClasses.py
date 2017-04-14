@@ -14,10 +14,10 @@ Version:       1.0
 
 Dependencies: 
          Public:     jnius, sys
-         Private:   setupJnius
+         Private:   SetupJnius
 
 Interfaces:
-        createSimpleFeatureType              Function with a class to create a 'bare' simpleFeatureType from a list
+        createSimpleFeatureType              Function with a class to create a 'bare' SimpleFeatureType from a list
                                                               of attributes, and to perform appropriate tasks, e.g. set feature indices
 
 Updates:
@@ -43,12 +43,12 @@ def getJavaTrueFalse(JNI, pyBool):
     if isinstance(pyBool, str):
         boolVal = BoolDict.get(pyBool.lower(), None)
         if not isinstance(boolVal, bool):
-            print("Error:bad balue passed to 'getJavaTrueFalse'; {} must be in str(true, false, yes, no).".format(pyBool))
+            print("Error:bad value passed to 'getJavaTrueFalse'; {} must be in str(true, false, yes, no).".format(pyBool))
             sys.exit(-1)
     elif isinstance(pyBool, bool):
         boolVal = pyBool
     else:
-        print("Error:bad balue passed to 'getJavaTrueFalse'; {} must be type bool or in str(true, false, yes, no).".format(pyBool))
+        print("Error:bad value passed to 'getJavaTrueFalse'; {} must be type bool or in str(true, false, yes, no).".format(pyBool))
         sys.exit(-1)
     jBool = Boolean()
     if boolVal:

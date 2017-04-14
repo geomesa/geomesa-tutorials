@@ -7,7 +7,7 @@ Note: this has been tested with python 2.7.12 & 3.5
 
 Description:
    This script performs the necessary steps to setup jnius to provide GeoMesa functionality
-   with accumulo. PyJnius is a third party package that requires cython and acts as a Java
+   with Accumulo. PyJnius is a third party package that requires cython and acts as a Java
    Natie Interface, allowing python programs to run java code.
    
    On unix-based systems these packages can be installed using pip:
@@ -25,7 +25,7 @@ Dependencies:
          Private:   
 
 Interfaces:
-        setupJnius              Class to set up jnius to work with the necessary GeoMesa libraries. It tests
+        SetupJnius              Class to set up jnius to work with the necessary GeoMesa libraries. It tests
                                       that the necessary packages are accessible, or fails with a sys.exit(-1). It also
                                       wraps some of the jnius classes with helper functions specific to GeoMesa cases.
 
@@ -50,7 +50,7 @@ To Do:
 #from __future__ import print_function
 import os, sys
 
-class setupJnius:
+class SetupJnius:
     def __init__(self, classpath=None):
         ''' This is a kluge to allow autoclass & find_javaclass to be 'private' functions
             of this class. In reality, they are global to the geomesa_jnius_setup namespace'''
@@ -86,7 +86,6 @@ class setupJnius:
     @property
     def cast(self):#, JavaClassPath,  jObject):
         ''' Cast an object as a specific java object type:'''
-        #return _cast(JavaClassPath,  jObject)
         return _cast
     
     @property
@@ -98,10 +97,10 @@ class setupJnius:
         if msg is None : msg = JavaClass
         try:
             _find_javaclass(JavaClass)
-            print("{} class path is OK".format(msg))
+            print("{} classpath is OK".format(msg))
             result = True
         except:
-            print("Error: {} class path is NOT OK".format(msg))
+            print("Error: {} classpath is NOT OK".format(msg))
             result = False
         return result
     
@@ -127,13 +126,6 @@ class setupJnius:
         Hadoop = self.find_javaclass("org.apache.hadoop.io.Writable", msg="Hadoop")
         #zookeeper test:
         zookeeper = self.find_javaclass("org.apache.zookeeper.KeeperException", msg="zookeeper")
-        #accumulo test:
+        #Accumulo test:
         accumulo = self.find_javaclass("org.apache.accumulo.core.util.Version", msg="accumulo")
         return GeoMesa and Hadoop and zookeeper and accumulo
-
-'''
-class DataStoreFinder(j.JavaClass):
-    __javaclass__ = "org/geotools/data/DataStoreFinder"
-    __metaclass__ = j.MetaJavaClass
-    getDataStore = j.JavaMethod('(Ljava/util/Map;)Lorg/geotools/data/DataStore;', static=True)
-'''

@@ -17,7 +17,7 @@ Dependencies:
          Private:   setupJnius
 
 Interfaces:
-        createSimpleFeatureType              Class to create a 'bare' simpleFeatureType from a list of attributes,
+        createSimpleFeatureType              Class to create a 'bare' SimpleFeatureType from a list of attributes,
                                                               and to perform appropriate tasks, e.g. set feature indices
 
 Updates:
@@ -26,7 +26,7 @@ To Do:
 """
 from .customJavaClasses import getJavaTrueFalse 
 
-class simpleFeatureType():
+class SimpleFeatureType():
     def __init__(self, JNI):
         """ Create the necessary java class interfaces: """
         self.SimpleFeatureTypes = JNI.autoclass("org.locationtech.geomesa.utils.interop.SimpleFeatureTypes")
@@ -36,12 +36,12 @@ class simpleFeatureType():
         self.true = getJavaTrueFalse(JNI, True)
     
     def createSimpleFeatureType(self, simpleFeatureTypeName, attribute_list):
-        """ This will create a 'bare' simpleFeatureType from a list of attributes: """
+        """ This will create a 'bare' SimpleFeatureType from a list of attributes: """
         attributes = ','.join(attribute_list)
         self.simpleFeature = self.SimpleFeatureTypes.createType(simpleFeatureTypeName, attributes)
     
     def setDateTimeIndex(self, field_name):
-        """ use the user-data (hints) to specify which date-time field is meant to be indexed: """
+        """ Use the user-data (hints) to specify which date-time field is meant to be indexed: """
         if self.simpleFeature is None:
             print("You must create a simple feature type before you can set an index")
             index_set = False

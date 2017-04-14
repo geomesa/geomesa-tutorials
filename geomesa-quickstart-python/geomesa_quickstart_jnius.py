@@ -6,7 +6,7 @@ geomesa_quickstart_jnius.py
 Note: this has been tested with python 2.7.12 & 3.5
 
 Description:
-   This script is a python adaptation of the GeoMesa accumulo quickstart. It is a querry only
+   This script is a python adaptation of the GeoMesa Accumulo quickstart. It is a query only
    demo, in contrast to the java quickstart that creates the table & loads data into it. This
    script uses two second party packages (jnius & bokeh) that need to be loaded to run. 'jnius'
    is a python-java bridge that allows python programs to run java code.
@@ -36,18 +36,17 @@ To Do: Get queryFeaturesToDict from tools/ECQL/queryFormatters
 from __future__ import print_function
 from datetime import datetime
 '''----------------------------------------------------------------------------------------------------------------------'''
-''' Import Java & Geomesa classes: '''
+''' Import Java & GeoMesa classes: '''
 '''----------------------------------------------------------------------------------------------------------------------'''
 from utils.geomesa_jnius_setup import *
 from utils.quickstart_command_line_parser import getArgs
-from pyJavaClasses.datastore import getDataStore as getDataStore, createAccumuloDBConf
-from pyJavaClasses.FeatureTypes import simpleFeatureType
+from pyJavaClasses.datastore import getDataStore, createAccumuloDBConf
 from tools.ECQL import filter
 '''----------------------------------------------------------------------------------------------------------------------'''
 ''' Setup quickstart data access & display functions: '''
 '''----------------------------------------------------------------------------------------------------------------------'''
 def queryFeaturesToDict(ecql, simpleFeatureTypeName, dataStore, filter_string):
-    ''' Return the results of a (E)CQL filter query as a dict for additional processing: '''
+    ''' Return the results of a ECQL filter query as a dict for additional processing: '''
     ''' Submit the query, which will return a features object: '''
     features = ecql.getFeatures(simpleFeatureTypeName, dataStore, filter_string)
     ''' Get an iterator of the matching features: '''
@@ -77,7 +76,7 @@ def printQuickStart(quickStart_dict):
                   quickStart_dict[k]["when"].strftime("%a %b %d %H:%M:%S %Z %Y"), 
                   quickStart_dict[k]["where"], quickStart_dict[k]["why"]))
 '''----------------------------------------------------------------------------------------------------------------------'''
-''' End GeoMesa querry functions: '''
+''' End GeoMesa query functions: '''
 '''----------------------------------------------------------------------------------------------------------------------'''
 
 if __name__ == "__main__":
@@ -89,9 +88,9 @@ if __name__ == "__main__":
     ''' Setup jnius for GeoMesa java calls: '''
     '''----------------------------------------------------------------------------------------------------------------------'''
     classpath = args.classpath
-    jni = setupJnius(classpath=classpath)
+    jni = SetupJnius(classpath=classpath)
     '''----------------------------------------------------------------------------------------------------------------------'''
-    ''' Setup data for GeoMesa querry: '''
+    ''' Setup data for GeoMesa query: '''
     '''----------------------------------------------------------------------------------------------------------------------'''
     simpleFeatureTypeName = "AccumuloQuickStart"
     dsconf_dict = {'instanceId':args.instanceId, 

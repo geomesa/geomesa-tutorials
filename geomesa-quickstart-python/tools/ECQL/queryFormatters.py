@@ -4,7 +4,7 @@
 queryFormatters.py
 
 Description:
-   These functions executes an (E)CQL query and either loads the results into a python
+   These functions executes an ECQL query and either loads the results into a python
    dictionary or list, or writes it to a JSON file. Field names and java data type are provided
    in field_dict, where the dict key is the field name and the java data type is stored in
    "type". The type_dict provides functions to convert from java data types to python data
@@ -17,10 +17,10 @@ Version:       1.0
 
 Dependencies: 
          Public:     jnius, json
-         Private:   ECQL, setupJnius
+         Private:   ECQL, SetupJnius
 
 Interfaces:
-            queryFeaturesToDict         Execute a query, convert the java objects to python types, & load
+            queryFeaturesToDict         Execute a query, convert the java objects to python types, and load
                                                      load the results into a python dict of dicts. The master dict is keyed
                                                      by row number & each sub_dict is the entire row of data, keyed by
                                                      field name. Warning, this seems to have a potential java memory
@@ -43,7 +43,7 @@ from __future__ import print_function
 import json
 
 def queryFeaturesToDict(ecql, simpleFeatureTypeName, dataStore, filter_string, field_dict, print_num=10):
-    ''' Return the results of a (E)CQL filter query as a dict for additional processing: '''
+    ''' Return the results of a ECQL filter query as a dict for additional processing: '''
     type_dict = {"date":lambda v : v.toString(), 
                          "double":lambda v : v, 
                          "float":lambda v : v, 
@@ -77,7 +77,7 @@ def queryFeaturesToDict(ecql, simpleFeatureTypeName, dataStore, filter_string, f
     return results
 
 def queryFeaturesToList(ecql, simpleFeatureTypeName, dataStore, filter_string):
-    ''' Return the results of a (E)CQL filter query as a list of GeoMesa java objects for additional processing: '''
+    ''' Return the results of a ECQL filter query as a list of GeoMesa java objects for additional processing: '''
     ''' Submit the query, which will return a features object: '''
     features = ecql.getFeatures(simpleFeatureTypeName, dataStore, filter_string)
     ''' Get an array (list) of the matching features as GeoMesa java objects: '''
@@ -85,7 +85,7 @@ def queryFeaturesToList(ecql, simpleFeatureTypeName, dataStore, filter_string):
     return results
 
 def queryFeaturesToJSON(ecql, simpleFeatureTypeName, dataStore, filter_string, field_dict, out_file):
-    ''' Return the results of a (E)CQL filter query as a dict for additional processing: '''
+    ''' Return the results of a ECQL filter query as a dict for additional processing: '''
     type_dict = {"date":lambda v : v.toString(), 
                          "double":lambda v : v, 
                          "float":lambda v : v, 

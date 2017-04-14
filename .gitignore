@@ -20,4 +20,6 @@ geomesa-quickstart-accumulo/src/main/java/com/example/geomesa/accumulo/AccumuloQ
 *.gz
 *.tar
 __pycache__
-
+Patricia*
+patricia*
+.eric*

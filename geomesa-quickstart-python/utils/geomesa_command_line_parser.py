@@ -38,7 +38,7 @@ class GeoMesaParser(argparse.ArgumentParser):
                        help="the password for the previously-mentioned Accumulo user (default=secret)")
         self.add_argument("--tableName", "--tableNm", "--table", "--tbl", "-t",  default="quickstart", 
                        help="the name of the on which to operate. This table will be created if it does not exist (default=quickstart)")
-        self.add_argument("--classpath", "-c", type=str, default=None, 
-                       help="set the geomesa-accumulo java classpath (default=None; use the classpath set in the os environment")
+        self.add_argument("--classpath", "--cp", type=str, default=None, 
+                       help="set the GeoMesa-Accumulo java classpath (default=None; use the classpath set in the os environment")
       
         self.description = "Run PyGeoMesa command line tools"

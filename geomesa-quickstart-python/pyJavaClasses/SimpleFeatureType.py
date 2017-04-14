@@ -14,17 +14,17 @@ Version:       1.0
 
 Dependencies: 
          Public:     jnius
-         Private:   setupJnius
+         Private:   SetupJnius
 
 Interfaces:
-        createSimpleFeatureType              Class to create a 'bare' simpleFeatureType from a list of attributes,
+        createSimpleFeatureType              Class to create a 'bare' SimpleFeatureType from a list of attributes,
                                                               and to perform appropriate tasks, e.g. set feature indices
 
 Updates:
 
 To Do:
 """
-class simpleFeatureType():
+class SimpleFeatureType():
     def __init__(self, JNI):
         """ Create the necessary java class interfaces: """
         self.SimpleFeatureTypes = JNI.autoclass("org.locationtech.geomesa.utils.interop.SimpleFeatureTypes")
@@ -37,4 +37,4 @@ class simpleFeatureType():
 
     def setDateTimeIndex(self, simpleFeature, field_name):
         """ use the user-data (hints) to specify which date-time field is meant to be indexed: """
-        simpleFeature.getUserData().put(self.SimpleFeatureTypes.DEFAULT_DATE_KEY, field_name);
+        simpleFeature.getUserData().put(self.SimpleFeatureTypes.DEFAULT_DATE_KEY, field_name)

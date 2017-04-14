@@ -15,7 +15,7 @@ Version:       1.0
 
 Dependencies: 
          Public:     jnius
-         Private:   setupJnius
+         Private:   SetupJnius
 
 Updates:
         4-6-2017          getTableFields          Added functionality to get data type for fields
@@ -59,6 +59,6 @@ def getTableFields(dataStore, feature):
     return field_dict
 
 def deleteTable(dataStore, tablename):
-    ''' Drop a table (feature) from an geomesa accumulo database (table): '''
+    ''' Drop a table (feature) from an GeoMesa Accumulo database (table): '''
     print("Warning:dropping {} from {}; this action cannot be reversed; all data will be lost!")
     dataStore.removeSchema(tablename)

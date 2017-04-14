@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project PyMesa -->
-<!-- Saved: 2017-04-11, 18:20:21 -->
+<!-- Saved: 2017-04-14, 17:15:36 -->
 <!-- Copyright (C) 2017 Jordan Muss,  -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -27,6 +27,8 @@
     <Source>tools/ECQL/filter.py</Source>
     <Source>tools/ECQL/queryFormatters.py</Source>
     <Source>tools/__init__.py</Source>
+    <Source>tools/dbModify/__init__.py</Source>
+    <Source>tools/dbModify/insert.py</Source>
     <Source>utils/__init__.py</Source>
     <Source>utils/geomesa_command_line_parser.py</Source>
     <Source>utils/geomesa_jnius_setup.py</Source>

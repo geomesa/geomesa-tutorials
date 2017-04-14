@@ -5,7 +5,7 @@ javaDateTime.py
 
 Description:
    This function takes a python datetime object with optional timezone information, translates
-   it into a java datetime object ( using jnius) and returns the java datetime object.
+   it into a java datetime object (using jnius) and returns the java datetime object.
 
 Created by: Jordan Muss
 
@@ -14,7 +14,7 @@ Version:       1.0
 
 Dependencies: 
          Public:     datetime, jnius
-         Private:   setupJnius
+         Private:   SetupJnius
 
 Updates:
 

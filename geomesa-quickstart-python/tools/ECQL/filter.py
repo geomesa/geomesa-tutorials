@@ -13,7 +13,7 @@ Version:       1.0
 
 Dependencies: 
          Public:     jnius
-         Private:   setupJnius
+         Private:   SetupJnius
 
 Interfaces:
             ECQLQuery                Helper cass to allow python access to java Query & CQL functions. Has createFilter,
@@ -39,7 +39,7 @@ class ECQLQuery:
         self.CQL = JNI.autoclass('org.geotools.filter.text.cql2.CQL')
     
     def createFilter(self, filter_string):
-        ''' Create the (E)CQL filter from the prepared (python) string: '''
+        ''' Create the ECQL filter from the prepared (python) string: '''
         return self.CQL.toFilter(self.jString(filter_string))
     
     def createQuery(self, simpleFeatureTypeName, dataStore, filter_string):
