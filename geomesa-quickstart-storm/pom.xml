@@ -10,6 +10,7 @@
 
     <artifactId>geomesa-quickstart-storm</artifactId>
     <name>GeoMesa Quickstart - Storm</name>
+    <inceptionYear>2016</inceptionYear>
 
     <dependencies>
         <dependency>

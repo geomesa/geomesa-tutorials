@@ -10,6 +10,7 @@
 
     <artifactId>geomesa-examples-spark</artifactId>
     <name>GeoMesa Examples - Spark</name>
+    <inceptionYear>2013</inceptionYear>
 
     <properties>
         <spark.version>2.0.2</spark.version>

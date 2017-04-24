@@ -10,6 +10,7 @@
 
     <artifactId>geomesa-quickstart-hbase</artifactId>
     <name>GeoMesa Quickstart - HBase</name>
+    <inceptionYear>2016</inceptionYear>
 
     <dependencies>
         <dependency>

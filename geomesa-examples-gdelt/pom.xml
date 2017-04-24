@@ -10,6 +10,7 @@
 
     <artifactId>geomesa-examples-gdelt</artifactId>
     <name>GeoMesa Examples - GDELT</name>
+    <inceptionYear>2014</inceptionYear>
 
     <dependencies>
         <dependency>

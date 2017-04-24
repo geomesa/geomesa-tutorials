@@ -19,6 +19,7 @@
 
     <artifactId>geomesa-quickstart-accumulo</artifactId>
     <name>GeoMesa Quickstart - Accumulo</name>
+    <inceptionYear>2013</inceptionYear>
 
     <dependencies>
         <dependency>

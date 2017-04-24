@@ -19,6 +19,7 @@
 
     <artifactId>geomesa-examples-avro</artifactId>
     <name>GeoMesa Examples - Feature-Level Visibility</name>
+    <inceptionYear>2014</inceptionYear>
 
     <dependencies>
         <dependency>
