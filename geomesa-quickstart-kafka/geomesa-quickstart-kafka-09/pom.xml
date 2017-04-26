@@ -9,6 +9,7 @@
 
     <artifactId>geomesa-quickstart-kafka-09</artifactId>
     <name>Kafka 09 Quickstart</name>
+    <inceptionYear>2016</inceptionYear>
 
     <dependencies>
         <dependency>

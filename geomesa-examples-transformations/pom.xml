@@ -10,6 +10,7 @@
 
     <artifactId>geomesa-examples-transformations</artifactId>
     <name>GeoMesa Examples - Transformations</name>
+    <inceptionYear>2013</inceptionYear>
 
     <dependencies>
         <dependency>

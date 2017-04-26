@@ -10,6 +10,7 @@
 
     <artifactId>geomesa-examples-authorizations</artifactId>
     <name>GeoMesa Examples - Authorizations</name>
+    <inceptionYear>2014</inceptionYear>
 
     <dependencies>
         <dependency>
