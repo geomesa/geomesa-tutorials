@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-5.1.dtd">
+<!-- eric project file for project PyMesa -->
+<!-- Saved: 2017-04-14, 17:15:36 -->
+<!-- Copyright (C) 2017 Jordan Muss,  -->
+<Project version="5.1">
+  <Language>en_US</Language>
+  <Hash>5d58e60dfec0c1cc036dfb496e10ccb749ab8726</Hash>
+  <ProgLanguage mixed="0">Python2</ProgLanguage>
+  <ProjectType>Console</ProjectType>
+  <Description>This project comprises tools and tutorials that provide GeoMesa functionality to python users. Although it is written for Python2, these tools should also run with python 3.5, unless otherwise noted.</Description>
+  <Version>0.1</Version>
+  <Author>Jordan Muss</Author>
+  <Email></Email>
+  <Eol index="0"/>
+  <Sources>
+    <Source>__init__.py</Source>
+    <Source>geomesa_quickstart_jnius.py</Source>
+    <Source>patricia.py</Source>
+    <Source>pyJavaClasses/FeatureTypes.py</Source>
+    <Source>pyJavaClasses/SimpleFeatureType.py</Source>
+    <Source>pyJavaClasses/__init__.py</Source>
+    <Source>pyJavaClasses/customJavaClasses.py</Source>
+    <Source>pyJavaClasses/datastore.py</Source>
+    <Source>pyJavaClasses/javaDateTime.py</Source>
+    <Source>tools/ECQL/__init__.py</Source>
+    <Source>tools/ECQL/filter.py</Source>
+    <Source>tools/ECQL/queryFormatters.py</Source>
+    <Source>tools/__init__.py</Source>
+    <Source>tools/dbModify/__init__.py</Source>
+    <Source>tools/dbModify/insert.py</Source>
+    <Source>utils/__init__.py</Source>
+    <Source>utils/geomesa_command_line_parser.py</Source>
+    <Source>utils/geomesa_jnius_setup.py</Source>
+    <Source>utils/quickstart_command_line_parser.py</Source>
+  </Sources>
+  <Forms/>
+  <Translations/>
+  <Resources/>
+  <Interfaces/>
+  <Others/>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.e4p" type="OTHERS"/>
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES"/>
+    <FiletypeAssociation pattern="*.md" type="OTHERS"/>
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.py" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.py2" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pyw" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.pyw2" type="SOURCES"/>
+    <FiletypeAssociation pattern="*.rst" type="OTHERS"/>
+    <FiletypeAssociation pattern="*.txt" type="OTHERS"/>
+    <FiletypeAssociation pattern="README" type="OTHERS"/>
+    <FiletypeAssociation pattern="README.*" type="OTHERS"/>
+  </FiletypeAssociations>
+</Project>
