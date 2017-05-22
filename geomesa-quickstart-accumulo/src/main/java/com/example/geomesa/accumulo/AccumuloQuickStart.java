@@ -25,6 +25,9 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.locationtech.geomesa.accumulo.audit.AccumuloAuditService;
+import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
+import org.locationtech.geomesa.index.utils.Releasable;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.interop.WKTUtils;
 import org.opengis.feature.Feature;
@@ -48,6 +51,7 @@ public class AccumuloQuickStart {
     static final String PASSWORD = "password";
     static final String AUTHS = "auths";
     static final String TABLE_NAME = "tableName";
+    static final String DELETE_TABLES = "deleteTables";
 
     // sub-set of parameters that are used to create the Accumulo DataStore
     static final String[] ACCUMULO_CONNECTION_PARAMS = new String[] {
@@ -106,6 +110,11 @@ public class AccumuloQuickStart {
                 .withDescription("the name of the Accumulo table to use -- or create, if it does not already exist -- to contain the new data")
                 .create(TABLE_NAME);
         options.addOption(tableNameOpt);
+
+        Option deleteTableOpt = OptionBuilder.withArgName(DELETE_TABLES)
+                .withDescription("Delete tables upon successful exit of the Accumulo Quickstart")
+                .create(DELETE_TABLES);
+        options.addOption(deleteTableOpt);
 
         return options;
     }
@@ -305,7 +314,7 @@ public class AccumuloQuickStart {
 
         // verify that we can see this Accumulo destination in a GeoTools manner
         Map<String, String> dsConf = getAccumuloDataStoreConf(cmd);
-        DataStore dataStore = DataStoreFinder.getDataStore(dsConf);
+        AccumuloDataStore dataStore = (AccumuloDataStore) DataStoreFinder.getDataStore(dsConf);
         assert dataStore != null;
 
         // establish specifics concerning the SimpleFeatureType to store
@@ -344,7 +353,17 @@ public class AccumuloQuickStart {
                 "(Who = 'Addams')",
                 5,
                 "What");
-
-        dataStore.dispose();
+        if (cmd.hasOption(DELETE_TABLES)) {
+            System.out.println("Deleting tables...");
+            // query audit table not deleted;
+            String queryTable = cmd.getOptionValue(TABLE_NAME) + "_queries";
+            if (dataStore.tableOps().exists(queryTable)) dataStore.tableOps().delete(queryTable);
+            dataStore.dispose();
+            dataStore.delete();
+            System.out.print("Complete");
+        } else {
+            dataStore.dispose();
+        }
+        System.exit(0);
     }
 }
