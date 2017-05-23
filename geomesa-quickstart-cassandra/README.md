@@ -10,7 +10,7 @@ few small things:
 
 1.  establishes a new (static) SimpleFeatureType
 2.  prepares the Cassandra table to store this type of data
-3.  creates a few hundred example SimpleFeatures
+3.  creates 1000 SimpleFeatures
 4.  writes these SimpleFeatures to the Cassandra table
 5.  queries for a given geographic rectangle, time range, and attribute filter,
     writing out the entries in the result set
@@ -23,14 +23,29 @@ Prerequisites
 
 Before you begin, you must have the following:
 
-* an instance of Cassandra 3.x standalone or running on Hadoop 2.2 or better,
+* an instance of Cassandra 3.x standalone or cluster,
 * a Cassandra user that has both create-table and write permissions (not needed for Cassandra standalone versions),
 * a local copy of the [Java](http://java.oracle.com/) JDK 8,
 * Apache [Maven](http://maven.apache.org/) installed, and
 * a GitHub client installed.
 
+Create A Cassandra Namespace
+----------------------------
+
+You will need a namespace in Cassandra for the tutorial to create tables in.
+The Easiest way to do this is with the ``cqlsh`` tool provided with Cassandra
+distributions. Start cqlsh, then type:
+
+```bash
+cqlsh>  CREATE KEYSPACE mykeyspace WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor' : 3};
+```
+
+This creates a key space called “mykeyspace”. This is a top-level name 
+space within Cassandra and it will provide a place for GeoMesa to put 
+all of its data, including data for spatial features and associated metadata.
+
 Download and Build the Tutorial
---------------------------
+-------------------------------
 
 Pick a reasonable directory on your machine, and run:
 
