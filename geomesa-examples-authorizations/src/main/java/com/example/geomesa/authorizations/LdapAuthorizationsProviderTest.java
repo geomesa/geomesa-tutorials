@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Integration test for connecting to LDAP for authorizations
@@ -40,7 +41,7 @@ public class LdapAuthorizationsProviderTest {
         System.out.println("Checking auths from LDAP for user '" + user + "'");
 
         // get the authorizations - this will connect to ldap using the values in geomesa-ldap.properties
-        Authorizations auths = provider.getAuthorizations();
+        List<String> auths = provider.getAuthorizations();
 
         System.out.println("Retrieved auths: " + auths);
     }
