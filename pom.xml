@@ -12,7 +12,7 @@
 
     <groupId>com.example.geomesa</groupId>
     <artifactId>geomesa-tutorials</artifactId>
-    <version>1.3.1.0-SNAPSHOT</version>
+    <version>1.3.2.0-SNAPSHOT</version>
 
     <name>GeoMesa Tutorials and Examples</name>
     <packaging>pom</packaging>
@@ -26,12 +26,13 @@
         <module>geomesa-examples-transformations</module>
         <module>geomesa-quickstart-accumulo</module>
         <module>geomesa-quickstart-kafka</module>
+        <module>geomesa-quickstart-cassandra</module>
         <module>geomesa-quickstart-hbase</module>
         <module>geomesa-quickstart-storm</module>
     </modules>
 
     <properties>
-        <geomesa.version>1.3.1</geomesa.version>
+        <geomesa.version>1.3.2-SNAPSHOT</geomesa.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -50,6 +51,7 @@
         <storm.version>1.0.2</storm.version>
         <hbase.version>1.1.5</hbase.version>
         <curator.version>2.11.0</curator.version>
+        <cassandra.version>3.0.0</cassandra.version>
     </properties>
 
     <dependencyManagement>
@@ -98,6 +100,11 @@
             <dependency>
                 <groupId>org.locationtech.geomesa</groupId>
                 <artifactId>geomesa-accumulo-datastore_${scala.abi.version}</artifactId>
+                <version>${geomesa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.locationtech.geomesa</groupId>
+                <artifactId>geomesa-cassandra-datastore_${scala.abi.version}</artifactId>
                 <version>${geomesa.version}</version>
             </dependency>
             <dependency>

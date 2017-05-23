@@ -24,6 +24,8 @@ import javax.naming.ldap.LdapContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -99,10 +101,12 @@ public class LdapAuthorizationsProvider
         searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
     }
 
-    public Authorizations getAuthorizations() {
+    public List<String> getAuthorizations() {
         // if there is an authenticated spring object, try to retrieve the auths from that, otherwise use empty auths
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return retrieveAuthorizationsFromPrincipal(authentication);
+        List<String> authList = new ArrayList<String>();
+        authList.add(retrieveAuthorizationsFromPrincipal(authentication).toString());
+        return authList;
     }
 
     /**
