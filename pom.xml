@@ -28,6 +28,7 @@
         <module>geomesa-quickstart-kafka</module>
         <module>geomesa-quickstart-cassandra</module>
         <module>geomesa-quickstart-hbase</module>
+        <module>geomesa-quickstart-lambda</module>
         <module>geomesa-quickstart-storm</module>
     </modules>
 
@@ -42,7 +43,7 @@
 
         <!-- environment specific variables-->
         <accumulo.version>1.7.2</accumulo.version>
-        <zookeeper.version>3.4.5</zookeeper.version>
+        <zookeeper.version>3.4.9</zookeeper.version>
         <hadoop.version>2.5.2</hadoop.version>
         <hbase.hadoop.version>2.5.2</hbase.hadoop.version>
         <kafka10.version>0.10.0.1</kafka10.version>
