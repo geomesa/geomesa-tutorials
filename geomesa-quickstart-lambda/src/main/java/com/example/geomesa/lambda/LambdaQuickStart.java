@@ -157,7 +157,7 @@ public class LambdaQuickStart implements Runnable {
 
       if (ds.getSchema(sftName) != null) {
         out.println("'" + sftName + "' feature type already exists - quick start will not work correctly");
-        out.println("Delete it and re-run");
+        out.println("Please delete it and re-run");
         return;
       }
 
