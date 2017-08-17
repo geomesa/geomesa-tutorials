@@ -6,18 +6,22 @@
  * http://www.opensource.org/licenses/apache2.0.php.
  ***********************************************************************/
 
-package com.example.geomesa.kafka10;
+package com.example.geomesa.kafka;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.locationtech.geomesa.kafka.KafkaDataStoreHelper;
 import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Property;
@@ -25,16 +29,21 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class KafkaLoadTester {
-    public static final String KAFKA_BROKER_PARAM = "brokers";
-    public static final String ZOOKEEPERS_PARAM = "zookeepers";
-    public static final String ZK_PATH = "zkPath";
-    public static final String PARTITIONS = "partitions";
-    public static final String REPLICATION = "replication";
+    public static final String KAFKA_BROKER_PARAM = "kafka.brokers";
+    public static final String ZOOKEEPERS_PARAM = "kafka.zookeepers";
+    public static final String ZK_PATH = "kafka.zk.path";
+    public static final String PARTITIONS = "kafka.topic.partitions";
+    public static final String REPLICATION = "kafka.topic.replication";
     public static final String VISIBILITY = "visibility";
     public static final String LOAD = "count";
     public static final String DELAY = "delay";
@@ -109,8 +118,9 @@ public class KafkaLoadTester {
         Map<String, String> dsConf = new HashMap<>();
         for (String param : KAFKA_CONNECTION_PARAMS) {
             String value = cmd.getOptionValue(param);
-            if (value != null)
+            if (value != null) {
                 dsConf.put(param, value);
+            }
         }
         return dsConf;
     }
@@ -165,9 +175,9 @@ public class KafkaLoadTester {
         // create the producer and consumer KafkaDataStore objects
         Map<String, String> dsConf = getKafkaDataStoreConf(cmd);
         System.out.println("KDS config: "+dsConf);
-        dsConf.put("isProducer", "true");
+        dsConf.put("kafka.consumer.count", "0");
         DataStore producerDS = DataStoreFinder.getDataStore(dsConf);
-        dsConf.put("isProducer", "false");
+        dsConf.put("kafka.consumer.count", "1");
         DataStore consumerDS = DataStoreFinder.getDataStore(dsConf);
 
         // verify that we got back our KafkaDataStore objects properly
@@ -178,83 +188,84 @@ public class KafkaLoadTester {
             throw new Exception("Null consumer KafkaDataStore");
         }
 
-        // create the schema which creates a topic in Kafka
-        // (only needs to be done once)
-        final String sftName = "KafkaStressTest";
-        final String sftSchema = "name:String,age:Int,step:Double,lat:Double,dtg:Date,*geom:Point:srid=4326";
-        SimpleFeatureType sft = SimpleFeatureTypes.createType(sftName, sftSchema);
-        // set zkPath to default if not specified
-        String zkPath = (dsConf.get(ZK_PATH) == null) ? "/geomesa/ds/kafka" : dsConf.get(ZK_PATH);
-        SimpleFeatureType preppedOutputSft = KafkaDataStoreHelper.createStreamingSFT(sft, zkPath);
-        // only create the schema if it hasn't been created already
-        if (!Arrays.asList(producerDS.getTypeNames()).contains(sftName))
-            producerDS.createSchema(preppedOutputSft);
+        try {
+            // create the schema which creates a topic in Kafka
+            // (only needs to be done once)
+            final String sftName = "KafkaStressTest";
+            final String sftSchema = "name:String,age:Int,step:Double,lat:Double,dtg:Date,*geom:Point:srid=4326";
+            SimpleFeatureType sft = SimpleFeatureTypes.createType(sftName, sftSchema);
+            producerDS.createSchema(sft);
 
-        System.out.println("Register KafkaDataStore in GeoServer (Press enter to continue)");
-        System.in.read();
+            System.out.println("Register KafkaDataStore in GeoServer (Press enter to continue)");
+            System.in.read();
 
-        // the live consumer must be created before the producer writes features
-        // in order to read streaming data.
-        // i.e. the live consumer will only read data written after its instantiation
-        SimpleFeatureStore producerFS = (SimpleFeatureStore) producerDS.getFeatureSource(sftName);
-        SimpleFeatureSource consumerFS = consumerDS.getFeatureSource(sftName);
+            // the live consumer must be created before the producer writes features
+            // in order to read streaming data.
+            // i.e. the live consumer will only read data written after its instantiation
+            SimpleFeatureStore producerFS = (SimpleFeatureStore) producerDS.getFeatureSource(sftName);
+            SimpleFeatureSource consumerFS = consumerDS.getFeatureSource(sftName);
 
-        // creates and adds SimpleFeatures to the producer every 1/5th of a second
-        System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
+            // creates and adds SimpleFeatures to the producer every 1/5th of a second
+            System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
 
-        SimpleFeatureBuilder builder = new SimpleFeatureBuilder(sft);
+            SimpleFeatureBuilder builder = new SimpleFeatureBuilder(sft);
 
-        Integer numFeats = getLoad(cmd);
+            Integer numFeats = getLoad(cmd);
 
-        System.out.println("Building a list of " + numFeats + " SimpleFeatures.");
-        List<SimpleFeature> features = IntStream.range(1, numFeats).mapToObj(i -> createFeature(builder, i, visibility)).collect(Collectors.toList());
+            System.out.println("Building a list of " + numFeats + " SimpleFeatures.");
+            List<SimpleFeature> features = IntStream.range(1, numFeats).mapToObj(i -> createFeature(builder, i, visibility)).collect(Collectors.toList());
 
-        // set variables to estimate feature production rate
-        Long startTime = null;
-        Long featuresSinceStartTime = 0L;
-        int cycle = 0;
-        int cyclesToSkip = 50000/numFeats; // collect enough features
-                                           // to get an accurate rate estimate
+            // set variables to estimate feature production rate
+            Long startTime = null;
+            Long featuresSinceStartTime = 0L;
+            int cycle = 0;
+            int cyclesToSkip = 50000/numFeats; // collect enough features
+                                               // to get an accurate rate estimate
 
-        while (true) {
-            // write features
-            features.forEach( feat -> {
-                        try {
-                            DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
-                            featureCollection.add(feat);
-                            producerFS.addFeatures(featureCollection);
-                        } catch (Exception e) {
-                            System.out.println("Caught an exception while writing features.");
-                            e.printStackTrace();
+            while (true) {
+                // write features
+                features.forEach( feat -> {
+                            try {
+                                DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
+                                featureCollection.add(feat);
+                                producerFS.addFeatures(featureCollection);
+                            } catch (Exception e) {
+                                System.out.println("Caught an exception while writing features.");
+                                e.printStackTrace();
+                            }
+                            updateFeature(feat);
                         }
-                        updateFeature(feat);
+                );
+
+                // count features written
+                Integer consumerSize = consumerFS.getFeatures().size();
+                cycle++;
+                featuresSinceStartTime += consumerSize;
+                System.out.println("At " + new Date() + " wrote "+consumerSize+" features");
+
+                // if we've collected enough features, calculate the rate
+                if (cycle >= cyclesToSkip || startTime == null) {
+                    Long endTime = System.currentTimeMillis();
+                    if ( startTime != null ) {
+                        Long diffTime = endTime - startTime;
+                        Double rate = (featuresSinceStartTime.doubleValue() * 1000.0)/diffTime.doubleValue();
+                        System.out.printf("%.1f feats/sec (%d/%d)\n", rate, featuresSinceStartTime, diffTime);
                     }
-            );
-
-            // count features written
-            Integer consumerSize = consumerFS.getFeatures().size();
-            cycle++;
-            featuresSinceStartTime += consumerSize;
-            System.out.println("At " + new Date() + " wrote "+consumerSize+" features");
-
-            // if we've collected enough features, calculate the rate
-            if (cycle >= cyclesToSkip || startTime == null) {
-                Long endTime = System.currentTimeMillis();
-                if ( startTime != null ) {
-                    Long diffTime = endTime - startTime;
-                    Double rate = (featuresSinceStartTime.doubleValue() * 1000.0)/diffTime.doubleValue();
-                    System.out.printf("%.1f feats/sec (%d/%d)\n", rate, featuresSinceStartTime, diffTime);
+                    cycle = 0;
+                    startTime = endTime;
+                    featuresSinceStartTime = 0L;
                 }
-                cycle = 0;
-                startTime = endTime;
-                featuresSinceStartTime = 0L;
+
+                // sleep before next write
+                if (delay != null) {
+                    System.out.printf("Sleeping for %d ms\n", delay);
+                    Thread.sleep(delay);
+                }
             }
 
-            // sleep before next write
-            if (delay != null) {
-                System.out.printf("Sleeping for %d ms\n", delay);
-                Thread.sleep(delay);
-            }
+        } finally {
+            producerDS.dispose();
+            consumerDS.dispose();
         }
     }
 

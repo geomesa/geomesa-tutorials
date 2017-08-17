@@ -12,7 +12,7 @@
 
     <groupId>com.example.geomesa</groupId>
     <artifactId>geomesa-tutorials</artifactId>
-    <version>1.3.3.1-SNAPSHOT</version>
+    <version>1.3.4.0-SNAPSHOT</version>
 
     <name>GeoMesa Tutorials and Examples</name>
     <packaging>pom</packaging>
@@ -33,7 +33,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>1.3.3</geomesa.version>
+        <geomesa.version>1.4.0-SNAPSHOT</geomesa.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -46,9 +46,7 @@
         <zookeeper.version>3.4.9</zookeeper.version>
         <hadoop.version>2.5.2</hadoop.version>
         <hbase.hadoop.version>2.5.2</hbase.hadoop.version>
-        <kafka10.version>0.10.0.1</kafka10.version>
-        <kafka09.version>0.9.0.1</kafka09.version>
-        <kafka08.version>0.8.2.1</kafka08.version>
+        <kafka.version>0.10.2.1</kafka.version>
         <storm.version>1.0.2</storm.version>
         <hbase.version>1.1.5</hbase.version>
         <curator.version>2.11.0</curator.version>
