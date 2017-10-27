@@ -34,7 +34,7 @@
 
     <properties>
         <geomesa.version>1.4.0-SNAPSHOT</geomesa.version>
-        <gt.version>18-RC1</gt.version>
+        <gt.version>18.0</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
