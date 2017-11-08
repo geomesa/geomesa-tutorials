@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.example.geomesa</groupId>
         <artifactId>geomesa-tutorials</artifactId>
-        <version>1.3.4.1-SNAPSHOT</version>
+        <version>1.4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>geomesa-quickstart-storm</artifactId>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_${scala.abi.version}</artifactId>
-            <version>${kafka08.version}</version>
+            <version>${kafka.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.storm</groupId>
