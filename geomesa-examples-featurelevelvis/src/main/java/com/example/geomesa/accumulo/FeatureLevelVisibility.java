@@ -32,8 +32,6 @@ import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.locationtech.geomesa.security.SecurityUtils;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.interop.WKTUtils;
@@ -46,6 +44,9 @@ import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +164,7 @@ public class FeatureLevelVisibility {
         String[] PEOPLE_NAMES = {"Addams", "Bierce", "Clemens"};
         Long SECONDS_PER_YEAR = 365L * 24L * 60L * 60L;
         Random random = new Random(5771);
-        DateTime MIN_DATE = new DateTime(2014, 1, 1, 0, 0, 0, DateTimeZone.forID("UTC"));
+        ZonedDateTime MIN_DATE = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Double MIN_X = -78.0;
         Double MIN_Y = -39.0;
         Double DX = 2.0;
@@ -192,8 +193,8 @@ public class FeatureLevelVisibility {
 
             // date-time:  construct a random instant within a year
             simpleFeature.setAttribute("Where", geometry);
-            DateTime dateTime = MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR));
-            simpleFeature.setAttribute("When", dateTime.toDate());
+            ZonedDateTime dateTime = MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR));
+            simpleFeature.setAttribute("When", Date.from(dateTime.toInstant()));
 
             // another string value
             // "Why"; left empty, showing that not all attributes need values

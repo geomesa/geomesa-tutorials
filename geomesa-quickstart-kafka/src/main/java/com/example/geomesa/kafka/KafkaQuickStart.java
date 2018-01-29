@@ -25,9 +25,6 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
 import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
 import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Property;
@@ -38,6 +35,8 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -103,7 +102,7 @@ public class KafkaQuickStart {
         final String[] PEOPLE_NAMES = {"James", "John", "Peter", "Hannah", "Claire", "Gabriel"};
         final long SECONDS_PER_YEAR = 365L * 24L * 60L * 60L;
         final Random random = new Random();
-        final DateTime MIN_DATE = new DateTime(2015, 1, 1, 0, 0, 0, DateTimeZone.forID("UTC"));
+        final ZonedDateTime MIN_DATE = ZonedDateTime.of(2015, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
         SimpleFeatureBuilder builder = new SimpleFeatureBuilder(sft);
         DefaultFeatureCollection featureCollection = new DefaultFeatureCollection();
@@ -115,14 +114,14 @@ public class KafkaQuickStart {
         for (int i = 1; i <= numFeatures; i++) {
             builder.add(PEOPLE_NAMES[i % PEOPLE_NAMES.length]); // name
             builder.add((int) Math.round(random.nextDouble()*110)); // age
-            builder.add(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toDate()); // dtg
+            builder.add(Date.from(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toInstant())); // dtg
             builder.add(WKTUtils$.MODULE$.read("POINT(" + (MIN_X + DX * i) + " " + (MIN_Y + DY * i) + ")")); // geom
             SimpleFeature feature1 = builder.buildFeature("1");
             feature1.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
 
             builder.add(PEOPLE_NAMES[(i+1) % PEOPLE_NAMES.length]); // name
             builder.add((int) Math.round(random.nextDouble()*110)); // age
-            builder.add(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toDate()); // dtg
+            builder.add(Date.from(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toInstant())); // dtg
             builder.add(WKTUtils$.MODULE$.read("POINT(" + (MIN_X + DX * i) + " " + (MAX_Y - DY * i) + ")")); // geom
             SimpleFeature feature2 = builder.buildFeature("2");
             feature2.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
@@ -219,12 +218,12 @@ public class KafkaQuickStart {
 
             // creates and adds SimpleFeatures to the producer every 1/5th of a second
             System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
-            Instant replayStart = new Instant();
+            long replayStart = System.currentTimeMillis();
 
             String vis = cmd.getOptionValue("visibility");
             if(vis != null) System.out.println("Writing features with " + vis);
             addSimpleFeatures(sft, producerFS, vis);
-            Instant replayEnd = new Instant();
+            long replayEnd = System.currentTimeMillis();
 
             // read from Kafka after writing all the features.
             // LIVE CONSUMER - will obtain the current state of SimpleFeatures

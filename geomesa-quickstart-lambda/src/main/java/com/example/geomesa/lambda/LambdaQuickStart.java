@@ -19,8 +19,6 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureWriter;
 import org.geotools.factory.Hints;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
 import org.locationtech.geomesa.lambda.data.LambdaDataStore;
 import org.locationtech.geomesa.lambda.data.LambdaDataStoreFactory;
@@ -34,6 +32,9 @@ import org.opengis.filter.Filter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -182,7 +183,7 @@ public class LambdaQuickStart implements Runnable {
       final int DX = 2;
       final String[] PEOPLE_NAMES = {"James", "John", "Peter", "Hannah", "Claire", "Gabriel"};
       final long SECONDS_PER_YEAR = 365L * 24L * 60L * 60L;
-      final DateTime MIN_DATE = new DateTime(2015, 1, 1, 0, 0, 0, DateTimeZone.forID("UTC"));
+      ZonedDateTime MIN_DATE = ZonedDateTime.of(2015, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
       final Random random = new Random();
 
       int numUpdates = (MAX_X - MIN_X) / DX;
@@ -191,7 +192,7 @@ public class LambdaQuickStart implements Runnable {
           SimpleFeature feature = writer.next();
           feature.setAttribute(0, PEOPLE_NAMES[i % PEOPLE_NAMES.length]); // name
           feature.setAttribute(1, (int) Math.round(random.nextDouble() * 110)); // age
-          feature.setAttribute(2, MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toDate()); // dtg
+          feature.setAttribute(2, Date.from(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toInstant())); // dtg
           feature.setAttribute(3, "POINT(" + (MIN_X + (DX * j)) + " " + (MIN_Y + ((MAX_Y - MIN_Y) / ((double) COUNT)) * i) + ")"); // geom
           feature.getUserData().put(Hints.PROVIDED_FID, String.format("%04d", i));
           writer.write();

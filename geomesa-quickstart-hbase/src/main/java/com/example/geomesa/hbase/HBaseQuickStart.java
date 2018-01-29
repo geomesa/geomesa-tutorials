@@ -11,8 +11,18 @@ package com.example.geomesa.hbase;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 import com.vividsolutions.jts.geom.Geometry;
-import org.apache.commons.cli.*;
-import org.geotools.data.*;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.Query;
 import org.geotools.factory.Hints;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.FeatureCollection;
@@ -21,8 +31,6 @@ import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.locationtech.geomesa.utils.text.WKTUtils$;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -31,6 +39,9 @@ import org.opengis.filter.Filter;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +108,7 @@ public class HBaseQuickStart {
         String[] PEOPLE_NAMES = {"Addams", "Bierce", "Clemens"};
         Long SECONDS_PER_YEAR = 365L * 24L * 60L * 60L;
         Random random = new Random(5771);
-        DateTime MIN_DATE = new DateTime(2014, 1, 1, 0, 0, 0, DateTimeZone.forID("UTC"));
+        ZonedDateTime MIN_DATE = ZonedDateTime.of(2014, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         Double MIN_X = -79.5;
         Double MIN_Y =  37.0;
         Double DX = 2.0;
@@ -126,8 +137,8 @@ public class HBaseQuickStart {
             simpleFeature.setAttribute("Where", geometry);
 
             // When: date-time:  construct a random instant within a year
-            DateTime dateTime = MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR));
-            simpleFeature.setAttribute("When", dateTime.toDate());
+            ZonedDateTime dateTime = MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR));
+            simpleFeature.setAttribute("When", Date.from(dateTime.toInstant()));
 
             // Why: another string value
             // left empty, showing that not all attributes need values
