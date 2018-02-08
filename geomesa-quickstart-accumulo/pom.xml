@@ -12,9 +12,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.example.geomesa</groupId>
+        <groupId>org.geomesa.example</groupId>
         <artifactId>geomesa-tutorials</artifactId>
-        <version>1.4.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>geomesa-quickstart-accumulo</artifactId>
@@ -22,6 +22,10 @@
     <inceptionYear>2013</inceptionYear>
 
     <dependencies>
+        <dependency>
+            <groupId>org.geomesa.example</groupId>
+            <artifactId>geomesa-quickstart-common</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.locationtech.geomesa</groupId>
             <artifactId>geomesa-accumulo-datastore_${scala.abi.version}</artifactId>
@@ -57,13 +61,8 @@
             <artifactId>hadoop-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-cli</groupId>
-            <artifactId>commons-cli</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.48</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -86,14 +85,6 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
             <id>live-test</id>
-            <properties>
-                <instanceId>cloud</instanceId>
-                <zookeepers>zoo</zookeepers>
-                <user>user</user>
-                <password>password</password>
-                <geomesa.accumulo.namespace>namespace</geomesa.accumulo.namespace>
-                <tableName>${geomesa.accumulo.namespace}.AccumuloQuickStart</tableName>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -112,17 +103,17 @@
                             <arguments>
                                 <argument>-classpath</argument>
                                 <classpath />
-                                <argument>com.example.geomesa.accumulo.AccumuloQuickStart</argument>
-                                <argument>-instanceId</argument>
-                                <argument>${instanceId}</argument>
-                                <argument>-zookeepers</argument>
-                                <argument>${zookeepers}</argument>
-                                <argument>-user</argument>
-                                <argument>${user}</argument>
-                                <argument>-password</argument>
-                                <argument>${password}</argument>
-                                <argument>-tableName</argument>
-                                <argument>${tableName}</argument>
+                                <argument>org.geomesa.example.accumulo.AccumuloQuickStart</argument>
+                                <argument>--accumulo.instance.id</argument>
+                                <argument>${accumulo.instance.id}</argument>
+                                <argument>--accumulo.zookeepers</argument>
+                                <argument>${accumulo.zookeepers}</argument>
+                                <argument>--accumulo.user</argument>
+                                <argument>${accumulo.user}</argument>
+                                <argument>--accumulo.password</argument>
+                                <argument>${accumulo.password}</argument>
+                                <argument>--accumulo.catalog</argument>
+                                <argument>${accumulo.catalog}</argument>
                             </arguments>
                         </configuration>
                     </plugin>
