@@ -30,6 +30,7 @@
         <module>geomesa-quickstart-hbase</module>
         <module>geomesa-quickstart-lambda</module>
         <module>geomesa-quickstart-storm</module>
+        <module>geomesa-quickstart-fsds</module>
     </modules>
 
     <properties>
