@@ -9,17 +9,26 @@
 package org.geomesa.example.fsds;
 
 import org.apache.commons.cli.ParseException;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.geomesa.example.quickstart.GDELTData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
 import org.geomesa.example.quickstart.QuickStartData;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
+import org.locationtech.geomesa.fs.FileSystemDataStore;
 import org.locationtech.geomesa.fs.FileSystemDataStoreFactory;
-import org.locationtech.geomesa.fs.storage.common.*;
+import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
 import org.locationtech.geomesa.fs.storage.api.PartitionScheme;
+import org.locationtech.geomesa.fs.storage.common.*;
+import org.locationtech.geomesa.fs.storage.interop.PartitionSchemeUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.apache.hadoop.fs.FileSystem;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class FSDSQuickStart extends GeoMesaQuickStart {
@@ -59,5 +68,30 @@ public class FSDSQuickStart extends GeoMesaQuickStart {
             System.exit(2);
         }
         System.exit(0);
+    }
+
+    @Override
+    public void cleanup(DataStore datastore, Boolean cleanup) {
+        if (datastore != null) {
+            try {
+                if (cleanup) {
+                    FileSystemStorage fsStorage = ((FileSystemDataStore) datastore).storage();
+                    Path fsPath = new Path(fsStorage.getRoot());
+                    FileSystem fs = FileSystem.get(new Configuration());
+                    try {
+                        System.out.println("Cleaning up test data");
+                        fs.delete(fsPath, true);
+                    } catch (IOException e) {
+                        System.out.println("Unable to delete" + fsPath.toString());
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Unable to cleanup datastore.\n" + e.getMessage());
+            } finally {
+                // make sure that we dispose of the datastore when we're done with it
+                datastore.dispose();
+            }
+        }
+        System.out.println("Done");
     }
 }
