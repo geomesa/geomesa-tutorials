@@ -42,6 +42,7 @@ public class FSDSQuickStart extends GeoMesaQuickStart {
 
     @Override
     public SimpleFeatureType createSchema(DataStore datastore, QuickStartData data) throws IOException {
+        // For the FSDS we need to modify the SimpleFeatureType to have the index scheme we'd like
         SimpleFeatureType sft = data.getSimpleFeatureType();
         PartitionScheme scheme = CommonSchemeLoader.build("daily,z2-2bit", sft);
         PartitionSchemeUtils.addToSft(sft, scheme);
