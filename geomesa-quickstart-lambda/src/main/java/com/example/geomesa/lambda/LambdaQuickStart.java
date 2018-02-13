@@ -1,224 +1,159 @@
-/***********************************************************************
+/*
  * Copyright (c) 2016-2017 Commonwealth Computer Research, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution and is available at
  * http://www.opensource.org/licenses/apache2.0.php.
- ***********************************************************************/
+ */
 
 package com.example.geomesa.lambda;
 
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.OptionBuilder;
-import org.apache.commons.cli.Options;
+import com.vividsolutions.jts.geom.Envelope;
 import org.apache.commons.cli.ParseException;
-import org.geotools.data.DataStoreFinder;
+import org.geomesa.example.quickstart.GeoMesaQuickStart;
+import org.geomesa.example.quickstart.QuickStartData;
+import org.geomesa.example.quickstart.TDriveData;
+import org.geotools.data.DataStore;
+import org.geotools.data.FeatureWriter;
+import org.geotools.data.Query;
 import org.geotools.data.Transaction;
-import org.geotools.data.simple.SimpleFeatureWriter;
-import org.geotools.factory.Hints;
+import org.geotools.feature.visitor.BoundsVisitor;
+import org.geotools.filter.identity.FeatureIdImpl;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
 import org.locationtech.geomesa.lambda.data.LambdaDataStore;
 import org.locationtech.geomesa.lambda.data.LambdaDataStoreFactory;
-import org.locationtech.geomesa.lambda.data.LambdaDataStoreFactory$Params$Accumulo$;
-import org.locationtech.geomesa.lambda.data.LambdaDataStoreFactory$Params$Kafka$;
-import org.locationtech.geomesa.utils.geotools.SimpleFeatureTypes;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Set;
 
-public class LambdaQuickStart implements Runnable {
+public class LambdaQuickStart extends GeoMesaQuickStart {
 
-  // reads and parse the command line args
-  @SuppressWarnings("AccessStaticViaInstance")
-  public static Map<String, String> parseOptions(String[] args) {
-    Options options = new Options();
+    // use t-dive streaming data
+    private QuickStartData data = new TDriveData();
 
-    options.addOption(OptionBuilder.hasArg()
-                                   .withArgName("brokers")
-                                   .withDescription("The comma-separated list of Kafka brokers, e.g. localhost:9092")
-                                   .isRequired()
-                                   .withLongOpt("brokers")
-                                   .create("b"));
-
-    options.addOption(OptionBuilder.hasArg()
-                                   .withArgName("zookeepers")
-                                   .withDescription("The comma-separated list of Zookeeper nodes that support your Kafka and Accumulo instances, e.g.: zoo1:2181,zoo2:2181,zoo3:2181")
-                                   .isRequired()
-                                   .withLongOpt("zookeepers")
-                                   .create("z"));
-
-    options.addOption(OptionBuilder.hasArg()
-                                   .withArgName("instance")
-                                   .withDescription("The name of your Accumulo instance")
-                                   .isRequired()
-                                   .withLongOpt("instance")
-                                   .create("i"));
-
-    options.addOption(OptionBuilder.hasArg()
-                                   .withArgName("user")
-                                   .withDescription("The user used to connect to your Accumulo instance")
-                                   .isRequired()
-                                   .withLongOpt("user")
-                                   .create("u"));
-
-    options.addOption(OptionBuilder.hasArg()
-                                   .withArgName("password")
-                                   .withDescription("The password for your Accumulo instance")
-                                   .isRequired()
-                                   .withLongOpt("password")
-                                   .create("p"));
-
-    options.addOption(OptionBuilder.hasArg()
-                                   .withArgName("catalog")
-                                   .withDescription("The catalog table to store Accumulo data, e.g. geomesa.my_catalog")
-                                   .isRequired()
-                                   .withLongOpt("catalog")
-                                   .create("c"));
-
-    Map<String, String> map = new HashMap<>();
-
-    CommandLine cmd = null;
-    try {
-      cmd = new BasicParser().parse(options, args);
-    } catch (MissingOptionException e) {
-      System.err.println(e.getMessage());
-      HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp( "LambdaQuickStart", options );
-      return null;
-    } catch (ParseException e) {
-      throw new RuntimeException(e);
+    public LambdaQuickStart(Map<String, String> params) {
+        super(params);
     }
 
-    String zookeepers = cmd.getOptionValue("z");
-
-    map.put(LambdaDataStoreFactory$Params$Accumulo$.MODULE$.ZookeepersParam().getName(), zookeepers);
-    map.put(LambdaDataStoreFactory$Params$Accumulo$.MODULE$.InstanceParam().getName(), cmd.getOptionValue("i"));
-    map.put(LambdaDataStoreFactory$Params$Accumulo$.MODULE$.UserParam().getName(), cmd.getOptionValue("u"));
-    map.put(LambdaDataStoreFactory$Params$Accumulo$.MODULE$.PasswordParam().getName(), cmd.getOptionValue("p"));
-    map.put(LambdaDataStoreFactory$Params$Accumulo$.MODULE$.CatalogParam().getName(), cmd.getOptionValue("c"));
-
-    map.put(LambdaDataStoreFactory$Params$Kafka$.MODULE$.BrokersParam().getName(), cmd.getOptionValue("b"));
-    map.put(LambdaDataStoreFactory$Params$Kafka$.MODULE$.ZookeepersParam().getName(), zookeepers);
-
-    map.put(LambdaDataStoreFactory.Params$.MODULE$.ExpiryParam().getName(), "1s");
-
-    return map;
-  }
-
-  public static void main(String[] args) throws Exception {
-    Map<String, String> params = parseOptions(args);
-    if (params == null) {
-      System.exit(1);
-    } else {
-      try {
-        new LambdaQuickStart(params, System.out, System.in).run();
-      } catch (Exception e) {
-        e.printStackTrace();
-        System.exit(2);
-      }
-      System.exit(0);
+    public LambdaQuickStart(String[] args) throws ParseException {
+        super(args, new LambdaDataStoreFactory().getParametersInfo());
     }
-  }
 
-  private LambdaDataStore ds;
-  private PrintStream out;
-  private InputStream in;
-
-  public LambdaQuickStart(Map<String, String> params, PrintStream out, InputStream in) {
-    System.setProperty("geomesa.lambda.persist.interval", "2s");
-    try {
-      ds = (LambdaDataStore) DataStoreFinder.getDataStore(params);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    @Override
+    public QuickStartData getData() {
+        return data;
     }
-    this.out = out;
-    this.in = in;
-  }
 
-  @Override
-  public void run() {
-    try {
-      // create the schema
-      final String sftName = "lambda-quick-start";
-      final String sftSchema = "name:String,age:Int,dtg:Date,*geom:Point:srid=4326";
-      SimpleFeatureType sft = SimpleFeatureTypes.createType(sftName, sftSchema);
+    @Override
+    public DataStore createDataStore(Map<String, String> params) throws IOException {
+        // sets the delay between receiving an update and persisting it to Accumulo
+        System.setProperty("geomesa.lambda.persist.interval", "2s");
+        return super.createDataStore(params);
+    }
 
-      if (ds.getSchema(sftName) != null) {
-        out.println("'" + sftName + "' feature type already exists - quick start will not work correctly");
-        out.println("Please delete it and re-run");
-        return;
-      }
-
-      out.println("Creating feature type '" + sftName + "'");
-
-      ds.createSchema(sft);
-
-      out.println("Feature type created - register the layer '" + sftName + "' in geoserver then hit <enter> to continue");
-      in.read();
-
-      SimpleFeatureWriter writer = ds.getFeatureWriterAppend(sftName, Transaction.AUTO_COMMIT);
-
-      out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
-
-      // creates and adds SimpleFeatures to the producer every 1/5th of a second
-
-      final int COUNT = 1000;
-      final int MIN_X = -180;
-      final int MAX_X = 180;
-      final int MIN_Y = -90;
-      final int MAX_Y = 90;
-      final int DX = 2;
-      final String[] PEOPLE_NAMES = {"James", "John", "Peter", "Hannah", "Claire", "Gabriel"};
-      final long SECONDS_PER_YEAR = 365L * 24L * 60L * 60L;
-      ZonedDateTime MIN_DATE = ZonedDateTime.of(2015, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-      final Random random = new Random();
-
-      int numUpdates = (MAX_X - MIN_X) / DX;
-      for (int j = 0; j < numUpdates; j++) {
-        for (int i = 0; i < COUNT; i++) {
-          SimpleFeature feature = writer.next();
-          feature.setAttribute(0, PEOPLE_NAMES[i % PEOPLE_NAMES.length]); // name
-          feature.setAttribute(1, (int) Math.round(random.nextDouble() * 110)); // age
-          feature.setAttribute(2, Date.from(MIN_DATE.plusSeconds((int) Math.round(random.nextDouble() * SECONDS_PER_YEAR)).toInstant())); // dtg
-          feature.setAttribute(3, "POINT(" + (MIN_X + (DX * j)) + " " + (MIN_Y + ((MAX_Y - MIN_Y) / ((double) COUNT)) * i) + ")"); // geom
-          feature.getUserData().put(Hints.PROVIDED_FID, String.format("%04d", i));
-          writer.write();
+    @Override
+    public SimpleFeatureType createSchema(DataStore datastore, QuickStartData data) throws IOException {
+        String typeName = data.getSimpleFeatureType().getTypeName();
+        if (datastore.getSchema(typeName) != null) {
+            System.out.println("'" + typeName + "' feature type already exists - quick start will not work correctly");
+            System.out.println("Please delete it and re-run");
+            throw new RuntimeException("'" + typeName + "' feature type already exists - quick start will not work correctly");
         }
-        Thread.sleep(200);
-      }
-
-      writer.close();
-
-      out.println("Waiting for expiry and persistence...");
-
-      long total = 0, persisted = 0;
-      do {
-        long newTotal = (long) ds.stats().getCount(sft, Filter.INCLUDE, true).get();
-        long newPersisted = (long)((AccumuloDataStore) ds.persistence()).stats().getCount(sft, Filter.INCLUDE, true).get();
-        if (newTotal != total || newPersisted != persisted) {
-          total = newTotal;
-          persisted = newPersisted;
-          out.println("Total features: " + total + ", features persisted to Accumulo: " + persisted);
-        }
-        Thread.sleep(100);
-      } while (persisted < COUNT || total > COUNT);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    } finally {
-      ds.dispose();
+        return super.createSchema(datastore, data);
     }
-  }
+
+    @Override
+    public void writeFeatures(DataStore datastore, SimpleFeatureType sft, List<SimpleFeature> features)
+          throws IOException {
+        BoundsVisitor visitor = new BoundsVisitor();
+        for (SimpleFeature feature: features) {
+            visitor.visit(feature);
+        }
+        Envelope env = visitor.getBounds();
+        System.out.println("Feature type created - register the layer '" + sft.getTypeName() +
+                           "' in geoserver with bounds: MinX[" + env.getMinX() + "] MinY[" +
+                           env.getMinY() + "] MaxX[" + env.getMaxX() + "] MaxY[" +
+                           env.getMaxY() + "]");
+        System.out.println("Press <enter> to continue");
+        System.in.read();
+
+        // creates and adds SimpleFeatures to the producer every few milliseconds to simulate a live stream
+        // given our test data set, this will run for approximately one minute
+        System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
+
+        // track the number of unique features
+        Set<String> ids = new HashSet<>();
+
+        // use try-with-resources to ensure the writer is closed
+        try (FeatureWriter<SimpleFeatureType, SimpleFeature> writer =
+                   datastore.getFeatureWriterAppend(sft.getTypeName(), Transaction.AUTO_COMMIT)) {
+            for (SimpleFeature feature : features) {
+                // using a geotools writer, you have to get a feature, modify it, then commit it
+                // appending writers will always return 'false' for haveNext, so we don't need to bother checking
+                SimpleFeature toWrite = writer.next();
+                // copy attributes
+                toWrite.setAttributes(feature.getAttributes());
+                // updating the feature ID requires casting to an implementation class
+                // alternatively, you can use the PROVIDED_FID hint in the user data
+                ((FeatureIdImpl) toWrite.getIdentifier()).setID(feature.getID());
+                ids.add(feature.getID());
+                // make sure to copy the user data, if there is any
+                toWrite.getUserData().putAll(feature.getUserData());
+                // write the feature
+                writer.write();
+
+                try {
+                    Thread.sleep(15);
+                } catch (InterruptedException e) {
+                    return;
+                }
+            }
+        }
+        System.out.println("Wrote " + features.size() + " features");
+        System.out.println();
+
+        System.out.println("Waiting for expiry and persistence...");
+
+        int count = ids.size();
+        LambdaDataStore ds = (LambdaDataStore) datastore;
+        long total = 0, persisted = 0;
+        do {
+            long newTotal = (long) ds.stats().getCount(sft, Filter.INCLUDE, true).get();
+            long newPersisted =
+                  (long) ((AccumuloDataStore) ds.persistence()).stats().getCount(sft, Filter.INCLUDE, true).get();
+            if (newTotal != total || newPersisted != persisted) {
+                total = newTotal;
+                persisted = newPersisted;
+                System.out.println("Total features: " + total + ", features persisted to Accumulo: " + persisted);
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                return;
+            }
+        } while (persisted < count || total > count);
+    }
+
+    @Override
+    public void queryFeatures(DataStore datastore, List<Query> queries) {
+        // this tutorial doesn't cover querying, but it would be the same as with any datastore
+    }
+
+    public static void main(String[] args) {
+        try {
+            new LambdaQuickStart(args).run();
+        } catch (ParseException e) {
+            System.exit(1);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.exit(2);
+        }
+        System.exit(0);
+    }
 }
