@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--********************************************************************
-* Copyright (c) 2013-2015 Commonwealth Computer Research, Inc.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Apache License, Version 2.0 which
-* accompanies this distribution and is available at
-* http://www.opensource.org/licenses/apache2.0.php.
-*********************************************************************-->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!--
+  ~ Copyright (c) 2013-2018 Commonwealth Computer Research, Inc.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Apache License, Version 2.0 which
+  ~ accompanies this distribution and is available at
+  ~ http://www.opensource.org/licenses/apache2.0.php.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.geomesa.example</groupId>
@@ -18,20 +18,14 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>geomesa-examples-authorizations</module>
-        <module>geomesa-examples-avro</module>
-        <module>geomesa-examples-featurelevelvis</module>
-        <module>geomesa-examples-gdelt</module>
         <module>geomesa-examples-spark</module>
-        <module>geomesa-examples-transformations</module>
-        <module>geomesa-quickstart-accumulo</module>
-        <module>geomesa-quickstart-common</module>
-        <module>geomesa-quickstart-kafka</module>
-        <module>geomesa-quickstart-cassandra</module>
-        <module>geomesa-quickstart-hbase</module>
-        <module>geomesa-quickstart-lambda</module>
         <module>geomesa-quickstart-storm</module>
-        <module>geomesa-quickstart-fsds</module>
+        <module>geomesa-tutorials-accumulo</module>
+        <module>geomesa-tutorials-cassandra</module>
+        <module>geomesa-tutorials-common</module>
+        <module>geomesa-tutorials-hbase</module>
+        <module>geomesa-tutorials-kafka</module>
+        <module>geomesa-tutorials-fsds</module>
     </modules>
 
     <properties>
@@ -68,7 +62,7 @@
 
             <dependency>
                 <groupId>org.geomesa.example</groupId>
-                <artifactId>geomesa-quickstart-common</artifactId>
+                <artifactId>geomesa-tutorials-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -133,11 +127,6 @@
                 <groupId>org.apache.hbase</groupId>
                 <artifactId>hbase-protocol</artifactId>
                 <version>${hbase.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.datastax.cassandra</groupId>
-                <artifactId>cassandra-driver-core</artifactId>
-                <version>${cassandra.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.storm</groupId>
