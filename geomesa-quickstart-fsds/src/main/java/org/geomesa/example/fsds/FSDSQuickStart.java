@@ -10,6 +10,7 @@ package org.geomesa.example.fsds;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.geomesa.example.quickstart.GDELTData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
@@ -20,16 +21,13 @@ import org.locationtech.geomesa.fs.FileSystemDataStore;
 import org.locationtech.geomesa.fs.FileSystemDataStoreFactory;
 import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
 import org.locationtech.geomesa.fs.storage.api.PartitionScheme;
-import org.locationtech.geomesa.fs.storage.common.*;
+import org.locationtech.geomesa.fs.storage.common.CommonSchemeLoader;
 import org.locationtech.geomesa.fs.storage.interop.PartitionSchemeUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.apache.hadoop.fs.FileSystem;
 
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
 
 public class FSDSQuickStart extends GeoMesaQuickStart {
 
