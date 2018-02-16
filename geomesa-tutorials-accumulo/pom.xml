@@ -6,7 +6,9 @@
   ~ accompanies this distribution and is available at
   ~ http://www.opensource.org/licenses/apache2.0.php.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -15,9 +17,18 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>geomesa-quickstart-storm</artifactId>
-    <name>GeoMesa Quickstart - Storm</name>
-    <inceptionYear>2016</inceptionYear>
+    <artifactId>geomesa-tutorials-accumulo</artifactId>
+    <name>GeoMesa Tutorials - Accumulo</name>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>geomesa-tutorials-accumulo-authorizations</module>
+        <module>geomesa-tutorials-accumulo-avro</module>
+        <module>geomesa-tutorials-accumulo-feature-level-vis</module>
+        <module>geomesa-tutorials-accumulo-quickstart</module>
+        <module>geomesa-tutorials-accumulo-transforms</module>
+        <module>geomesa-tutorials-accumulo-lambda-quickstart</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -33,22 +44,46 @@
                 <version>${accumulo.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.kafka</groupId>
-                <artifactId>kafka_${scala.abi.version}</artifactId>
-                <version>${kafka.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>${zookeeper.version}</version>
             </dependency>
+            <!--<dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.curator</groupId>
+                        <artifactId>curator-client</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
+            <groupId>org.geomesa.example</groupId>
+            <artifactId>geomesa-tutorials-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.locationtech.geomesa</groupId>
             <artifactId>geomesa-accumulo-datastore_${scala.abi.version}</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.locationtech.geomesa</groupId>
+            <artifactId>geomesa-utils_${scala.abi.version}</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.accumulo</groupId>
@@ -59,14 +94,8 @@
             <artifactId>accumulo-start</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_${scala.abi.version}</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.storm</groupId>
-            <artifactId>storm-core</artifactId>
-            <version>${storm.version}</version>
-            <scope>provided</scope>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -77,43 +106,13 @@
             <artifactId>hadoop-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-wkt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>11.0.1</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
-
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <configuration>
-                    <artifactSet>
-                        <excludes>
-                            <exclude>org.slf4j:*</exclude>
-                        </excludes>
-                    </artifactSet>
-                    <relocations>
-                        <relocation>
-                            <pattern>com.google.common</pattern>
-                            <shadedPattern>com.example.geomesa.shaded.com.google.common</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 
 </project>
