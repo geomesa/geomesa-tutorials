@@ -43,9 +43,10 @@ public class LambdaQuickStart extends GeoMesaQuickStart {
     public void createSchema(DataStore datastore, SimpleFeatureType sft) throws IOException {
         String typeName = sft.getTypeName();
         if (datastore.getSchema(typeName) != null) {
-            System.out.println("'" + typeName + "' feature type already exists - quick start will not work correctly");
-            System.out.println("Please delete it and re-run");
-            throw new RuntimeException("'" + typeName + "' feature type already exists - quick start will not work correctly");
+            System.out.println("'" + typeName + "' feature type already exists - deleting existing schema");
+            datastore.removeSchema(typeName);
+            System.out.println("Please re-run quick start");
+            throw new RuntimeException("Deleted existing scheme, please re-run quick start");
         }
         super.createSchema(datastore, sft);
     }
