@@ -22,6 +22,7 @@ import org.geotools.data.FeatureWriter;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.factory.Hints;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.text.ecql.ECQL;
 import org.locationtech.geomesa.index.geotools.GeoMesaDataStore;
@@ -147,13 +148,23 @@ public abstract class GeoMesaQuickStart implements Runnable {
                     // using a geotools writer, you have to get a feature, modify it, then commit it
                     // appending writers will always return 'false' for haveNext, so we don't need to bother checking
                     SimpleFeature toWrite = writer.next();
+
                     // copy attributes
                     toWrite.setAttributes(feature.getAttributes());
-                    // updating the feature ID requires casting to an implementation class
-                    // alternatively, you can use the PROVIDED_FID hint in the user data
-                    ((FeatureIdImpl) toWrite.getIdentifier()).setID(feature.getID());
+
+                    // if you want to set the feature ID, you have to cast to an implementation class
+                    // and add the USE_PROVIDED_FID hint to the user data
+                     ((FeatureIdImpl) toWrite.getIdentifier()).setID(feature.getID());
+                     toWrite.getUserData().put(Hints.USE_PROVIDED_FID, Boolean.TRUE);
+
+                    // alternatively, you can use the PROVIDED_FID hint directly
+                    // toWrite.getUserData().put(Hints.PROVIDED_FID, feature.getID());
+
+                    // if no feature ID is set, a UUID will be generated for you
+
                     // make sure to copy the user data, if there is any
                     toWrite.getUserData().putAll(feature.getUserData());
+
                     // write the feature
                     writer.write();
                 }
