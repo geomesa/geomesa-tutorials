@@ -9,8 +9,7 @@
 package org.geomesa.example.fsds;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.Path;
 import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
@@ -20,12 +19,11 @@ import org.locationtech.geomesa.fs.FileSystemDataStore;
 import org.locationtech.geomesa.fs.FileSystemDataStoreFactory;
 import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
 import org.locationtech.geomesa.fs.storage.api.PartitionScheme;
-import org.locationtech.geomesa.fs.storage.common.CommonSchemeLoader;
 import org.locationtech.geomesa.fs.storage.interop.PartitionSchemeUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
-
+import java.util.Collections;
 
 public class FileSystemQuickStart extends GeoMesaQuickStart {
 
@@ -38,7 +36,7 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
     public SimpleFeatureType getSimpleFeatureType(TutorialData data) {
         SimpleFeatureType sft = super.getSimpleFeatureType(data);
         // For the FSDS we need to modify the SimpleFeatureType to specify the index scheme
-        PartitionScheme scheme = CommonSchemeLoader.build("daily,z2-2bit", sft);
+        PartitionScheme scheme = PartitionSchemeUtils.apply(sft, "daily,z2-2bit", Collections.emptyMap());
         PartitionSchemeUtils.addToSft(sft, scheme);
         return sft;
     }
@@ -60,17 +58,17 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
         if (datastore != null) {
             try {
                 if (cleanup) {
-                    FileSystemStorage fsStorage = ((FileSystemDataStore) datastore).storage();
-                    Path fsPath = new Path(fsStorage.getRoot());
-                    FileSystem fs = fsPath.getFileSystem(new Configuration());
+                    FileSystemStorage fsStorage = ((FileSystemDataStore) datastore).storage(typeName);
+                    Path fsPath = fsStorage.getMetadata().getRoot();
+                    FileContext fc = fsStorage.getMetadata().getFileContext();
                     try {
                         System.out.println("Cleaning up test data");
-                        fs.delete(fsPath, true);
+                        fc.delete(fsPath, true);
                     } catch (IOException e) {
                         System.out.println("Unable to delete '" + fsPath.toString() + "':" + e.toString());
                     }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.out.println("Unable to cleanup datastore: " + e.toString());
             } finally {
                 // make sure that we dispose of the datastore when we're done with it
