@@ -22,8 +22,8 @@
     </modules>
 
     <properties>
-        <geomesa.version>2.1.0</geomesa.version>
-        <gt.version>18.0</gt.version>
+        <geomesa.version>2.2.0-SNAPSHOT</geomesa.version>
+        <gt.version>20.0</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
