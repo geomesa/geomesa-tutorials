@@ -8,7 +8,7 @@
 
 package com.example.geomesa.lambda;
 
-import com.vividsolutions.jts.geom.Envelope;
+import org.locationtech.jts.geom.Envelope;
 import org.apache.commons.cli.ParseException;
 import org.geomesa.example.data.TDriveData;
 import org.geomesa.example.data.TutorialData;
