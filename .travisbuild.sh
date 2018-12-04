@@ -20,7 +20,6 @@ if [[ $RESULT -ne 0 ]]; then
   # dump out the end of the build log, to show success or errors
   tail -500 $BUILD_OUTPUT
   echo -e "[ERROR] Build failed!\n"
-else
 fi
 
 # nicely terminate the ping output loop
