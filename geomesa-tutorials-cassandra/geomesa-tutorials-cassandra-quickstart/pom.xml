@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.geomesa.example</groupId>
         <artifactId>geomesa-tutorials-cassandra</artifactId>
-        <version>2.1.1-SNAPSHOT</version>
+        <version>2.1.1</version>
     </parent>
 
     <artifactId>geomesa-tutorials-cassandra-quickstart</artifactId>
