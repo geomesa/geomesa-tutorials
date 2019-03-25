@@ -10,7 +10,7 @@ package org.geomesa.example.fsds.avro;
 
 import org.apache.commons.cli.ParseException;
 import org.geomesa.example.avro.GeoMesaAvroTutorial;
-import org.locationtech.geomesa.fs.FileSystemDataStoreFactory;
+import org.locationtech.geomesa.fs.data.FileSystemDataStoreFactory;
 
 public class FileSystemAvroTutorial extends GeoMesaAvroTutorial {
 

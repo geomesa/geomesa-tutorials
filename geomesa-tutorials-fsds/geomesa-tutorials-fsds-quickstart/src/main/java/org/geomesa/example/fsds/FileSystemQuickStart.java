@@ -15,11 +15,11 @@ import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
 import org.geotools.data.DataStore;
-import org.locationtech.geomesa.fs.FileSystemDataStore;
-import org.locationtech.geomesa.fs.FileSystemDataStoreFactory;
+import org.locationtech.geomesa.fs.data.FileSystemDataStore;
+import org.locationtech.geomesa.fs.data.FileSystemDataStoreFactory;
 import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
 import org.locationtech.geomesa.fs.storage.api.PartitionScheme;
-import org.locationtech.geomesa.fs.storage.interop.PartitionSchemeUtils;
+import org.locationtech.geomesa.fs.storage.common.interop.ConfigurationUtils;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
@@ -36,8 +36,7 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
     public SimpleFeatureType getSimpleFeatureType(TutorialData data) {
         SimpleFeatureType sft = super.getSimpleFeatureType(data);
         // For the FSDS we need to modify the SimpleFeatureType to specify the index scheme
-        PartitionScheme scheme = PartitionSchemeUtils.apply(sft, "daily,z2-2bit", Collections.emptyMap());
-        PartitionSchemeUtils.addToSft(sft, scheme);
+        ConfigurationUtils.setScheme(sft, "daily,z2-2bit", Collections.emptyMap());
         return sft;
     }
 
@@ -59,11 +58,10 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
             try {
                 if (cleanup) {
                     FileSystemStorage fsStorage = ((FileSystemDataStore) datastore).storage(typeName);
-                    Path fsPath = fsStorage.getMetadata().getRoot();
-                    FileContext fc = fsStorage.getMetadata().getFileContext();
+                    Path fsPath = fsStorage.context().root();
                     try {
                         System.out.println("Cleaning up test data");
-                        fc.delete(fsPath, true);
+                        fsStorage.context().fc().delete(fsPath, true);
                     } catch (IOException e) {
                         System.out.println("Unable to delete '" + fsPath.toString() + "':" + e.toString());
                     }

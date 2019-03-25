@@ -10,7 +10,7 @@ package org.geomesa.example.fsds.transformations;
 
 import org.apache.commons.cli.ParseException;
 import org.geomesa.example.transformations.GeoMesaQueryTutorial;
-import org.locationtech.geomesa.fs.FileSystemDataStoreFactory;
+import org.locationtech.geomesa.fs.data.FileSystemDataStoreFactory;
 
 public class FileSystemQueryTutorial extends GeoMesaQueryTutorial {
 
