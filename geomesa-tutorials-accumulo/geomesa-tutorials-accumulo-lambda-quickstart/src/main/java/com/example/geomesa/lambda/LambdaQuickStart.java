@@ -8,7 +8,6 @@
 
 package com.example.geomesa.lambda;
 
-import com.vividsolutions.jts.geom.Envelope;
 import org.apache.commons.cli.ParseException;
 import org.geomesa.example.data.TDriveData;
 import org.geomesa.example.data.TutorialData;
@@ -22,6 +21,7 @@ import org.geotools.filter.identity.FeatureIdImpl;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore;
 import org.locationtech.geomesa.lambda.data.LambdaDataStore;
 import org.locationtech.geomesa.lambda.data.LambdaDataStoreFactory;
+import org.locationtech.jts.geom.Envelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;

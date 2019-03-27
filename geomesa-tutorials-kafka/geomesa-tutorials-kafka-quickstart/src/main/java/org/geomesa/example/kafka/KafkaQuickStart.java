@@ -8,7 +8,6 @@
 
 package org.geomesa.example.kafka;
 
-import com.vividsolutions.jts.geom.Envelope;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -26,6 +25,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.visitor.BoundsVisitor;
 import org.locationtech.geomesa.kafka.data.KafkaDataStoreFactory;
+import org.locationtech.jts.geom.Envelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
