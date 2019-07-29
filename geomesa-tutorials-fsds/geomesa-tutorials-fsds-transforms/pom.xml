@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.geomesa.example</groupId>
         <artifactId>geomesa-tutorials-fsds</artifactId>
-        <version>2.1.4-SNAPSHOT</version>
+        <version>2.1.4</version>
     </parent>
 
     <artifactId>geomesa-tutorials-fsds-transforms</artifactId>
