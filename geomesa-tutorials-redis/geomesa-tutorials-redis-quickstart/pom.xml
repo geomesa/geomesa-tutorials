@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.geomesa.example</groupId>
         <artifactId>geomesa-tutorials-redis</artifactId>
-        <version>2.3.1-SNAPSHOT</version>
+        <version>2.3.1</version>
     </parent>
 
     <artifactId>geomesa-tutorials-redis-quickstart</artifactId>
