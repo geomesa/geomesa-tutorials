@@ -27,7 +27,7 @@ public class EmptyAuthorizationsProvider implements AuthorizationsProvider {
         return authList;
     }
 
-    public void configure(Map<String, Serializable> params) {
+    public void configure(Map<String, ? extends Serializable> params) {
 
     }
 }

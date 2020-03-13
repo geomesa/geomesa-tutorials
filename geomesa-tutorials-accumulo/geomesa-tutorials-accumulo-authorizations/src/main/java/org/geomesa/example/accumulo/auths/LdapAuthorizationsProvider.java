@@ -64,7 +64,7 @@ public class LdapAuthorizationsProvider implements AuthorizationsProvider {
 
     private final Logger logger = LoggerFactory.getLogger(LdapAuthorizationsProvider.class);
 
-    public void configure(Map<String, Serializable> params) {
+    public void configure(Map<String, ? extends Serializable> params) {
         // load the properties from the props file on the classpath
 
         InputStream inputStream = getClass()
