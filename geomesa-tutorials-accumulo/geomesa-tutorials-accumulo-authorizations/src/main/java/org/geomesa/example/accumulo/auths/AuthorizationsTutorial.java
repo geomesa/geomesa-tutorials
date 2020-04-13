@@ -8,6 +8,7 @@
 
 package org.geomesa.example.accumulo.auths;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -22,6 +23,8 @@ import org.locationtech.geomesa.accumulo.data.AccumuloDataStoreFactory;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStoreParams;
 import org.locationtech.geomesa.security.AuthorizationsProvider;
 import org.locationtech.geomesa.security.DefaultAuthorizationsProvider;
+import org.locationtech.geomesa.security.SecurityUtils;
+import org.opengis.feature.simple.SimpleFeature;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -31,7 +34,7 @@ import java.util.Map;
 public class AuthorizationsTutorial extends GeoMesaQuickStart {
 
     // use gdelt data - overwrite the type name so we don't interfere with the regular quick start
-    private static TutorialData data = new GDELTData() {
+    private static final TutorialData data = new GDELTData() {
         @Override
         public String getTypeName() {
             return "gdelt-secure";
@@ -39,6 +42,7 @@ public class AuthorizationsTutorial extends GeoMesaQuickStart {
     };
 
     private DataStore unauthorizedDatastore = null;
+    private String visibilities = null;
 
     public AuthorizationsTutorial(String[] args)  throws ParseException {
         super(args, new AccumuloDataStoreFactory().getParametersInfo(), data);
@@ -48,12 +52,11 @@ public class AuthorizationsTutorial extends GeoMesaQuickStart {
     public Options createOptions(Param[] parameters) {
         Options options = super.createOptions(parameters);
         // make visibilities and auths required
-        Param visibility = AccumuloDataStoreParams.VisibilitiesParam();
         Option vis = Option.builder(null)
-                           .longOpt(visibility.getName())
-                           .argName(visibility.getName())
+                           .longOpt("visibilities")
+                           .argName("visibilities")
                            .hasArg()
-                           .desc(visibility.getDescription().toString())
+                           .desc("Visibilities to set on each feature")
                            .required(true)
                            .build();
         options.addOption(vis);
@@ -70,6 +73,12 @@ public class AuthorizationsTutorial extends GeoMesaQuickStart {
     }
 
     @Override
+    public void initializeFromOptions(CommandLine command) {
+        super.initializeFromOptions(command);
+        this.visibilities = command.getOptionValue("visibilities");
+    }
+
+    @Override
     public DataStore createDataStore(Map<String, String> params) throws IOException {
         // get an instance of the data store that uses our authorizations provider,
         // that always returns empty auths
@@ -82,6 +91,15 @@ public class AuthorizationsTutorial extends GeoMesaQuickStart {
         System.setProperty(AuthorizationsProvider.AUTH_PROVIDER_SYS_PROPERTY,
                            DefaultAuthorizationsProvider.class.getName());
         return super.createDataStore(params);
+    }
+
+    @Override
+    public List<SimpleFeature> getTestFeatures(TutorialData data) {
+        List<SimpleFeature> features = super.getTestFeatures(data);
+        for (SimpleFeature feature : features) {
+            feature.getUserData().put(SecurityUtils.FEATURE_VISIBILITY, visibilities);
+        }
+        return features;
     }
 
     @Override

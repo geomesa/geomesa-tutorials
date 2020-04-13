@@ -53,7 +53,6 @@ public class CommandLineDataStore {
 
     public static Map<String, String> getDataStoreParams(CommandLine command, Options options) {
         Map<String, String> params = new HashMap<>();
-        // noinspection unchecked
         for (Option opt: options.getOptions()) {
             String value = command.getOptionValue(opt.getLongOpt());
             if (value != null) {
