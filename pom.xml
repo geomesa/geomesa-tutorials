@@ -249,14 +249,14 @@
     <repositories>
         <repository>
             <id>locationtech-releases</id>
-            <url>https://repo.locationtech.org/content/groups/releases</url>
+            <url>https://repo.eclipse.org/content/groups/releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
             <id>locationtech-snapshots</id>
-            <url>https://repo.locationtech.org/content/groups/snapshots</url>
+            <url>https://repo.eclipse.org/content/groups/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
