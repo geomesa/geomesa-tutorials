@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>3.0.0</geomesa.version>
+        <geomesa.version>3.0.1-SNAPSHOT</geomesa.version>
         <gt.version>23.0</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
