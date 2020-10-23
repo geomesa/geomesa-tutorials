@@ -8,10 +8,16 @@
 
 package com.example.geomesa.storm;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -22,6 +28,7 @@ import java.util.Properties;
 import java.util.Random;
 
 public class OSMIngestProducer {
+
     private static final Logger log = Logger.getLogger(OSMIngestProducer.class);
     static String INGEST_FILE = "ingestFile";
     static String TOPIC = "topic";
@@ -50,12 +57,13 @@ public class OSMIngestProducer {
         return options;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+          throws FileNotFoundException, ParseException {
 
         CommandLineParser parser = new BasicParser();
         Options options = getRequiredOptions();
         CommandLine cmd = null;
-        kafka.javaapi.producer.Producer<String, String> producer = null;
+        Producer<String, String> producer = null;
         String topic = null;
         try {
             cmd = parser.parse(options, args);
@@ -64,9 +72,10 @@ public class OSMIngestProducer {
             props.put("serializer.class", "kafka.serializer.StringEncoder");
             props.put("metadata.broker.list", cmd.getOptionValue(BROKER_LIST));
             props.put("producer.type", "async");
-            producer = new Producer(new ProducerConfig(props));
+            producer = new KafkaProducer<>(props);
         } catch (ParseException e) {
             log.error("Error parsing command line args", e);
+            throw e;
         }
 
         BufferedReader bufferedReader = null;
@@ -75,6 +84,7 @@ public class OSMIngestProducer {
             bufferedReader = new BufferedReader(fileReader);
         } catch (FileNotFoundException e) {
             log.error("File not found", e);
+            throw e;
         }
 
         //to assign messages to different partitions using default partitioner, need random key
@@ -83,7 +93,7 @@ public class OSMIngestProducer {
             for (String x = bufferedReader.readLine();
                 x != null;
                 x = bufferedReader.readLine()) {
-                producer.send(new KeyedMessage<String, String>(topic, String.valueOf(rnd.nextInt()), x));
+                producer.send(new ProducerRecord<>(topic, String.valueOf(rnd.nextInt()), x));
             }
         } catch (IOException e) {
             log.error("Error reading lines from file", e);

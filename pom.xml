@@ -4,7 +4,7 @@
 
     <groupId>org.geomesa.example</groupId>
     <artifactId>geomesa-tutorials</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.1.0-SNAPSHOT</version>
 
     <name>GeoMesa Tutorials and Examples</name>
     <packaging>pom</packaging>
@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>3.0.1-SNAPSHOT</geomesa.version>
+        <geomesa.version>3.1.0-SNAPSHOT</geomesa.version>
         <gt.version>23.3</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,7 +37,7 @@
         <zookeeper.version>3.4.14</zookeeper.version>
         <hadoop.version>2.8.5</hadoop.version>
         <hbase.hadoop.version>2.5.2</hbase.hadoop.version>
-        <kafka.version>1.0.0</kafka.version>
+        <kafka.version>2.1.1</kafka.version>
         <storm.version>1.0.2</storm.version>
         <hbase.version>2.2.2</hbase.version>
         <cassandra.version>3.0.0</cassandra.version>
