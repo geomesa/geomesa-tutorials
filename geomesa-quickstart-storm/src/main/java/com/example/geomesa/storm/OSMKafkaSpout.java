@@ -8,31 +8,38 @@
 
 package com.example.geomesa.storm;
 
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.internals.NoOpConsumerRebalanceListener;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.log4j.Logger;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
-import kafka.consumer.Consumer;
-import kafka.consumer.ConsumerConfig;
-import kafka.consumer.ConsumerIterator;
-import kafka.consumer.KafkaStream;
-import kafka.javaapi.consumer.ConsumerConnector;
-import kafka.serializer.StringDecoder;
-import kafka.utils.VerifiableProperties;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.*;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
 public class OSMKafkaSpout extends BaseRichSpout {
 
     private static final Logger log = Logger.getLogger(OSMKafkaSpout.class);
-    ConsumerIterator<String, String> kafkaIterator = null;
     SpoutOutputCollector _collector = null;
     Map<String, String> conf;
     String groupId;
     String topic;
+    Consumer<String, String> consumer;
 
     public OSMKafkaSpout(Map<String, String> conf, String groupId, String topic) throws IOException {
         this.conf = conf;
@@ -41,9 +48,13 @@ public class OSMKafkaSpout extends BaseRichSpout {
     }
 
     public void nextTuple() {
-        if(kafkaIterator.hasNext()) {
-            List<Object> messages = new ArrayList<Object>();
-            messages.add(kafkaIterator.next().message());
+        Iterator<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofMillis(10)).iterator();
+        if (records.hasNext()) {
+            List<Object> messages = new ArrayList<>();
+            messages.add(records.next());
+            while (records.hasNext()) {
+                messages.add(records.next().value());
+            }
             _collector.emit(messages);
         }
     }
@@ -59,18 +70,9 @@ public class OSMKafkaSpout extends BaseRichSpout {
         props.put("group.id", groupId);
         props.put("zookeeper.sync.time.ms", "200");
         props.put("auto.commit.interval.ms", "1000");
-        ConsumerConfig consumerConfig = new ConsumerConfig(props);
-        ConsumerConnector consumer = Consumer.createJavaConsumerConnector(consumerConfig);
-        Map<String, Integer> topicCountMap = new HashMap<String, Integer>();
-        topicCountMap.put(topic, 1);
-        Map<String, List<KafkaStream<String, String>>> consumerMap = consumer.createMessageStreams(topicCountMap, new StringDecoder(new VerifiableProperties()), new StringDecoder(new VerifiableProperties()));
-        List<KafkaStream<String, String>> streams = consumerMap.get(topic);
-        KafkaStream<String, String> stream = null;
-        if (streams.size() == 1) {
-            stream = streams.get(0);
-        } else {
-            log.error("Streams should be of size 1");
-        }
-        kafkaIterator = stream.iterator();
+        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Collections.singleton(topic), new NoOpConsumerRebalanceListener());
     }
 }
