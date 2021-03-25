@@ -8,6 +8,7 @@
 
 package com.example.geomesa.lambda;
 
+import org.geotools.util.factory.Hints;
 import org.locationtech.jts.geom.Envelope;
 import org.apache.commons.cli.ParseException;
 import org.geomesa.example.data.TDriveData;
@@ -107,9 +108,9 @@ public class LambdaQuickStart extends GeoMesaQuickStart {
         LambdaDataStore ds = (LambdaDataStore) datastore;
         long total = 0, persisted = 0;
         do {
-            long newTotal = (long) ds.stats().getCount(sft, Filter.INCLUDE, true).get();
+            long newTotal = (long) ds.stats().getCount(sft, Filter.INCLUDE, true, new Hints()).get();
             long newPersisted =
-                  (long) ((AccumuloDataStore) ds.persistence()).stats().getCount(sft, Filter.INCLUDE, true).get();
+                  (long) ((AccumuloDataStore) ds.persistence()).stats().getCount(sft, Filter.INCLUDE, true, new Hints()).get();
             if (newTotal != total || newPersisted != persisted) {
                 total = newTotal;
                 persisted = newPersisted;
