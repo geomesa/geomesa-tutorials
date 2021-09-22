@@ -4,7 +4,7 @@
 
     <groupId>org.geomesa.example</groupId>
     <artifactId>geomesa-tutorials</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>3.3.0</version>
 
     <name>GeoMesa Tutorials and Examples</name>
     <packaging>pom</packaging>
@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>3.2.0</geomesa.version>
+        <geomesa.version>3.3.0</geomesa.version>
         <gt.version>23.3</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

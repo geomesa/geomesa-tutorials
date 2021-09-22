@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.geomesa.example</groupId>
         <artifactId>geomesa-tutorials-accumulo</artifactId>
-        <version>4.0.0-SNAPSHOT</version>
+        <version>3.3.0</version>
     </parent>
 
     <artifactId>geomesa-tutorials-accumulo-quickstart</artifactId>
