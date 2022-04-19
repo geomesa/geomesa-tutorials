@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.geomesa.example</groupId>
         <artifactId>geomesa-tutorials</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.0</version>
     </parent>
 
     <artifactId>geomesa-tutorials-hbase</artifactId>
@@ -25,6 +25,9 @@
         <module>geomesa-tutorials-hbase-quickstart</module>
     </modules>
 
+    <properties>
+        <hbase.version>1.4.13</hbase.version>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <!-- inject the dependency management for hbase, which fixes the guava version -->
