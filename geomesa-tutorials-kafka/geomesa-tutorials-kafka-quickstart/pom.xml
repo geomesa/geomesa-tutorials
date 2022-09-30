@@ -64,7 +64,7 @@
                             <arguments>
                                 <argument>-classpath</argument>
                                 <classpath />
-                                <argument>org.geomesa.example.kafka.KafkaStreamsQuickStart</argument>
+                                <argument>org.geomesa.example.kafka.KafkaQuickStart</argument>
                                 <argument>-kafka.brokers</argument>
                                 <argument>${kafka.brokers}</argument>
                                 <argument>-kafka.zookeepers</argument>
