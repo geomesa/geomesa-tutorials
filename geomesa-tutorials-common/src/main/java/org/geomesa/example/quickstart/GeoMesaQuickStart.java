@@ -38,7 +38,7 @@ import java.util.Map;
 
 public abstract class GeoMesaQuickStart implements Runnable {
 
-    private final Map<String, String> params;
+    public final Map<String, String> params;
     private final TutorialData data;
     private final boolean cleanup;
     private final boolean readOnly;

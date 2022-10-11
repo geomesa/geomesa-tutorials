@@ -22,10 +22,17 @@
 
     <modules>
         <module>geomesa-tutorials-kafka-quickstart</module>
+        <module>geomesa-tutorials-kafka-streams-quickstart</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.geomesa.example</groupId>
+                <artifactId>geomesa-tutorials-kafka-quickstart</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- redefine provided dependencies as runtime for ease in setting up the classpath -->
             <dependency>
                 <groupId>org.apache.kafka</groupId>
