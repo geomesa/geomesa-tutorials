@@ -7,6 +7,8 @@ import org.locationtech.geomesa.utils.geohash.GeohashUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
+import java.util.List;
+
 class GeoPartitioner implements KeyValueMapper<String, GeoMesaMessage, String> {
 
   private final Short partitionNumBits;
@@ -27,7 +29,8 @@ class GeoPartitioner implements KeyValueMapper<String, GeoMesaMessage, String> {
 
   @Override
   public String apply(String key, GeoMesaMessage value) {
-    Geometry geom = (Geometry) value.attributes().apply(defaultGeomIndex);
+    List<Object> attributes = value.asJava();
+    Geometry geom = (Geometry) attributes.get(defaultGeomIndex);
     return getZBin(geom);
   }
 }

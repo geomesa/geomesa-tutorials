@@ -20,6 +20,7 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.JoinWindows;
 import org.apache.kafka.streams.kstream.Joined;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.StreamJoined;
 import org.geomesa.example.data.CvilleRICData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
@@ -38,6 +39,7 @@ import org.locationtech.geomesa.kafka.streams.GeoMesaMessage;
 import org.locationtech.jts.geom.Envelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,7 +154,8 @@ public class KafkaStreamsQuickStart extends GeoMesaQuickStart {
 
         try {
             // Let streams thread finish processing
-            Thread.sleep(1000);
+            Thread.sleep(5*1000);
+            producerFS.removeFeatures(Filter.INCLUDE);
         } catch (InterruptedException e) {
             return;
         }
@@ -177,7 +180,9 @@ public class KafkaStreamsQuickStart extends GeoMesaQuickStart {
 
         // Re-key and repartition the data geospatially
         KStream<String, GeoMesaMessage> geoPartioned = input
-            .filter((k, v) -> !Objects.equals(getFID(v), proximityId))
+            // Filter empty and proximity messages
+            .filter((k, v) -> !Objects.equals(getFID(v), "") && !getFID(v).startsWith(proximityId))
+            // Re-key and re-partition the data spatially
             .selectKey(new GeoPartitioner(numbits, defaultGeomIndex));
 
         // Join records with others in their GeoSpatial proximity.
@@ -185,8 +190,8 @@ public class KafkaStreamsQuickStart extends GeoMesaQuickStart {
             .join(geoPartioned,
                 (left, right) -> new Proximity(left, right, defaultGeomIndex),
                 JoinWindows.of(Duration.ofMinutes(2)),
-                Joined.with(Serdes.String(), serde, serde))
-            .filter((k, v) -> v.areDifferent() && v.areNotProximities() && v.getDistance() < proximityDistanceMeters)
+                StreamJoined.with(Serdes.String(), serde, serde))
+            .filter((k, v) -> v.areDifferent() && v.getDistance() < proximityDistanceMeters)
             .mapValues(Proximity::toGeoMesaMessage)
             .selectKey((k, v) -> proximityId + UUID.randomUUID());
 
@@ -207,15 +212,20 @@ public class KafkaStreamsQuickStart extends GeoMesaQuickStart {
 
     private String getFID(GeoMesaMessage message) {
         // The FID (entityId) is the first attribute in this schema
-        return message.attributes().apply(0).toString();
+        List<Object> attributes = message.asJava();
+        if (attributes.size() > 0) {
+            return attributes.get(0).toString();
+        } else {
+            return "";
+        }
     }
 
-    static Properties streamsConfig() {
+    private Properties streamsConfig() {
         Properties properties = new Properties();
 
         properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "test");
         properties.put(StreamsConfig.CLIENT_ID_CONFIG, "test-client");
-        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, params.get("kafka.brokers"));
 
         // These ensure data isn't buffered for the quickstart and shouldn't be used in production code
         properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1);
