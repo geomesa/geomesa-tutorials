@@ -23,7 +23,6 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +63,7 @@ public class LdapAuthorizationsProvider implements AuthorizationsProvider {
 
     private final Logger logger = LoggerFactory.getLogger(LdapAuthorizationsProvider.class);
 
-    public void configure(Map<String, ? extends Serializable> params) {
+    public void configure(Map<String, ?> params) {
         // load the properties from the props file on the classpath
 
         InputStream inputStream = getClass()

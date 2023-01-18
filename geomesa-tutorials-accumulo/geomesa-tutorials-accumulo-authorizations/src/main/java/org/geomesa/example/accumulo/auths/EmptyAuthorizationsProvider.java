@@ -11,7 +11,6 @@ package org.geomesa.example.accumulo.auths;
 import org.apache.accumulo.core.security.Authorizations;
 import org.locationtech.geomesa.security.AuthorizationsProvider;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class EmptyAuthorizationsProvider implements AuthorizationsProvider {
         return authList;
     }
 
-    public void configure(Map<String, ? extends Serializable> params) {
+    public void configure(Map<String, ?> params) {
 
     }
 }

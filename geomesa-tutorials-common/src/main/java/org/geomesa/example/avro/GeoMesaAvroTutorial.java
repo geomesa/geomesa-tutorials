@@ -18,8 +18,8 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
-import org.locationtech.geomesa.features.avro.AvroDataFileReader;
-import org.locationtech.geomesa.features.avro.AvroDataFileWriter;
+import org.locationtech.geomesa.features.avro.io.AvroDataFileReader;
+import org.locationtech.geomesa.features.avro.io.AvroDataFileWriter;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
