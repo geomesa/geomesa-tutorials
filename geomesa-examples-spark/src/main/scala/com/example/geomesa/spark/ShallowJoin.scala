@@ -15,7 +15,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.geotools.data.{DataStoreFinder, _}
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore
 import org.locationtech.geomesa.features.ScalaSimpleFeatureFactory
-import org.locationtech.geomesa.spark.{GeoMesaSpark, GeoMesaSparkKryoRegistrator}
+import org.locationtech.geomesa.spark.{GeoMesaSpark, GeoMesaSparkKryoRegistrator, SpatialRDD}
 import org.locationtech.geomesa.utils.geotools.{SchemaBuilder, SimpleFeatureTypes}
 import org.locationtech.jts.geom.Geometry
 import org.opengis.feature.simple.SimpleFeature
@@ -47,8 +47,8 @@ object ShallowJoin {
     val rddProviderCountries = GeoMesaSpark(countriesDsParams)
     val rddProviderGdelt     = GeoMesaSpark(gdeltDsParams)
 
-    val countriesRdd: RDD[SimpleFeature] = rddProviderCountries.rdd(new Configuration(), sc, countriesDsParams, new Query("states"))
-    val gdeltRdd: RDD[SimpleFeature] = rddProviderGdelt.rdd(new Configuration(), sc, gdeltDsParams, new Query("gdelt"))
+    val countriesRdd = rddProviderCountries.rdd(new Configuration(), sc, countriesDsParams, new Query("states"))
+    val gdeltRdd = rddProviderGdelt.rdd(new Configuration(), sc, gdeltDsParams, new Query("gdelt"))
 
     val aggregated = shallowJoin(sc, countriesRdd, gdeltRdd, "STATE_NAME")
 
@@ -59,9 +59,9 @@ object ShallowJoin {
 
   }
 
-  def shallowJoin(sc: SparkContext, coveringSet: RDD[SimpleFeature], data: RDD[SimpleFeature], key: String): RDD[SimpleFeature] = {
+  def shallowJoin(sc: SparkContext, coveringSet: SpatialRDD, data: SpatialRDD, key: String): RDD[SimpleFeature] = {
     // Broadcast sfts to executors
-    GeoMesaSparkKryoRegistrator.broadcast(data)
+    GeoMesaSparkKryoRegistrator.register(data.schema)
 
     // Broadcast covering set to executors
     val broadcastedCover = sc.broadcast(coveringSet.collect)
@@ -126,7 +126,6 @@ object ShallowJoin {
 
     // Register it with kryo and send it to executors
     GeoMesaSparkKryoRegistrator.register(Seq(coverSft))
-    GeoMesaSparkKryoRegistrator.broadcast(keyedData)
     val coverSftBroadcast = sc.broadcast(SimpleFeatureTypes.encodeType(coverSft))
 
     // Pre-compute known indices and send them to workers

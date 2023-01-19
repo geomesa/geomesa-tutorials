@@ -99,8 +99,8 @@
             <version>11.0.1</version>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>ch.qos.reload4j</groupId>
+            <artifactId>reload4j</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>
