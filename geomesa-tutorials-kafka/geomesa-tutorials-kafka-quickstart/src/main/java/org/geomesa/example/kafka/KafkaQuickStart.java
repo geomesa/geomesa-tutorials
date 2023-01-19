@@ -8,6 +8,7 @@
 
 package org.geomesa.example.kafka;
 
+import org.locationtech.geomesa.kafka.data.KafkaDataStore;
 import org.locationtech.jts.geom.Envelope;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -31,12 +32,12 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class KafkaQuickStart extends GeoMesaQuickStart {
 
-    private DataStore consumer = null;
     private boolean wait = true;
 
     // uses t-dive streaming data
@@ -62,15 +63,9 @@ public class KafkaQuickStart extends GeoMesaQuickStart {
     public DataStore createDataStore(Map<String, String> params) throws IOException {
         // use geotools service loading to get a datastore instance
         // we load two data stores - one is a producer, that writes features to kafka
-        // the second is a consumer, that reads them from kafka
-
+        // the second is a consumer, that reads them from kafka (created below)
         params.put("kafka.consumer.count", "0");
-        DataStore producer = super.createDataStore(params);
-
-        params.put("kafka.consumer.count", "1");
-        consumer = super.createDataStore(params);
-
-        return producer;
+        return super.createDataStore(params);
     }
 
     @Override
@@ -78,44 +73,53 @@ public class KafkaQuickStart extends GeoMesaQuickStart {
         // the live consumer must be created before the producer writes features
         // in order to read streaming data.
         // i.e. the live consumer will only read data written after its instantiation
-        SimpleFeatureSource consumerFS = consumer.getFeatureSource(sft.getTypeName());
-        SimpleFeatureStore producerFS = (SimpleFeatureStore) datastore.getFeatureSource(sft.getTypeName());
+        // alternatively, it may be configured to read back in the topic
+        params.put("kafka.consumer.count", "1");
+        DataStore consumer = super.createDataStore(params);
+        try {
+            SimpleFeatureSource consumerFS = consumer.getFeatureSource(sft.getTypeName());
+            SimpleFeatureStore producerFS = (SimpleFeatureStore) datastore.getFeatureSource(sft.getTypeName());
 
-        if (wait) {
-            BoundsVisitor visitor = new BoundsVisitor();
+            if (wait) {
+                BoundsVisitor visitor = new BoundsVisitor();
+                for (SimpleFeature feature: features) {
+                    visitor.visit(feature);
+                }
+                Envelope env = visitor.getBounds();
+
+                System.out.println("Feature type created - register the layer '" + sft.getTypeName() +
+                                   "' in geoserver with bounds: MinX[" + env.getMinX() + "] MinY[" +
+                                   env.getMinY() + "] MaxX[" + env.getMaxX() + "] MaxY[" +
+                                   env.getMaxY() + "]");
+                System.out.println("Press <enter> to continue");
+                System.in.read();
+            }
+
+            // creates and adds SimpleFeatures to the producer every few milliseconds to simulate a live stream
+            // given our test data set, this will run for approximately 30 seconds
+            System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
+            System.out.println("Current consumer state:");
+            int n = 0;
             for (SimpleFeature feature: features) {
-                visitor.visit(feature);
-            }
-            Envelope env = visitor.getBounds();
-
-            System.out.println("Feature type created - register the layer '" + sft.getTypeName() +
-                               "' in geoserver with bounds: MinX[" + env.getMinX() + "] MinY[" +
-                               env.getMinY() + "] MaxX[" + env.getMaxX() + "] MaxY[" +
-                               env.getMaxY() + "]");
-            System.out.println("Press <enter> to continue");
-            System.in.read();
-        }
-
-        // creates and adds SimpleFeatures to the producer every few milliseconds to simulate a live stream
-        // given our test data set, this will run for approximately 30 seconds
-        System.out.println("Writing features to Kafka... refresh GeoServer layer preview to see changes");
-        int n = 0;
-        for (SimpleFeature feature: features) {
-            producerFS.addFeatures(new ListFeatureCollection(sft, Collections.singletonList(feature)));
-            try {
-                Thread.sleep(15);
-            } catch (InterruptedException e) {
-                return;
-            }
-            if (++n % 200 == 0) {
-                // LIVE CONSUMER - will obtain the current state of SimpleFeatures
-                // there should only be a single feature at one time
-                try (SimpleFeatureIterator iterator = consumerFS.getFeatures().features()) {
-                    System.out.println("Current consumer state:");
-                    while (iterator.hasNext()) {
-                        System.out.println(DataUtilities.encodeFeature(iterator.next()));
+                producerFS.addFeatures(new ListFeatureCollection(sft, Collections.singletonList(feature)));
+                try {
+                    Thread.sleep(15);
+                } catch (InterruptedException e) {
+                    return;
+                }
+                if (++n % 200 == 0) {
+                    // LIVE CONSUMER - will obtain the current state of SimpleFeatures
+                    // there should only be a single feature at one time
+                    try (SimpleFeatureIterator iterator = consumerFS.getFeatures().features()) {
+                        while (iterator.hasNext()) {
+                            System.out.println(DataUtilities.encodeFeature(iterator.next()));
+                        }
                     }
                 }
+            }
+        } finally {
+            if (consumer != null) {
+                consumer.dispose();
             }
         }
 
