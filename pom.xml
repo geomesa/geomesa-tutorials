@@ -22,13 +22,13 @@
     </modules>
 
     <properties>
-        <geomesa.version>4.0.0-SNAPSHOT</geomesa.version>
-        <gt.version>28.0</gt.version>
+        <geomesa.version>4.0.0</geomesa.version>
+        <gt.version>28.2</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <scala.abi.version>2.12</scala.abi.version>
-        <scala.version>2.12.13</scala.version>
+        <scala.version>2.12.17</scala.version>
 
         <!-- environment specific variables-->
         <accumulo.version>2.0.1</accumulo.version>
