@@ -13,12 +13,13 @@ import java.text.SimpleDateFormat
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.geotools.data.{DataStoreFinder, Query}
+import org.geotools.api.data.DataStoreFinder
+import org.geotools.api.data.Query
 import org.geotools.factory.CommonFactoryFinder
 import org.geotools.filter.text.ecql.ECQL
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore
 import org.locationtech.geomesa.spark.GeoMesaSpark
-import org.opengis.feature.simple.SimpleFeature
+import org.geotools.api.feature.simple.SimpleFeature
 
 import scala.collection.JavaConversions._
 
@@ -68,7 +69,7 @@ object CountByDay {
   def countByDay(rdd: RDD[SimpleFeature], dateField: String = "dtg") = {
     val dayAndFeature = rdd.mapPartitions { iter =>
       val df = new SimpleDateFormat("yyyyMMdd")
-      val ff = CommonFactoryFinder.getFilterFactory2
+      val ff = CommonFactoryFinder.getFilterFactory
       val exp = ff.property(dateField)
       iter.map { f => (df.format(exp.evaluate(f).asInstanceOf[java.util.Date]), f) }
     }

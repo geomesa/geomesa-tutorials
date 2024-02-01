@@ -14,7 +14,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.api.data.DataAccessFactory.Param;
 
 import java.util.HashMap;
 import java.util.Map;

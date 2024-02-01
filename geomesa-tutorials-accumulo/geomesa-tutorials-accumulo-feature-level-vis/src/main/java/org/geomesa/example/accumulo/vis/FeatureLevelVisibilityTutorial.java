@@ -12,12 +12,12 @@ import org.apache.commons.cli.ParseException;
 import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
-import org.geotools.data.Query;
+import org.geotools.api.data.Query;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStoreFactory;
 import org.locationtech.geomesa.security.SecurityUtils;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 
 import java.util.Collections;
 import java.util.List;

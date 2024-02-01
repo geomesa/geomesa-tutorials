@@ -14,12 +14,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.geotools.data.DataAccessFactory.Param;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
+import org.geotools.api.data.DataAccessFactory.Param;
+import org.geotools.api.data.DataStore;
+import org.geotools.api.data.DataStoreFinder;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.FeatureEvent;
-import org.geotools.data.FeatureListener;
+import org.geotools.api.data.FeatureEvent;
+import org.geotools.api.data.FeatureListener;
 import org.locationtech.geomesa.kafka.data.KafkaDataStoreFactory;
 import org.locationtech.geomesa.kafka.utils.KafkaFeatureEvent.KafkaFeatureChanged;
 

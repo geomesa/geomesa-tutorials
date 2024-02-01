@@ -11,13 +11,13 @@ package org.geomesa.example.data;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.geotools.data.Query;
+import org.geotools.api.data.Query;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.util.factory.Hints;
 import org.locationtech.geomesa.utils.interop.SimpleFeatureTypes;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.filter.Filter;
 
 import java.io.IOException;
 import java.net.URL;
