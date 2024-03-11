@@ -14,13 +14,13 @@ import org.apache.hadoop.fs.Path;
 import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
-import org.geotools.data.DataStore;
+import org.geotools.api.data.DataStore;
 import org.locationtech.geomesa.fs.data.FileSystemDataStore;
 import org.locationtech.geomesa.fs.data.FileSystemDataStoreFactory;
 import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
 import org.locationtech.geomesa.fs.storage.api.PartitionScheme;
 import org.locationtech.geomesa.fs.storage.common.interop.ConfigurationUtils;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
 import java.util.Collections;

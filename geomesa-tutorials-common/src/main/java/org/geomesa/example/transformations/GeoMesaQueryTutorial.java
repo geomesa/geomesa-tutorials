@@ -12,9 +12,9 @@ import org.apache.commons.cli.ParseException;
 import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
-import org.geotools.data.DataAccessFactory.Param;
-import org.geotools.data.Query;
-import org.opengis.filter.Filter;
+import org.geotools.api.data.DataAccessFactory.Param;
+import org.geotools.api.data.Query;
+import org.geotools.api.filter.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
