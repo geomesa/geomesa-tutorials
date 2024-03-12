@@ -1,0 +1,23 @@
+<configuration scan="true">
+
+  <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-5level [%thread] %date{ISO8601} %F:%L - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="stdout" />
+  </root>
+
+  <logger name="geomesa" level="info"/>
+  <logger name="org.locationtech.geomesa" level="info"/>
+  <logger name="org.apache.zookeeper" level="warn"/>
+  <logger name="org.apache.curator" level="warn"/>
+  <logger name="org.I0Itec.zkclient" level="warn"/>
+  <logger name="org.apache.kafka" level="warn"/>
+  <logger name="kafka" level="warn"/>
+  <logger name="org.apache.hadoop" level="warn"/>
+  <logger name="hsqldb.db" level="warn"/>
+
+</configuration>
