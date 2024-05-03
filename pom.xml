@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>5.0.0-SNAPSHOT</geomesa.version>
+        <geomesa.version>5.0.0</geomesa.version>
         <gt.version>30.2</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
