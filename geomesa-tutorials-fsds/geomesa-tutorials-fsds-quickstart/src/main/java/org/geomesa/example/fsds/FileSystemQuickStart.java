@@ -9,18 +9,16 @@
 package org.geomesa.example.fsds;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.hadoop.fs.FileContext;
 import org.apache.hadoop.fs.Path;
 import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
 import org.geotools.api.data.DataStore;
+import org.geotools.api.feature.simple.SimpleFeatureType;
 import org.locationtech.geomesa.fs.data.FileSystemDataStore;
 import org.locationtech.geomesa.fs.data.FileSystemDataStoreFactory;
 import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
-import org.locationtech.geomesa.fs.storage.api.PartitionScheme;
 import org.locationtech.geomesa.fs.storage.common.interop.ConfigurationUtils;
-import org.geotools.api.feature.simple.SimpleFeatureType;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -57,17 +55,19 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
         if (datastore != null) {
             try {
                 if (cleanup) {
+                    // noinspection resource
                     FileSystemStorage fsStorage = ((FileSystemDataStore) datastore).storage(typeName);
                     Path fsPath = fsStorage.context().root();
                     try {
                         System.out.println("Cleaning up test data");
-                        fsStorage.context().fc().delete(fsPath, true);
+                        // noinspection resource
+                        fsStorage.context().fs().delete(fsPath, true);
                     } catch (IOException e) {
-                        System.out.println("Unable to delete '" + fsPath.toString() + "':" + e.toString());
+                        System.out.println("Unable to delete '" + fsPath.toString() + "':" + e);
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Unable to cleanup datastore: " + e.toString());
+                System.out.println("Unable to cleanup datastore: " + e);
             } finally {
                 // make sure that we dispose of the datastore when we're done with it
                 datastore.dispose();
