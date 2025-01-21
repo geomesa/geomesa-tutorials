@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <geomesa.version>5.2.0-SNAPSHOT</geomesa.version>
+        <geomesa.version>5.2.0</geomesa.version>
         <gt.version>32.0</gt.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,6 +41,8 @@
         <storm.version>1.0.2</storm.version>
         <hbase.version>2.5.8-hadoop3</hbase.version>
         <cassandra.version>3.11.3</cassandra.version>
+
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -102,8 +104,18 @@
 
             <dependency>
                 <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-reload4j</artifactId>
-                <version>1.7.36</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.reload4j</groupId>
@@ -243,6 +255,13 @@
     <profiles>
         <profile>
             <id>live-test</id>
+        </profile>
+        <profile>
+            <id>accumulo-2.0</id>
+            <properties>
+                <accumulo.version>2.0.1</accumulo.version>
+                <thrift.version>0.12.0</thrift.version>
+            </properties>
         </profile>
     </profiles>
 
