@@ -12,19 +12,18 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.geotools.api.data.DataStoreFinder
-import org.geotools.data._
 import org.geotools.api.data._
+import org.geotools.api.feature.simple.SimpleFeature
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore
 import org.locationtech.geomesa.features.ScalaSimpleFeatureFactory
 import org.locationtech.geomesa.spark.{GeoMesaSpark, GeoMesaSparkKryoRegistrator, SpatialRDD}
 import org.locationtech.geomesa.utils.geotools.{SchemaBuilder, SimpleFeatureTypes}
 import org.locationtech.jts.geom.Geometry
-import org.geotools.api.feature.simple.SimpleFeature
-
-import scala.collection.JavaConversions._
 
 object ShallowJoin {
+
+  import scala.jdk.CollectionConverters._
+
   val countriesDsParams = Map(
     "instanceId" -> "mycloud",
     "zookeepers" -> "zoo1,zoo2,zoo3",
@@ -39,8 +38,8 @@ object ShallowJoin {
     "password"   -> "password",
     "tableName"  -> "geomesa.gdelt")
 
-  val countriesDs = DataStoreFinder.getDataStore(countriesDsParams).asInstanceOf[AccumuloDataStore]
-  val gdeltDs = DataStoreFinder.getDataStore(gdeltDsParams).asInstanceOf[AccumuloDataStore]
+  val countriesDs = DataStoreFinder.getDataStore(countriesDsParams.asJava).asInstanceOf[AccumuloDataStore]
+  val gdeltDs = DataStoreFinder.getDataStore(gdeltDsParams.asJava).asInstanceOf[AccumuloDataStore]
 
   def main(args: Array[String]) {
     val conf = new SparkConf().setAppName("testSpark")
@@ -70,7 +69,7 @@ object ShallowJoin {
 
     // Key data by cover name
     val keyedData = data.mapPartitions { iter =>
-      import org.locationtech.geomesa.utils.geotools.Conversions._
+
 
       iter.flatMap { sf =>
         // Iterate over covers until a match is found
@@ -81,7 +80,7 @@ object ShallowJoin {
           val cover = it.next()
           // If the cover's polygon contains the feature,
           // or in the case of non-point geoms, if they intersect, set the container
-          if (cover.geometry.intersects(sf.geometry)) {
+          if (cover.getDefaultGeometry.asInstanceOf[Geometry].intersects(sf.getDefaultGeometry.asInstanceOf[Geometry])) {
             container = Some(cover.getAttribute(key).asInstanceOf[String])
           }
         }
@@ -96,7 +95,7 @@ object ShallowJoin {
 
     // Get the indices and types of the attributes that can be aggregated and send them to the partitions
     val countableTypes = Seq("Integer", "Long", "Double")
-    val typeNames = data.first.getType.getTypes.toIndexedSeq.map{t => t.getBinding.getSimpleName.toString}
+    val typeNames = data.first.getType.getTypes.asScala.toIndexedSeq.map{t => t.getBinding.getSimpleName.toString}
 
     val countableIndices = typeNames.indices.flatMap { index =>
       val featureType = typeNames(index)
@@ -114,7 +113,7 @@ object ShallowJoin {
     sftBuilder.addString(key)
     sftBuilder.addMultiPolygon("geom")
     sftBuilder.addInt("count")
-    val featureProperties = data.first.getProperties.toSeq
+    val featureProperties = data.first.getProperties.asScala.toSeq
     countableIndices.foreach { case (index, clazz) =>
       val featureName = featureProperties.apply(index).getName
       clazz match {
@@ -131,30 +130,29 @@ object ShallowJoin {
     val coverSftBroadcast = sc.broadcast(SimpleFeatureTypes.encodeType(coverSft))
 
     // Pre-compute known indices and send them to workers
-    val stringAttrs = coverSft.getAttributeDescriptors.map(_.getLocalName)
+    val stringAttrs = coverSft.getAttributeDescriptors.asScala.map(_.getLocalName)
     val countIndex = sc.broadcast(stringAttrs.indexOf("count"))
     // Reduce features by their covering area
     val aggregate = reduceAndAggregate(keyedData, countable, countIndex, coverSftBroadcast)
 
     // Send a map of cover name -> geom to the executors
-    import org.locationtech.geomesa.utils.geotools.Conversions._
     val coverMap: scala.collection.Map[String, Geometry] =
       coveringSet.map{ sf =>
-        sf.getAttribute(key).asInstanceOf[String] -> sf.geometry
+        sf.getAttribute(key).asInstanceOf[String] -> sf.getDefaultGeometry.asInstanceOf[Geometry]
       }.collectAsMap
 
     val broadcastedCoverMap = sc.broadcast(coverMap)
 
     // Compute averages and set cover names and geometries
     aggregate.mapPartitions { iter =>
-      import org.locationtech.geomesa.utils.geotools.Conversions.RichSimpleFeature
+
 
       iter.flatMap{ case (coverName, sf) =>
         if (sf.getType.getTypeName == "aggregate") {
-          sf.getProperties.foreach{ prop =>
+          sf.getProperties.asScala.foreach{ prop =>
             val name = prop.getName.toString
             if (name.startsWith("total_")) {
-              val count = sf.get[Integer]("count")
+              val count = sf.getAttribute("count").asInstanceOf[Integer]
               val avg = prop.getValue match {
                 case a: Integer => a.toDouble / count
                 case a: java.lang.Long => a.toDouble / count
@@ -181,7 +179,6 @@ object ShallowJoin {
 
     // Reduce features by their covering area
     val aggregate = keyedData.reduceByKey((featureA, featureB) => {
-      import org.locationtech.geomesa.utils.geotools.Conversions.RichSimpleFeature
 
       val aggregateSft = SimpleFeatureTypes.createType("aggregate", coverSftBroadcast.value)
 
@@ -190,7 +187,7 @@ object ShallowJoin {
       // Case: combining two aggregate features
       if (typeA == "aggregate" && typeB == "aggregate") {
         // Combine the "total" properties
-        (featureA.getProperties, featureB.getProperties).zipped.foreach((propA, propB) => {
+        featureA.getProperties.asScala.zip(featureB.getProperties.asScala).foreach { case (propA, propB) =>
           val name = propA.getName.toString
           if (propA.getName.toString.startsWith("total_") || propA.getName.toString == "count") {
             val sum = (propA.getValue, propB.getValue) match {
@@ -201,15 +198,15 @@ object ShallowJoin {
             }
             featureA.setAttribute(propA.getName, sum)
           }
-        })
+        }
         featureA
         // Case: combining two regular features
       } else if (typeA != "aggregate" && typeB != "aggregate") {
         // Grab each feature's properties
-        val featurePropertiesA = featureA.getProperties.toSeq
-        val featurePropertiesB = featureB.getProperties.toSeq
+        val featurePropertiesA = featureA.getProperties.asScala.toSeq
+        val featurePropertiesB = featureB.getProperties.asScala.toSeq
         // Create a new aggregate feature to hold the result
-        val featureFields = Seq("empty", featureA.geometry) ++ Seq.fill(aggregateSft.getTypes.size - 2)("0")
+        val featureFields = Seq("empty", featureA.getDefaultGeometry) ++ Seq.fill(aggregateSft.getTypes.size - 2)("0")
         val aggregateFeature = ScalaSimpleFeatureFactory.buildFeature(aggregateSft, featureFields, featureA.getID)
 
         // Loop over the countable properties and sum them for both geonames simple features
@@ -246,7 +243,7 @@ object ShallowJoin {
         }
 
         // Loop over the aggregate feature's properties, adding on the regular feature's properties
-        aggFeature.getProperties.foreach { prop =>
+        aggFeature.getProperties.asScala.foreach { prop =>
           val name = prop.getName.toString
           if (name.startsWith("total_")) {
             val geoProp = geoFeature.getProperty(name.substring(6))
@@ -262,7 +259,7 @@ object ShallowJoin {
           }
 
         }
-        aggFeature.setAttribute(countIndex.value, aggFeature.get[Integer](countIndex.value) + 1)
+        aggFeature.setAttribute(countIndex.value, aggFeature.getAttribute(countIndex.value).asInstanceOf[Integer] + 1)
         aggFeature
       }
     })
