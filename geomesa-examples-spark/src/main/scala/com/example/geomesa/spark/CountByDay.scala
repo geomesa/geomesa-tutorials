@@ -8,22 +8,21 @@
 
 package com.example.geomesa.spark
 
-import java.text.SimpleDateFormat
-
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.geotools.api.data.DataStoreFinder
-import org.geotools.api.data.Query
+import org.geotools.api.data.{DataStoreFinder, Query}
+import org.geotools.api.feature.simple.SimpleFeature
 import org.geotools.factory.CommonFactoryFinder
 import org.geotools.filter.text.ecql.ECQL
 import org.locationtech.geomesa.accumulo.data.AccumuloDataStore
 import org.locationtech.geomesa.spark.GeoMesaSpark
-import org.geotools.api.feature.simple.SimpleFeature
 
-import scala.collection.JavaConversions._
+import java.text.SimpleDateFormat
 
 object CountByDay {
+
+  import scala.jdk.CollectionConverters._
 
   val params = Map(
     "instanceId" -> "mycloud",
@@ -44,7 +43,7 @@ object CountByDay {
 
   def main(args: Array[String]) {
     // Get a handle to the data store
-    val ds = DataStoreFinder.getDataStore(params).asInstanceOf[AccumuloDataStore]
+    val ds = DataStoreFinder.getDataStore(params.asJava).asInstanceOf[AccumuloDataStore]
 
     // Construct a CQL query to filter by bounding box
     val q = new Query(typeName, ECQL.toFilter(filter))

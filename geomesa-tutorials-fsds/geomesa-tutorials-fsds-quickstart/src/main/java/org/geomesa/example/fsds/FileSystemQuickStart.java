@@ -9,19 +9,11 @@
 package org.geomesa.example.fsds;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.hadoop.fs.Path;
 import org.geomesa.example.data.GDELTData;
 import org.geomesa.example.data.TutorialData;
 import org.geomesa.example.quickstart.GeoMesaQuickStart;
-import org.geotools.api.data.DataStore;
 import org.geotools.api.feature.simple.SimpleFeatureType;
-import org.locationtech.geomesa.fs.data.FileSystemDataStore;
 import org.locationtech.geomesa.fs.data.FileSystemDataStoreFactory;
-import org.locationtech.geomesa.fs.storage.api.FileSystemStorage;
-import org.locationtech.geomesa.fs.storage.common.interop.ConfigurationUtils;
-
-import java.io.IOException;
-import java.util.Collections;
 
 public class FileSystemQuickStart extends GeoMesaQuickStart {
 
@@ -34,7 +26,7 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
     public SimpleFeatureType getSimpleFeatureType(TutorialData data) {
         SimpleFeatureType sft = super.getSimpleFeatureType(data);
         // For the FSDS we need to modify the SimpleFeatureType to specify the index scheme
-        ConfigurationUtils.setScheme(sft, "daily,z2-2bit", Collections.emptyMap());
+        sft.getUserData().put("geomesa.fs.scheme", "daily,z2-2bit");
         return sft;
     }
 
@@ -48,30 +40,5 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
             System.exit(2);
         }
         System.exit(0);
-    }
-
-    @Override
-    public void cleanup(DataStore datastore, String typeName, boolean cleanup) {
-        if (datastore != null) {
-            try {
-                if (cleanup) {
-                    // noinspection resource
-                    FileSystemStorage fsStorage = ((FileSystemDataStore) datastore).storage(typeName);
-                    Path fsPath = fsStorage.context().root();
-                    try {
-                        System.out.println("Cleaning up test data");
-                        // noinspection resource
-                        fsStorage.context().fs().delete(fsPath, true);
-                    } catch (IOException e) {
-                        System.out.println("Unable to delete '" + fsPath.toString() + "':" + e);
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Unable to cleanup datastore: " + e);
-            } finally {
-                // make sure that we dispose of the datastore when we're done with it
-                datastore.dispose();
-            }
-        }
     }
 }
