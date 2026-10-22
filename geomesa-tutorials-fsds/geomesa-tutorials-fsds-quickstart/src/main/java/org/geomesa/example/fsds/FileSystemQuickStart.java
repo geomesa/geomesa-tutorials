@@ -26,7 +26,7 @@ public class FileSystemQuickStart extends GeoMesaQuickStart {
     public SimpleFeatureType getSimpleFeatureType(TutorialData data) {
         SimpleFeatureType sft = super.getSimpleFeatureType(data);
         // For the FSDS we need to modify the SimpleFeatureType to specify the index scheme
-        sft.getUserData().put("geomesa.fs.scheme", "daily,z2-2bit");
+        sft.getUserData().put("geomesa.fs.scheme", "daily,z2-4bit");
         return sft;
     }
 
